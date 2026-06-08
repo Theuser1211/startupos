@@ -1,0 +1,542 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type { InterviewData } from "@/lib/types";
+import {
+  STAGE_LABELS,
+  INDUSTRY_LABELS,
+  CUSTOMER_LABELS,
+  BUSINESS_MODEL_LABELS,
+  PRICE_RANGE_LABELS,
+  PROBLEM_LABELS,
+} from "@/lib/types";
+
+/* ─── Step Definitions ─── */
+
+interface StepField {
+  id: string;
+  label: string;
+  type: "text" | "textarea" | "select" | "conditional-price";
+  placeholder?: string;
+  options?: { label: string; value: string }[];
+  /** Show this field only when the referenced field equals one of these values */
+  showIf?: { field: string; is: string[] };
+}
+
+interface Step {
+  id: string;
+  title: string;
+  description: string;
+  heading: string;
+  fields: StepField[];
+}
+
+const steps: Step[] = [
+  {
+    id: "idea",
+    title: "What are you building?",
+    description: "Describe your startup in one clear sentence.",
+    heading: "Your Startup Idea",
+    fields: [
+      {
+        id: "idea",
+        label: "Describe your startup idea in one sentence",
+        type: "text",
+        placeholder: "AI lawyer for startups",
+      },
+    ],
+  },
+  {
+    id: "basics",
+    title: "Where are you now?",
+    description: "Help us understand your current stage and market.",
+    heading: "Stage & Industry",
+    fields: [
+      {
+        id: "stage",
+        label: "Current Stage",
+        type: "select",
+        options: Object.entries(STAGE_LABELS).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      },
+      {
+        id: "industry",
+        label: "Industry",
+        type: "select",
+        options: Object.entries(INDUSTRY_LABELS).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      },
+      {
+        id: "industryOther",
+        label: "Describe your industry",
+        type: "text",
+        placeholder: "e.g. LegalTech, SpaceTech, etc.",
+        showIf: { field: "industry", is: ["other"] },
+      },
+    ],
+  },
+  {
+    id: "customer",
+    title: "Who are you building for?",
+    description: "Define your target customer and how you'll charge them.",
+    heading: "Customer & Revenue",
+    fields: [
+      {
+        id: "targetCustomer",
+        label: "Target Customer",
+        type: "select",
+        options: Object.entries(CUSTOMER_LABELS).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      },
+      {
+        id: "businessModel",
+        label: "Business Model",
+        type: "select",
+        options: Object.entries(BUSINESS_MODEL_LABELS).map(
+          ([value, label]) => ({
+            label,
+            value,
+          })
+        ),
+      },
+      {
+        id: "priceRange",
+        label: "Target Price Range",
+        type: "select",
+        options: Object.entries(PRICE_RANGE_LABELS).map(([value, label]) => ({
+          label,
+          value,
+        })),
+        showIf: {
+          field: "businessModel",
+          is: ["subscription", "usage"],
+        },
+      },
+    ],
+  },
+  {
+    id: "problem",
+    title: "What problem do you solve?",
+    description: "Identify the core pain point your startup addresses.",
+    heading: "Core Problem",
+    fields: [
+      {
+        id: "problem",
+        label: "Biggest Customer Problem",
+        type: "select",
+        options: Object.entries(PROBLEM_LABELS).map(([value, label]) => ({
+          label,
+          value,
+        })),
+      },
+      {
+        id: "problemOther",
+        label: "Describe the problem",
+        type: "textarea",
+        placeholder: "Describe the specific problem your startup solves...",
+        showIf: { field: "problem", is: ["other"] },
+      },
+    ],
+  },
+  {
+    id: "done",
+    title: "Your Blueprint is Ready!",
+    description:
+      "We've analyzed your input and generated a personalized StartupOS Blueprint.",
+    heading: "",
+    fields: [],
+  },
+];
+
+/* ─── Default data ─── */
+const defaultData: InterviewData = {
+  idea: "",
+  stage: "ideation",
+  industry: "saas",
+  targetCustomer: "b2b-small",
+  businessModel: "subscription",
+  problem: "cost",
+};
+
+/* ─── Validation ─── */
+function validateStep(step: Step, data: InterviewData): boolean {
+  if (step.id === "done") return true;
+  return step.fields.every((f) => {
+    // Skip conditional fields that aren't visible
+    if (f.showIf) {
+      const dependentValue = data[f.showIf.field as keyof InterviewData] as string;
+      if (!f.showIf.is.includes(dependentValue)) return true;
+    }
+    const val = data[f.id as keyof InterviewData];
+    if (typeof val === "string") return val.trim().length > 0;
+    return val !== undefined && val !== null;
+  });
+}
+
+/* ─── Component ─── */
+export default function InterviewPage() {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [data, setData] = useState<InterviewData>({ ...defaultData });
+  const [direction, setDirection] = useState(0);
+
+  const step = steps[currentStep];
+
+  const updateField = (id: string, value: string) => {
+    setData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const nextStep = () => {
+    if (currentStep < steps.length - 1) {
+      setDirection(1);
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 0) {
+      setDirection(-1);
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+
+  const handleFinish = () => {
+    const payload = {
+      ...data,
+      name: extractName(data.idea),
+      company: extractCompany(data.idea),
+    };
+
+    // Store in localStorage for the workspace to pick up
+    localStorage.setItem("startupos-founder", JSON.stringify(payload));
+
+    // Workspace handles Supabase saving on demand (with actual blueprint data)
+    router.push("/workspace");
+  };
+
+  const isLastQuestion = false; // All question steps navigate forward; done screen handles final redirect
+
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 grid-bg" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px]" />
+
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
+              <Sparkles className="h-3 w-3 text-white" />
+            </div>
+            <span className="text-sm font-bold">
+              Startup<span className="text-primary">OS</span>
+            </span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <Badge variant="outline" className="text-xs">
+              Step {currentStep + 1} of {steps.length}
+            </Badge>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="fixed top-14 left-0 right-0 h-0.5 bg-white/5 z-40">
+        <motion.div
+          className="h-full bg-gradient-to-r from-primary to-secondary"
+          initial={{ width: "0%" }}
+          animate={{
+            width: `${((currentStep + 1) / steps.length) * 100}%`,
+          }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+        />
+      </div>
+
+      {/* Question counter chips */}
+      <div className="fixed top-[62px] left-0 right-0 z-30 flex justify-center pt-2">
+        <div className="flex items-center gap-1.5">
+          {steps.slice(0, -1).map((s, i) => (
+            <div
+              key={s.id}
+              className={`h-1.5 w-6 rounded-full transition-all duration-300 ${
+                i <= currentStep ? "bg-primary/60" : "bg-white/10"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 w-full max-w-2xl px-6">
+        <div className="overflow-hidden">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={step.id}
+              custom={direction}
+              initial={{ opacity: 0, x: direction > 0 ? 100 : -100, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: direction > 0 ? -100 : 100, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: "easeInOut" }}
+            >
+              {/* ─── Done Screen ─── */}
+              {step.id === "done" ? (
+                <div className="text-center py-8">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-xl shadow-primary/30"
+                  >
+                    <Check className="h-10 w-10 text-white" />
+                  </motion.div>
+
+                  <h2 className="text-3xl font-display font-bold mb-3">
+                    Your Blueprint is Ready ✨
+                  </h2>
+                  <p className="text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed">
+                    We&apos;ve analyzed your input and built a personalized
+                    StartupOS workspace with your brand, ICP, revenue model,
+                    roadmap, and more.
+                  </p>
+
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground mb-6">
+                      <span className="flex items-center gap-1.5">
+                        <Check className="h-3 w-3 text-emerald-400" /> Brand
+                        Analysis
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Check className="h-3 w-3 text-emerald-400" /> ICP
+                        Identified
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Check className="h-3 w-3 text-emerald-400" /> Revenue
+                        Model
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Check className="h-3 w-3 text-emerald-400" /> Startup
+                        Roast
+                      </span>
+                    </div>
+
+                    <Button
+                      size="xl"
+                      className="glow-purple px-12 text-base"
+                      onClick={handleFinish}
+                    >
+                      Enter Workspace
+                      <ArrowRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+
+                  {/* Quick review of answers */}
+                  <div className="mt-10 max-w-sm mx-auto">
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Your Blueprint is based on:
+                    </p>
+                    <div className="space-y-1.5 text-xs text-left">
+                      <ReviewLine label="Idea" value={data.idea} />
+                      <ReviewLine
+                        label="Stage"
+                        value={STAGE_LABELS[data.stage]}
+                      />
+                      <ReviewLine
+                        label="Industry"
+                        value={
+                          data.industry === "other"
+                            ? data.industryOther
+                            : INDUSTRY_LABELS[data.industry]
+                        }
+                      />
+                      <ReviewLine
+                        label="Customer"
+                        value={CUSTOMER_LABELS[data.targetCustomer]}
+                      />
+                      <ReviewLine
+                        label="Revenue"
+                        value={
+                          data.businessModel === "subscription" ||
+                          data.businessModel === "usage"
+                            ? `${BUSINESS_MODEL_LABELS[data.businessModel]} · ${data.priceRange}`
+                            : BUSINESS_MODEL_LABELS[data.businessModel]
+                        }
+                      />
+                      <ReviewLine
+                        label="Problem"
+                        value={
+                          data.problem === "other"
+                            ? data.problemOther
+                            : PROBLEM_LABELS[data.problem]
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* ─── Question Screen ─── */
+                <div className="py-8">
+                  <div className="mb-2">
+                    <span className="text-xs font-medium text-primary uppercase tracking-wider">
+                      Question {currentStep + 1} of {steps.length - 1}
+                    </span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-display font-bold mb-2">
+                    {step.title}
+                  </h2>
+                  <p className="text-muted-foreground mb-10 leading-relaxed">
+                    {step.description}
+                  </p>
+
+                  <div className="space-y-6">
+                    {step.fields.map((field) => {
+                      // Check conditional visibility
+                      if (field.showIf) {
+                        const dependentValue = data[
+                          field.showIf.field as keyof InterviewData
+                        ] as string;
+                        if (!field.showIf.is.includes(dependentValue)) {
+                          return null;
+                        }
+                      }
+
+                      const currentValue =
+                        (data[field.id as keyof InterviewData] as string) ||
+                        "";
+                      const fieldId = field.id;
+
+                      return (
+                        <div key={field.id}>
+                          <label
+                            htmlFor={field.id}
+                            className="block text-sm font-medium text-foreground mb-2"
+                          >
+                            {field.label}
+                          </label>
+                          {field.type === "textarea" ? (
+                            <Textarea
+                              id={field.id}
+                              placeholder={field.placeholder}
+                              value={currentValue}
+                              onChange={(e) =>
+                                updateField(fieldId, e.target.value)
+                              }
+                              className="min-h-[100px]"
+                            />
+                          ) : field.type === "select" ||
+                            field.type === "conditional-price" ? (
+                            <Select
+                              value={currentValue}
+                              onValueChange={(value: string) =>
+                                updateField(fieldId, value)
+                              }
+                            >
+                              <SelectTrigger id={field.id}>
+                                <SelectValue placeholder="Select an option..." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {field.options?.map((opt) => (
+                                  <SelectItem key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <Input
+                              id={field.id}
+                              type="text"
+                              placeholder={field.placeholder}
+                              value={currentValue}
+                              onChange={(e) =>
+                                updateField(fieldId, e.target.value)
+                              }
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Navigation */}
+                  <div className="mt-10 flex items-center justify-between">
+                    <Button
+                      variant="ghost"
+                      onClick={prevStep}
+                      disabled={currentStep === 0}
+                      className="gap-2"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </Button>
+                    <Button
+                      onClick={isLastQuestion ? handleFinish : nextStep}
+                      disabled={!validateStep(step, data)}
+                      className="gap-2 glow-purple"
+                    >
+                      {isLastQuestion ? "Generate My Blueprint" : "Continue"}
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="fixed bottom-0 left-0 right-0 z-40">
+        <div className="mx-auto flex h-12 max-w-5xl items-center justify-center px-6">
+          <p className="text-xs text-muted-foreground">
+            StartupOS Beta · Your data stays private
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Helpers ─── */
+
+/** Derive a display name from the idea text */
+function extractName(idea: string): string {
+  if (!idea || idea.trim().length === 0) return "Founder";
+  return "Founder";
+}
+
+/** Derive a company name from the idea text (first 2 words, capitalized) */
+function extractCompany(idea: string): string {
+  if (!idea || idea.trim().length === 0) return "";
+  const words = idea.trim().split(/\s+/);
+  return words
+    .slice(0, 2)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+/** Small component for the review summary */
+function ReviewLine({ label, value }: { label: string; value?: string }) {
+  if (!value) return null;
+  return (
+    <div className="flex items-start gap-2">
+      <span className="text-muted-foreground shrink-0 w-16">{label}:</span>
+      <span className="text-foreground">{value}</span>
+    </div>
+  );
+}
