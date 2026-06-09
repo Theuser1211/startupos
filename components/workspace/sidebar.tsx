@@ -48,7 +48,7 @@ interface SidebarProps {
   blueprintId?: string;
   isPublished?: boolean;
   shareToken?: string | null;
-  onPublishToggle?: () => void;
+  onPublishToggle?: () => void | Promise<void>;
 }
 
 export function Sidebar({
@@ -67,11 +67,17 @@ export function Sidebar({
     ? `${typeof window !== "undefined" ? window.location.origin : ""}/public/${shareToken}`
     : null;
 
-  const handlePublish = async () => {
-    if (!onPublishToggle || publishing) return;
+  const handlePublishToggle = async () => {
+    if (!onPublishToggle) return;
+
+    if (isPublished) {
+      const confirmed = window.confirm("Are you sure you want to unpublish this blueprint? The public URL will no longer work.");
+      if (!confirmed) return;
+    }
+
     setPublishing(true);
     try {
-      onPublishToggle();
+      await onPublishToggle();
     } finally {
       setPublishing(false);
     }
@@ -170,7 +176,7 @@ export function Sidebar({
             </div>
           )}
           <button
-            onClick={handlePublish}
+            onClick={handlePublishToggle}
             disabled={publishing}
             className={cn(
               "flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200",
@@ -185,7 +191,7 @@ export function Sidebar({
             ) : (
               <Globe className="h-3.5 w-3.5" />
             )}
-            {publishing ? "Publishing..." : isPublished ? "Published" : "Publish"}
+            {publishing ? "Publishing..." : isPublished ? "Unpublish" : "Publish"}
           </button>
         </div>
       )}
