@@ -7,13 +7,9 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 /* ─── Floating Particle ─── */
-function Particle() {
-  const size = Math.random() * 4 + 2;
-  const x = Math.random() * 100;
-  const y = Math.random() * 100;
-  const duration = Math.random() * 6 + 4;
-  const delay = Math.random() * 4;
-
+function Particle({ size, x, y, duration, delay }: {
+  size: number; x: number; y: number; duration: number; delay: number;
+}) {
   return (
     <motion.div
       aria-hidden="true"
@@ -24,6 +20,14 @@ function Particle() {
     />
   );
 }
+
+const PARTICLE_DATA = Array.from({ length: 20 }, () => ({
+  size: Math.random() * 4 + 2,
+  x: Math.random() * 100,
+  y: Math.random() * 100,
+  duration: Math.random() * 6 + 4,
+  delay: Math.random() * 4,
+}));
 
 /* ─── Floating Orb ─── */
 function FloatingOrb({ className, size, delay = 0 }: { className?: string; size: number; delay?: number }) {
@@ -118,8 +122,8 @@ export function HeroSection() {
       </motion.div>
 
       {/* Particles */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <Particle key={i} />
+      {PARTICLE_DATA.map((p, i) => (
+        <Particle key={i} {...p} />
       ))}
 
       {/* Scroll-indication gradient fade at bottom */}

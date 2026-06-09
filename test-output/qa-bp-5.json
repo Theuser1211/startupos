@@ -1,0 +1,501 @@
+{
+  "startupName": "Mental Health AI",
+  "tagline": "Patient care without the paperwork",
+  "problem": "Healthcare systems are fragmented, paper-heavy, and prioritize billing over patient outcomes.",
+  "solution": "A unified digital health platform that connects patients, providers, and payers in one experience.",
+  "companySnapshot": {
+    "stage": "Ideation",
+    "industry": "HealthTech / Bio",
+    "funding": "$0 (Bootstrapped)",
+    "teamSize": 1,
+    "foundedDate": "Jan 2025"
+  },
+  "stats": {
+    "brandScore": 70,
+    "marketFit": "C+",
+    "readiness": 55,
+    "growthScore": 65
+  },
+  "insights": [
+    {
+      "title": "Interoperability Mandate",
+      "description": "CMS interoperability rules are driving $5B+ in healthcare IT spending. Your timing aligns with regulatory tailwinds.",
+      "type": "positive"
+    },
+    {
+      "title": "Clinician Burnout",
+      "description": "86% of clinicians report burnout from administrative tools. A UX-first approach is a massive differentiator.",
+      "type": "opportunity"
+    },
+    {
+      "title": "Sales Cycle Reality",
+      "description": "Hospital procurement averages 12-18 months. Plan your runway accordingly and start with outpatient clinics.",
+      "type": "warning"
+    },
+    {
+      "title": "Integration First",
+      "description": "Build Epic and Cerner integrations before adding features. Without EMR integration, your product won't get evaluated.",
+      "type": "action"
+    }
+  ],
+  "website": {
+    "url": "yourstartup.example.com",
+    "summary": "Clean, professional website with strong clinical imagery, but lacks technical depth on integrations.",
+    "strengths": [
+      "Trustworthy clinical design language",
+      "Clear patient-first messaging",
+      "Good accessibility compliance"
+    ],
+    "improvements": [
+      "Add EMR integration documentation",
+      "Include clinician testimonials",
+      "Showcase regulatory compliance certifications",
+      "Add a product demo video"
+    ],
+    "recommendations": [
+      "Lead with interoperability — list supported EMRs prominently",
+      "Add a 'Security & Compliance' section with HIPAA attestation",
+      "Include case studies from pilot hospitals or clinics",
+      "Offer a self-service sandbox for IT teams to test integrations"
+    ]
+  },
+  "brand": {
+    "mission": "To make healthcare technology work for patients, clinicians, and administrators alike.",
+    "values": [
+      "Patient-first design",
+      "Clinical accuracy",
+      "Privacy by default",
+      "Interoperability"
+    ],
+    "tone": [
+      "Empathetic and caring",
+      "Clinically precise",
+      "Clear and educational",
+      "Innovative but grounded"
+    ],
+    "colors": [
+      {
+        "name": "Medical Green",
+        "hex": "#10B981"
+      },
+      {
+        "name": "Sky Blue",
+        "hex": "#38BDF8"
+      },
+      {
+        "name": "Clean White",
+        "hex": "#F8FAFC"
+      },
+      {
+        "name": "Graphite",
+        "hex": "#64748B"
+      }
+    ],
+    "typography": {
+      "heading": "Instrument Serif",
+      "body": "Plus Jakarta Sans"
+    }
+  },
+  "logos": [
+    {
+      "id": "1",
+      "description": "Leaf combined with a heartbeat line — natural meets clinical",
+      "style": "Organic / Medical",
+      "preview": "Mental Health AI",
+      "colors": [
+        "#10B981",
+        "#38BDF8"
+      ]
+    },
+    {
+      "id": "2",
+      "description": "Simplified cross symbol with overlapping gradient layers",
+      "style": "Minimalist / Clean",
+      "preview": "Mental Health AI",
+      "colors": [
+        "#10B981",
+        "#38BDF8"
+      ]
+    },
+    {
+      "id": "3",
+      "description": "Abstract DNA helix forming the first letter of your brand",
+      "style": "Scientific / Biotech",
+      "preview": "Mental Health AI",
+      "colors": [
+        "#10B981",
+        "#38BDF8"
+      ]
+    }
+  ],
+  "icp": {
+    "title": "Chief Medical Information Officer",
+    "role": "Clinical technology decision-maker at a healthcare organization",
+    "companySize": "500-5000+ employees",
+    "description": "A healthcare technology executive responsible for digital transformation, drowning in legacy EMR systems, interoperability nightmares, and the pressure to improve patient outcomes while reducing costs.",
+    "painPoints": [
+      "EMR systems don't talk to each other — patient data is siloed",
+      "HIPAA compliance makes every engineering change a legal review",
+      "Clinician burnout from poorly designed digital tools is at crisis levels",
+      "Telehealth infrastructure is stuck at 2019 quality"
+    ],
+    "goals": [
+      "Achieve true interoperability between EMR systems",
+      "Reduce clinician administrative burden by 30%",
+      "Improve patient outcomes with data-driven clinical insights",
+      "Meet evolving regulatory and reporting requirements"
+    ],
+    "objections": [
+      "\"We just invested $10M in Epic\"",
+      "\"HIPAA compliance is too risky with third parties\"",
+      "\"Our clinicians won't adopt another tool\"",
+      "\"How do you integrate with our existing stack?\""
+    ],
+    "recommendations": [
+      "Build an EMR integration directory showing compatibility with Epic, Cerner, and Meditech",
+      "Publish a HIPAA compliance whitepaper before the first sales call",
+      "Create a clinician ROI calculator showing hours saved per week"
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Epic Systems",
+      "strength": "Dominant EMR provider, deep hospital integration",
+      "weakness": "Terrible UX, expensive, requires IT teams to operate",
+      "opportunity": "UX-first alternative for clinics"
+    },
+    {
+      "name": "DrChrono",
+      "strength": "iPad-native EMR, good mobile experience",
+      "weakness": "Limited to ambulatory care, no hospital features",
+      "opportunity": "Full-stack clinic management platform"
+    },
+    {
+      "name": "ZeOmega",
+      "strength": "Population health management, analytics",
+      "weakness": "Complex implementation, enterprise-only",
+      "opportunity": "Simplified analytics for small practices"
+    },
+    {
+      "name": "Health Catalyst",
+      "strength": "Data analytics platform, outcome tracking",
+      "weakness": "Requires massive data infrastructure",
+      "opportunity": "Lightweight analytics for SMB healthcare"
+    }
+  ],
+  "revenue": {
+    "model": "Pre-revenue B2C freemium model — targeting $20/mo/mo",
+    "pricing": "Target: $20/mo/mo per seat (to be validated)",
+    "justification": "At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing.",
+    "projections": [
+      {
+        "month": "Jan",
+        "projected": 0,
+        "actual": 0
+      },
+      {
+        "month": "Feb",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Mar",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Apr",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "May",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jun",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jul",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Aug",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Sep",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Oct",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Nov",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Dec",
+        "projected": 0,
+        "actual": null
+      }
+    ],
+    "funding": "$0 (Bootstrapped)",
+    "analysis": "Mental Health AI — At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing."
+  },
+  "roadmap": [
+    {
+      "quarter": "Phase 1: Foundation",
+      "items": [
+        {
+          "title": "Patient intake digitalization MVP",
+          "description": "Replace paper forms with tablet-based intake",
+          "status": "in-progress"
+        },
+        {
+          "title": "HIPAA-compliant data layer",
+          "description": "Encrypted storage and audit logging",
+          "status": "planned"
+        },
+        {
+          "title": "Provider dashboard prototype",
+          "description": "Single-pane view of patient schedule and history",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 2: Product-Market Fit",
+      "items": [
+        {
+          "title": "Launch to 50 early adopters",
+          "description": "Onboard 50 users, achieve 40%+ weekly retention",
+          "status": "planned"
+        },
+        {
+          "title": "Iterate based on usage data",
+          "description": "Ship 3 feature iterations based on user feedback, measure NPS > 40",
+          "status": "planned"
+        },
+        {
+          "title": "Achieve first revenue",
+          "description": "Convert 10% of free users to paid, reach $2K MRR",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 3: Growth",
+      "items": [
+        {
+          "title": "Scale acquisition channels",
+          "description": "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably",
+          "status": "planned"
+        },
+        {
+          "title": "Hire first employee",
+          "description": "Bring on a full-stack engineer or sales lead to accelerate growth",
+          "status": "planned"
+        },
+        {
+          "title": "Hit $10K MRR",
+          "description": "Reach $10K MRR with 100+ paying customers",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "badge": "needs-work",
+    "badgeLabel": "NEEDS WORK",
+    "compositeScore": 47,
+    "summary": "Mental Health AI: Your startup scored 47/100. founderFit is your strongest dimension (70/100). distribution needs the most attention (20/100).",
+    "dimensions": {
+      "market": {
+        "score": 60,
+        "label": "Large & Fragmented",
+        "description": "Healthcare IT is a $500B+ market. Fragmented buyer landscape creates both opportunity and complexity."
+      },
+      "timing": {
+        "score": 55,
+        "label": "Cautious Timing",
+        "description": "Post-COVID digital health adoption has slowed. Sales cycles remain 12-18 months."
+      },
+      "competition": {
+        "score": 35,
+        "label": "Entrenched Incumbents",
+        "description": "Epic and Cerner control 70%+ of hospital EMR market. Integration-dependent market."
+      },
+      "defensibility": {
+        "score": 50,
+        "label": "Compliance Moat",
+        "description": "HIPAA, SOC 2, and FDA clearance create significant barriers. Integration depth adds switching costs."
+      },
+      "founderFit": {
+        "score": 70,
+        "label": "Early Stage",
+        "description": "At ideation, founder-market fit is assumed based on your problem choice. Validate through customer discovery."
+      },
+      "distribution": {
+        "score": 20,
+        "label": "Complex Healthcare Sales",
+        "description": "Hospital procurement requires multiple stakeholders. Starting with clinics bypasses enterprise sales."
+      },
+      "revenue": {
+        "score": 40,
+        "label": "Per-Seat, Long-Term",
+        "description": "Hospital software contracts are high-value (6-figure ACV) but long sales cycles."
+      }
+    },
+    "strengths": [
+      {
+        "dimension": "founderFit",
+        "score": 70,
+        "explanation": "Strong founder-market fit. You deeply understand the problem."
+      },
+      {
+        "dimension": "market",
+        "score": 60,
+        "explanation": "Your market has potential but faces growth or competitive challenges."
+      }
+    ],
+    "weaknesses": [
+      {
+        "dimension": "distribution",
+        "score": 20,
+        "explanation": "Customer acquisition is a critical risk. Rethink your distribution strategy."
+      },
+      {
+        "dimension": "competition",
+        "score": 35,
+        "explanation": "You face entrenched competitors with significant advantages."
+      }
+    ],
+    "fatalRisks": [
+      "Critical weakness in distribution: scored 20/100. Customer acquisition is a critical risk. Rethink your distribution strategy."
+    ],
+    "suggestedPivot": "Your weakest dimension is distribution (20/100). Consider rethinking your Healthtech strategy to address this gap. Launch a self-serve onboarding flow",
+    "confidence": 69,
+    "confidenceLabel": "Moderate",
+    "confidenceBreakdown": {
+      "dataCompleteness": 100,
+      "stageMaturity": 40,
+      "dimensionAgreement": 53,
+      "industrySignal": 80
+    },
+    "improvementPaths": [
+      {
+        "dimension": "founderFit",
+        "action": "Work in the industry you're disrupting for 3 months",
+        "scoreGain": 8,
+        "risk": "Hire a CEO who doesn't understand the problem",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "market",
+        "action": "Narrow from broad market to a specific vertical",
+        "scoreGain": 10,
+        "risk": "Expand too early into adjacent verticals",
+        "scoreLoss": 8
+      },
+      {
+        "dimension": "timing",
+        "action": "Ship MVP and get first 10 design partners",
+        "scoreGain": 12,
+        "risk": "Delay launch by 6+ months for perfection",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "defensibility",
+        "action": "File provisional patents or build proprietary data assets",
+        "scoreGain": 12,
+        "risk": "Open-source your core differentiator",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "revenue",
+        "action": "Pre-sell to 3 customers before building",
+        "scoreGain": 15,
+        "risk": "Increase burn without proving willingness-to-pay",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "competition",
+        "action": "Identify and amplify your unfair advantage",
+        "scoreGain": 10,
+        "risk": "A well-funded competitor enters your space",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "distribution",
+        "action": "Launch a self-serve onboarding flow",
+        "scoreGain": 10,
+        "risk": "Rely entirely on outbound enterprise sales",
+        "scoreLoss": 12
+      }
+    ]
+  },
+  "roast": {
+    "score": 5,
+    "verdict": "Mental Health AI — Healthcare is the hardest market to sell into. The buyer isn't the user, the sales cycle is 12-18 months, and one compliance misstep ends the company.",
+    "risks": [
+      "HIPAA compliance is expensive ($50K-$200K for initial audit)",
+      "Hospital procurement cycles kill early-stage startups",
+      "Clinical validation requires studies that take years",
+      "No revenue means every assumption about pricing is unvalidated",
+      "Ideation-stage startups have a 90% failure rate before reaching PMF"
+    ],
+    "recommendations": [
+      "Start with a B2B2C model: sell to clinics, not hospitals",
+      "Build for a single specialty (e.g., dermatology) before generalizing",
+      "Publish a security whitepaper on day one to shorten trust-building"
+    ],
+    "items": [
+      {
+        "category": "Compliance Readiness",
+        "rating": 4,
+        "feedback": "HIPAA BAAs alone take 3-6 months to negotiate with hospital legal teams. Start the paperwork before you have customers.",
+        "severity": "high"
+      },
+      {
+        "category": "Integration Strategy",
+        "rating": 5,
+        "feedback": "Without Epic integration, you're not sellable to hospitals. Build that first, even if it's a manual export feature.",
+        "severity": "high"
+      },
+      {
+        "category": "Target Market",
+        "rating": 6,
+        "feedback": "Starting with hospitals is a mistake. Target independent clinics and urgent care centers first — faster sales cycles.",
+        "severity": "medium"
+      },
+      {
+        "category": "Clinical Validation",
+        "rating": 5,
+        "feedback": "You need clinical evidence. Publish a pilot study with measurable outcomes before approaching enterprise buyers.",
+        "severity": "high"
+      },
+      {
+        "category": "UX for Clinicians",
+        "rating": 6,
+        "feedback": "Clinicians have 15-minute appointment slots. If your tool adds even one extra click, adoption will fail.",
+        "severity": "medium"
+      },
+      {
+        "category": "Pricing Model",
+        "rating": 5,
+        "feedback": "Hospitals hate per-seat pricing. Consider per-encounter or value-based pricing that aligns with outcomes.",
+        "severity": "medium"
+      }
+    ]
+  }
+}

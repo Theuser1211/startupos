@@ -1,0 +1,331 @@
+{
+  "evaluations": [
+    {
+      "id": 1,
+      "label": "AI Contract Review — Indian SMBs",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 49; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 4/10; detailed verdict; 6 items; 6 risks; 4 recs; severity variety"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "differentiation": 7.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [
+          "Fabricated URL: aicontractrevie.io"
+        ],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 2,
+      "label": "Vet Marketplace",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 53; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 6/10; detailed verdict; 6 items; 6 risks; 4 recs; severity variety"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 7,
+        "differentiation": 6.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [
+          "seamless experience"
+        ],
+        "hallucinations": [
+          "Fabricated URL: ondemandveterin.io"
+        ],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 3,
+      "label": "FinTech Compliance Platform",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 65; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 7/10; detailed verdict; 6 items; 6 risks; 4 recs; severity variety"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5,
+        "founderUsefulness": 9.5,
+        "actionability": 7,
+        "differentiation": 6.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [
+          "next generation"
+        ],
+        "hallucinations": [
+          "Fabricated URL: automatedregula.io"
+        ],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 4,
+      "label": "Creator Monetization SaaS",
+      "source": "ai",
+      "sections": {
+        "brand": {
+          "score": 8.5,
+          "notes": "detailed mission; 3 colors; valid hex; distinct fonts; 4 values; multi-tone"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 3 pain points; 3 goals; 3 objections; contains numbers; specific role"
+        },
+        "revenue": {
+          "score": 7.5,
+          "notes": "detailed model; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 7.5,
+          "notes": "status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 8.5,
+          "notes": "composite: 78; detailed summary; detailed dimensions; 2 fatal risks; confidence breakdown"
+        },
+        "roast": {
+          "score": 8,
+          "notes": "score: 7/10; detailed verdict; 2 risks; 2 recs; severity variety"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 6.5,
+        "founderUsefulness": 6.5,
+        "actionability": 8,
+        "differentiation": 6.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [
+          "Fabricated URL: kreatorpay.io"
+        ],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 5,
+      "label": "AI Sales Assistant",
+      "source": "ai",
+      "sections": {
+        "brand": {
+          "score": 8.5,
+          "notes": "detailed mission; 3 colors; valid hex; distinct fonts; 4 values; multi-tone"
+        },
+        "icp": {
+          "score": 9.5,
+          "notes": "detailed desc; 4 pain points; 3 goals; 3 objections; contains numbers"
+        },
+        "revenue": {
+          "score": 7,
+          "notes": "analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 7.5,
+          "notes": "status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 8.5,
+          "notes": "composite: 84; detailed summary; detailed dimensions; 2 fatal risks; confidence breakdown"
+        },
+        "roast": {
+          "score": 8,
+          "notes": "score: 7/10; detailed verdict; 2 risks; 2 recs; severity variety"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 6.5,
+        "founderUsefulness": 6.5,
+        "actionability": 9,
+        "differentiation": 6.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [
+          "Fabricated URL: closeloop.ai"
+        ],
+        "weakRecommendations": []
+      }
+    }
+  ],
+  "sectionRankings": [
+    {
+      "name": "icp",
+      "avg": 9.9
+    },
+    {
+      "name": "verdict",
+      "avg": 9.2
+    },
+    {
+      "name": "brand",
+      "avg": 8.8
+    },
+    {
+      "name": "roast",
+      "avg": 8.6
+    },
+    {
+      "name": "revenue",
+      "avg": 8.3
+    },
+    {
+      "name": "roadmap",
+      "avg": 8.1
+    }
+  ],
+  "overallRankings": [
+    {
+      "id": 1,
+      "label": "AI Contract Review — Indian SMBs",
+      "source": "deterministic",
+      "overall": 8.525
+    },
+    {
+      "id": 2,
+      "label": "Vet Marketplace",
+      "source": "deterministic",
+      "overall": 8.333333333333332
+    },
+    {
+      "id": 3,
+      "label": "FinTech Compliance Platform",
+      "source": "deterministic",
+      "overall": 8.283333333333333
+    },
+    {
+      "id": 5,
+      "label": "AI Sales Assistant",
+      "source": "ai",
+      "overall": 7.833333333333333
+    },
+    {
+      "id": 4,
+      "label": "Creator Monetization SaaS",
+      "source": "ai",
+      "overall": 7.716666666666667
+    }
+  ],
+  "overallScore": 8.138333333333334,
+  "aiScore": 7.775,
+  "deterministicScore": 8.380555555555555,
+  "improvements": [
+    {
+      "rank": 1,
+      "title": "Inject real market data into the prompt",
+      "evidence": "Avg specificity: 8.8/10. 5 hallucinated facts. Blueprints lack real competitor names, real market sizes, real regulatory bodies.",
+      "impact": "Add to prompt: \"Cite real competitors (names, URLs), real TAM/SAM/SOM numbers with sources, real regulatory bodies. Do NOT fabricate URLs or statistics. If you don't know a number, say 'TBD' rather than guessing.\""
+    },
+    {
+      "rank": 2,
+      "title": "Ban generic startup jargon with explicit blacklist",
+      "evidence": "2 generic phrases found across all blueprints: leverage, disrupt, seamless, end-to-end, world-class, cutting-edge, next-gen, game-changing.",
+      "impact": "Add to prompt: \"BANNED PHRASES (using any = automatic failure): leverage, disrupt, synergy, ecosystem, scalable, innovative, game-changing, seamless, end-to-end, world-class, cutting-edge, next-gen, revolutionary, best-in-class. Replace with specific, concrete language.\""
+    },
+    {
+      "rank": 3,
+      "title": "Require concrete, measurable roadmap milestones",
+      "evidence": "Avg actionability: 7.8/10. Roadmap items use vague verbs like 'build' and 'develop' without measurable outcomes.",
+      "impact": "Add to prompt: \"Each roadmap item MUST include a measurable deliverable. Example: 'Ship landing page with 3 waitlist signups from 10 cold emails' — NOT 'Build website'. Every item needs: what ships, how you measure success, and who owns it.\""
+    },
+    {
+      "rank": 4,
+      "title": "Force brutal honesty in roast and verdict sections",
+      "evidence": "0 weak/vague recommendations detected. Roast scores cluster around 5-7 (diplomatic). Verdicts avoid saying 'this will fail'.",
+      "impact": "Add to prompt: \"The roast must be BRUTALLY honest. If the idea is mediocre, say 'This idea is mediocre and here's why.' Avoid 'consider X' — say 'You will fail unless you do X'. The verdict badge must reflect real risk, not diplomatic averages. A 'pass' badge should be rare (top 20% of ideas).\""
+    },
+    {
+      "rank": 5,
+      "title": "Differentiate revenue projections by stage with hard constraints",
+      "evidence": "Revenue projections often use similar scales ($10K-50K/mo) regardless of ideation vs seed stage. Growth rates are unrealistically smooth.",
+      "impact": "Add to prompt: \"Revenue projections MUST match stage: Ideation: $0-5K/mo for 12 months. Pre-seed: $1-20K/mo. Seed: $10-100K/mo. Growth: $50K-1M/mo. Use realistic month-over-month growth (5-20% for early stage, not linear). Include a 'realistic' and 'optimistic' column.\""
+    }
+  ]
+}

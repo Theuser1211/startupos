@@ -307,7 +307,7 @@ function standardDeviation(values: number[]): number {
 
 /* ─── Score a single dimension ─── */
 
-function scoreDimension(
+function _scoreDimension(
   base: number,
   industryKey: string,
   stage: string,
@@ -319,7 +319,7 @@ function scoreDimension(
   s += stageMods[stage] ?? 0;
 
   if (problemPenalties[problem]) {
-    const pp = problemPenalties[problem];
+    const _pp = problemPenalties[problem];
     // We apply industryKey-specific problem adjustments generically
     // The problem penalty function is dimension-agnostic, applied by caller
   }

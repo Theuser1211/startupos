@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Users, CreditCard, BarChart3, Activity, Sparkles, TrendingUp, AlertTriangle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,11 +33,7 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchAdminData();
-  }, []);
-
-  const fetchAdminData = async () => {
+  const fetchAdminData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -54,7 +51,11 @@ export default function AdminPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAdminData(); // eslint-disable-line react-hooks/set-state-in-effect
+  }, [fetchAdminData]);
 
   if (isLoading) {
     return (
@@ -99,11 +100,14 @@ export default function AdminPage() {
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-                <Sparkles className="h-3 w-3 text-white" />
-              </div>
-              <span className="text-sm font-bold">Startup<span className="text-primary">OS</span></span>
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo-full.png"
+                alt="StartupOS"
+                width={1536}
+                height={1024}
+                className="h-5 w-auto"
+              />
             </Link>
             <Badge variant="outline" className="text-[10px]">Admin</Badge>
           </div>

@@ -1,0 +1,493 @@
+{
+  "startupName": "Data Pipeline Automation",
+  "tagline": "Software that grows with you",
+  "problem": "SMBs buy too many point solutions that don't talk to each other, creating data silos and workflow friction.",
+  "solution": "An integrated SaaS platform that replaces 5 tools with one, unified through a shared data model.",
+  "companySnapshot": {
+    "stage": "Seed",
+    "industry": "data",
+    "funding": "$2M (Seed)",
+    "teamSize": 5,
+    "foundedDate": "Jun 2024"
+  },
+  "stats": {
+    "brandScore": 75,
+    "marketFit": "B+",
+    "readiness": 65,
+    "growthScore": 75
+  },
+  "insights": [
+    {
+      "title": "SaaS Sprawl Crisis",
+      "description": "Average mid-market company uses 177 SaaS applications. Consolidation is a $30B opportunity.",
+      "type": "positive"
+    },
+    {
+      "title": "Downmarket Opportunity",
+      "description": "Enterprise tools are too expensive for SMBs. Consumer tools lack features. Your mid-market focus hits a sweet spot.",
+      "type": "opportunity"
+    },
+    {
+      "title": "Churn Risk",
+      "description": "Vertical SaaS products have 30% annual churn. Horizontal platforms with multiple use cases have 10% churn.",
+      "type": "warning"
+    },
+    {
+      "title": "Integration Depth",
+      "description": "Pre-built integrations with Slack, Google Workspace, and Microsoft 365 are table stakes. Build API-first architecture.",
+      "type": "action"
+    }
+  ],
+  "website": {
+    "url": "yourstartup.example.com",
+    "summary": "Clean SaaS landing page with strong consolidation messaging, but needs more migration detail.",
+    "strengths": [
+      "Clear consolidation value proposition",
+      "Professional, clean design",
+      "Good integration messaging"
+    ],
+    "improvements": [
+      "Add migration timeline estimates",
+      "Include ROI calculator",
+      "Show integration directory depth",
+      "Add customer consolidation stories"
+    ],
+    "recommendations": [
+      "Add a 'SaaS Consolidation Calculator' showing potential savings",
+      "Include migration timelines for common tool replacements",
+      "Showcase integration marketplace with 100+ connectors",
+      "Add a self-service data import wizard"
+    ]
+  },
+  "brand": {
+    "mission": "To make business software work together so teams can focus on work, not tools.",
+    "values": [
+      "Simplicity at scale",
+      "Integration-first",
+      "Customer-driven roadmap",
+      "Transparent economics"
+    ],
+    "tone": [
+      "Practical and results-driven",
+      "Clear and relatable",
+      "Honest about complexity",
+      "Confident but approachable"
+    ],
+    "colors": [
+      {
+        "name": "Primary Purple",
+        "hex": "#7C3AED"
+      },
+      {
+        "name": "Electric Indigo",
+        "hex": "#6366F1"
+      },
+      {
+        "name": "Deep Space",
+        "hex": "#0A0A0F"
+      },
+      {
+        "name": "Silver Mist",
+        "hex": "#A1A1B5"
+      }
+    ],
+    "typography": {
+      "heading": "Instrument Serif",
+      "body": "Plus Jakarta Sans"
+    }
+  },
+  "logos": [
+    {
+      "id": "1",
+      "description": "Geometric letter mark with circuit-board lines representing neural networks",
+      "style": "Minimalist / Tech",
+      "preview": "Data Pipeline Automation",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    },
+    {
+      "id": "2",
+      "description": "Abstract cloud node with connecting dots — SaaS connectivity",
+      "style": "Cloud / Modern",
+      "preview": "Data Pipeline Automation",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    },
+    {
+      "id": "3",
+      "description": "Interlocking hexagons forming the first letter — modular and scalable",
+      "style": "Modern / Geometric",
+      "preview": "Data Pipeline Automation",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    }
+  ],
+  "icp": {
+    "title": "VP of Operations",
+    "role": "Operations leader at a mid-market company",
+    "companySize": "50-500 employees",
+    "description": "Small business owner who wants professional software without enterprise complexity or pricing.",
+    "painPoints": [
+      "Team uses 15+ SaaS tools that don't integrate",
+      "Subscription costs have grown 3x faster than headcount",
+      "Data entry is duplicated across 5 systems daily",
+      "IT has no visibility into tool usage or need"
+    ],
+    "goals": [
+      "Consolidate from 15 SaaS tools to 5",
+      "Reduce SaaS spend by 40%",
+      "Eliminate duplicate data entry across systems",
+      "Gain visibility into tool usage and ROI"
+    ],
+    "objections": [
+      "\"We're locked into annual contracts with our existing tools\"",
+      "\"Our team is set in their workflows\"",
+      "\"How long does migration take?\"",
+      "\"What if we need a tool you don't offer?\""
+    ],
+    "recommendations": [
+      "Create a SaaS consolidation assessment tool",
+      "Publish migration guides from 10 most common tool stacks",
+      "Offer a free 'tool sprawl audit' with actionable recommendations"
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Salesforce",
+      "strength": "Market leader, massive ecosystem",
+      "weakness": "Complex, expensive, slow to innovate",
+      "opportunity": "Simplified vertical SaaS"
+    },
+    {
+      "name": "HubSpot",
+      "strength": "Great UX, strong marketing",
+      "weakness": "Limited customization, pricing creep",
+      "opportunity": "Affordable alternative for SMBs"
+    },
+    {
+      "name": "Zoho",
+      "strength": "Affordable, wide product suite",
+      "weakness": "Fragmented products, weak integrations",
+      "opportunity": "Unified platform with better UX"
+    }
+  ],
+  "revenue": {
+    "model": "Seed-stage B2B usage-based — variable/mo with tiered plans",
+    "pricing": "variable/mo (starter) to $XXX (growth)",
+    "justification": "At seed stage, pricing should balance acquisition velocity with unit economics. A self-serve low-touch plan can drive adoption while sales-assisted plans build revenue quality.",
+    "projections": [
+      {
+        "month": "Jan",
+        "projected": 4733,
+        "actual": null
+      },
+      {
+        "month": "Feb",
+        "projected": 6875,
+        "actual": null
+      },
+      {
+        "month": "Mar",
+        "projected": 7705,
+        "actual": null
+      },
+      {
+        "month": "Apr",
+        "projected": 9452,
+        "actual": null
+      },
+      {
+        "month": "May",
+        "projected": 12252,
+        "actual": null
+      },
+      {
+        "month": "Jun",
+        "projected": 16657,
+        "actual": null
+      },
+      {
+        "month": "Jul",
+        "projected": 19512,
+        "actual": null
+      },
+      {
+        "month": "Aug",
+        "projected": 26300,
+        "actual": null
+      },
+      {
+        "month": "Sep",
+        "projected": 29654,
+        "actual": null
+      },
+      {
+        "month": "Oct",
+        "projected": 32144,
+        "actual": null
+      },
+      {
+        "month": "Nov",
+        "projected": 42292,
+        "actual": null
+      },
+      {
+        "month": "Dec",
+        "projected": 61785,
+        "actual": null
+      }
+    ],
+    "funding": "$2M (Seed)",
+    "analysis": "Data Pipeline Automation — At seed stage, pricing should balance acquisition velocity with unit economics. A self-serve low-touch plan can drive adoption while sales-assisted plans build revenue quality."
+  },
+  "roadmap": [
+    {
+      "quarter": "Phase 1: Foundation",
+      "items": [
+        {
+          "title": "Unified search & data model",
+          "description": "Cross-tool search and data synchronization",
+          "status": "done"
+        },
+        {
+          "title": "Role-based access control",
+          "description": "Admin, editor, viewer permission levels",
+          "status": "done"
+        },
+        {
+          "title": "Usage analytics & reporting",
+          "description": "Tool adoption and cost allocation dashboard",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 2: Product-Market Fit",
+      "items": [
+        {
+          "title": "Launch to 50 early adopters",
+          "description": "Onboard 50 users, achieve 40%+ weekly retention",
+          "status": "planned"
+        },
+        {
+          "title": "Iterate based on usage data",
+          "description": "Ship 3 feature iterations based on user feedback, measure NPS > 40",
+          "status": "planned"
+        },
+        {
+          "title": "Achieve first revenue",
+          "description": "Convert 10% of free users to paid, reach $2K MRR",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 3: Growth",
+      "items": [
+        {
+          "title": "Scale acquisition channels",
+          "description": "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably",
+          "status": "planned"
+        },
+        {
+          "title": "Hire first employee",
+          "description": "Bring on a full-stack engineer or sales lead to accelerate growth",
+          "status": "planned"
+        },
+        {
+          "title": "Hit $10K MRR",
+          "description": "Reach $10K MRR with 100+ paying customers",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "badge": "conditional",
+    "badgeLabel": "CONDITIONAL PASS",
+    "compositeScore": 55,
+    "summary": "Data Pipeline Automation: Your startup scored 55/100. market is your strongest dimension (70/100). defensibility needs the most attention (35/100).",
+    "dimensions": {
+      "market": {
+        "score": 70,
+        "label": "Mature & Competitive",
+        "description": "SaaS is the most established startup category. Market exists but crowded with competitors."
+      },
+      "timing": {
+        "score": 65,
+        "label": "Steady Timing",
+        "description": "SaaS adoption remains strong. Macro headwinds are offset by the structural shift to cloud."
+      },
+      "competition": {
+        "score": 35,
+        "label": "Highly Crowded",
+        "description": "Every SaaS category has 20+ funded competitors. Differentiation is difficult without vertical focus."
+      },
+      "defensibility": {
+        "score": 35,
+        "label": "Low Switching Costs",
+        "description": "SaaS customers churn when switching costs are low. Data portability and workflow integration create stickiness."
+      },
+      "founderFit": {
+        "score": 65,
+        "label": "Developing",
+        "description": "Your founder-market fit is developing. Deeper domain expertise will strengthen your position."
+      },
+      "distribution": {
+        "score": 60,
+        "label": "Multi-Channel",
+        "description": "SaaS companies use PLG, sales, and partnerships. Self-serve drives adoption, sales closes enterprise."
+      },
+      "revenue": {
+        "score": 65,
+        "label": "Proven SaaS Metrics",
+        "description": "SaaS subscription model is the most venture-backable. Predictable recurring revenue."
+      }
+    },
+    "strengths": [
+      {
+        "dimension": "market",
+        "score": 70,
+        "explanation": "Your market is large, growing, and has strong tailwinds."
+      },
+      {
+        "dimension": "timing",
+        "score": 65,
+        "explanation": "Timing is reasonable but not optimal. Be prepared for longer cycles."
+      }
+    ],
+    "weaknesses": [
+      {
+        "dimension": "defensibility",
+        "score": 35,
+        "explanation": "Low defensibility. Focus on building moats before competitors replicate your product."
+      },
+      {
+        "dimension": "competition",
+        "score": 35,
+        "explanation": "You face entrenched competitors with significant advantages."
+      }
+    ],
+    "fatalRisks": [],
+    "suggestedPivot": null,
+    "confidence": 72,
+    "confidenceLabel": "Moderate",
+    "confidenceBreakdown": {
+      "dataCompleteness": 100,
+      "stageMaturity": 75,
+      "dimensionAgreement": 59,
+      "industrySignal": 40
+    },
+    "improvementPaths": [
+      {
+        "dimension": "market",
+        "action": "Narrow from broad market to a specific vertical",
+        "scoreGain": 10,
+        "risk": "Expand too early into adjacent verticals",
+        "scoreLoss": 8
+      },
+      {
+        "dimension": "timing",
+        "action": "Ship MVP and get first 10 design partners",
+        "scoreGain": 12,
+        "risk": "Delay launch by 6+ months for perfection",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "founderFit",
+        "action": "Work in the industry you're disrupting for 3 months",
+        "scoreGain": 8,
+        "risk": "Hire a CEO who doesn't understand the problem",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "revenue",
+        "action": "Pre-sell to 3 customers before building",
+        "scoreGain": 15,
+        "risk": "Increase burn without proving willingness-to-pay",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "distribution",
+        "action": "Launch a self-serve onboarding flow",
+        "scoreGain": 10,
+        "risk": "Rely entirely on outbound enterprise sales",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "competition",
+        "action": "Identify and amplify your unfair advantage",
+        "scoreGain": 10,
+        "risk": "A well-funded competitor enters your space",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "defensibility",
+        "action": "File provisional patents or build proprietary data assets",
+        "scoreGain": 12,
+        "risk": "Open-source your core differentiator",
+        "scoreLoss": 15
+      }
+    ]
+  },
+  "roast": {
+    "score": 7,
+    "verdict": "Data Pipeline Automation — SaaS is the most crowded category in startups. You're not competing against 5 companies — you're competing against 500, plus the 'build vs. buy' decision.",
+    "risks": [
+      "Every horizontal SaaS category has 20+ well-funded competitors",
+      "Enterprise sales require feature parity with incumbents",
+      "Customer churn is high when switching costs are low",
+      "Seed-stage churn kills your Series A narrative",
+      "Over-reliance on founder-led sales hides lack of product-market fit"
+    ],
+    "recommendations": [
+      "Pick a vertical (e.g., SaaS for dental practices) before going horizontal",
+      "Offer a 'done for you' setup service",
+      "Build a community-driven product roadmap"
+    ],
+    "items": [
+      {
+        "category": "Competitive Positioning",
+        "rating": 6,
+        "feedback": "SaaS consolidation is a crowded space. Your differentiation needs to be immediately obvious or you'll be invisible.",
+        "severity": "high"
+      },
+      {
+        "category": "Migration Friction",
+        "rating": 5,
+        "feedback": "Customers fear migration more than they hate their current tools. Offer white-glove migration support.",
+        "severity": "high"
+      },
+      {
+        "category": "Vertical Specialization",
+        "rating": 7,
+        "feedback": "Going horizontal first is a common mistake. Pick one vertical (e.g., SaaS for marketing agencies) and dominate it.",
+        "severity": "medium"
+      },
+      {
+        "category": "Integration Depth",
+        "rating": 6,
+        "feedback": "10 integrations is a start, but customers expect 50+. Build an integration marketplace so partners contribute.",
+        "severity": "medium"
+      },
+      {
+        "category": "Pricing Strategy",
+        "rating": 6,
+        "feedback": "Replacing 5 tools at $50/mo each means you can charge $150/mo. Make your pricing simpler than the sum of parts.",
+        "severity": "medium"
+      },
+      {
+        "category": "Switching Costs",
+        "rating": 7,
+        "feedback": "Low switching costs mean high churn. Build workflow templates and data history that create stickiness.",
+        "severity": "medium"
+      }
+    ]
+  }
+}

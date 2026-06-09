@@ -101,7 +101,7 @@ function DebugSection({ blueprint }: { blueprint: NonNullable<ReturnType<typeof 
   const [expanded, setExpanded] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [aiGenerated, setAiGenerated] = useState(false);
-  const { loadInterviewData, generateWithAI, error, generationStatus, generationMode, generationError, interviewData } = useBlueprint();
+  const { loadInterviewData, generateWithAI, error, generationStatus, generationMode, interviewData } = useBlueprint();
   const { toast } = useToast();
 
   const handleLoadExample = useCallback((data: InterviewData) => {

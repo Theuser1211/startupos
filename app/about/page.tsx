@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Sparkles, Rocket, Target, Heart } from "lucide-react";
 import Link from "next/link";
 
@@ -15,13 +16,14 @@ export default function AboutPage() {
     <div className="min-h-screen bg-background">
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-5 w-auto"
+            />
           </Link>
         </div>
       </header>

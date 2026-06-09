@@ -142,6 +142,12 @@ export const StartupBlueprintSchema = z.object({
     objections: z.array(z.string()),
     recommendations: z.array(z.string()),
   }),
+  competitors: z.array(z.object({
+    name: z.string(),
+    strength: z.string(),
+    weakness: z.string(),
+    opportunity: z.string(),
+  })).optional().default([]),
   revenue: z.object({
     model: z.string(),
     pricing: z.string(),

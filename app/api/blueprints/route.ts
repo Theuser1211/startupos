@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
+      console.error("[Blueprints API] Fetch error:", error.message);
+      return NextResponse.json({ error: "Blueprint not found" }, { status: 404 });
     }
 
     return NextResponse.json(data);
@@ -41,7 +42,8 @@ export async function GET(request: NextRequest) {
       .limit(1);
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error("[Blueprints API] Query error:", error.message);
+      return NextResponse.json({ error: "Failed to query blueprints" }, { status: 500 });
     }
 
     return NextResponse.json(data?.[0] || null);
@@ -55,7 +57,8 @@ export async function GET(request: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Blueprints API] List error:", error.message);
+    return NextResponse.json({ error: "Failed to list blueprints" }, { status: 500 });
   }
 
   return NextResponse.json(data);
@@ -73,8 +76,8 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const { name, idea, industry, stage, blueprint, interview_data } = body;
 
-  if (!name || !idea || !blueprint) {
-    return NextResponse.json({ error: "Missing required fields: name, idea, blueprint" }, { status: 400 });
+  if (!name || !idea) {
+    return NextResponse.json({ error: "Missing required fields: name, idea" }, { status: 400 });
   }
 
   const { data, error } = await supabase
@@ -92,7 +95,8 @@ export async function POST(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Blueprints API] Insert error:", error.message);
+    return NextResponse.json({ error: "Failed to create blueprint" }, { status: 500 });
   }
 
   return NextResponse.json(data, { status: 201 });
@@ -128,7 +132,8 @@ export async function PUT(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Blueprints API] Update error:", error.message);
+    return NextResponse.json({ error: "Failed to update blueprint" }, { status: 500 });
   }
 
   return NextResponse.json(data);
@@ -157,7 +162,8 @@ export async function DELETE(request: NextRequest) {
     .eq("user_id", user.id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Blueprints API] Delete error:", error.message);
+    return NextResponse.json({ error: "Failed to delete blueprint" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { Menu, X, Sparkles, LayoutDashboard, LogOut } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -62,20 +63,19 @@ export function Navbar() {
         >
           <Link href="/" className="flex items-center gap-2 group">
             <motion.div
-              className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary"
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              <Sparkles className="h-4 w-4 text-white" />
-              <motion.div
-                className="absolute inset-0 rounded-lg bg-primary/30 blur-xl"
-                animate={{ opacity: [0.3, 0.8, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              <Image
+                src="/logo-full.png"
+                alt="StartupOS"
+                width={1536}
+                height={1024}
+                className="h-7 w-auto"
+                priority
               />
             </motion.div>
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              Startup<span className="text-primary">OS</span>
-            </span>
           </Link>
         </motion.div>
 

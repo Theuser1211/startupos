@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/supabase/auth-context";
 import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut } from "lucide-react";
@@ -25,17 +26,6 @@ export default function BlueprintsPage() {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/auth/sign-in");
-      return;
-    }
-
-    if (user) {
-      fetchBlueprints();
-    }
-  }, [user, authLoading]);
-
   const fetchBlueprints = async () => {
     try {
       setIsLoading(true);
@@ -51,6 +41,17 @@ export default function BlueprintsPage() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/auth/sign-in");
+      return;
+    }
+
+    if (user) {
+      fetchBlueprints(); // eslint-disable-line react-hooks/set-state-in-effect
+    }
+  }, [user, authLoading, fetchBlueprints]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this blueprint? This action cannot be undone.")) return;
@@ -85,13 +86,14 @@ export default function BlueprintsPage() {
       {/* Header */}
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-purple-500 to-indigo-600">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-5 w-auto"
+            />
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground hidden sm:inline">

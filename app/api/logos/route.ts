@@ -13,10 +13,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { startupName, industry, brandColors, startupId } = body as {
+    const { startupName, industry, brandColors, tone, startupId } = body as {
       startupName: string;
       industry: string;
       brandColors: { name: string; hex: string }[];
+      tone?: string[];
       startupId?: string;
     };
 
@@ -24,13 +25,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "startupName is required" }, { status: 400 });
     }
 
-    // Generate logos using the deterministic SVG generator
+    // Generate logos using the deterministic SVG generator (v3 favicon-first engine)
     const logos = serializeLogos(startupName, industry || "saas", brandColors || [
       { name: "Primary", hex: "#7C3AED" },
       { name: "Secondary", hex: "#6366F1" },
       { name: "Dark", hex: "#0A0A0F" },
       { name: "Light", hex: "#A1A1B5" },
-    ]);
+    ], tone);
 
     // Store logos in the database using service client
     const serviceClient = createServiceClient();
@@ -42,11 +43,17 @@ export async function POST(request: NextRequest) {
         .insert({
           user_id: user.id,
           startup_id: startupId || null,
-          prompt: logo.description,
+          prompt: logo.brandConcept,
           style: logo.style,
           image_url: logo.preview,
-          thumbnail_url: logo.preview,
-          metadata: { colors: logo.colors },
+          thumbnail_url: logo.monochromePreview,
+          metadata: {
+            colors: logo.colors,
+            qualityScore: logo.qualityScore,
+            symbolReasoning: logo.symbolReasoning,
+            fullPreview: logo.fullPreview,
+            monochromePreview: logo.monochromePreview,
+          },
         })
         .select()
         .single();

@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { InterviewData } from "@/lib/types";
@@ -215,7 +216,9 @@ export default function InterviewPage() {
     }
   };
 
-  const handleFinish = () => {
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleFinish = async () => {
     const payload = {
       ...data,
       name: extractName(data.idea),
@@ -225,8 +228,34 @@ export default function InterviewPage() {
     // Store in localStorage for the workspace to pick up
     localStorage.setItem("startupos-founder", JSON.stringify(payload));
 
-    // Workspace handles Supabase saving on demand (with actual blueprint data)
-    router.push("/workspace");
+    // Try to save interview data to Supabase so workspace can load it by ID
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/blueprints", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: extractCompany(data.idea) || "My Startup",
+          idea: data.idea,
+          industry: data.industry || "other",
+          stage: data.stage || "ideation",
+          blueprint: null, // Blueprint not yet generated; workspace will fill this in
+          interview_data: payload,
+        }),
+      });
+
+      if (res.ok) {
+        const saved = await res.json();
+        router.push(`/workspace?id=${saved.id}`);
+      } else {
+        // Save failed — workspace will still work from localStorage
+        router.push("/workspace");
+      }
+    } catch {
+      router.push("/workspace");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const isLastQuestion = false; // All question steps navigate forward; done screen handles final redirect
@@ -240,13 +269,14 @@ export default function InterviewPage() {
       {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-5 w-auto"
+            />
           </Link>
           <div className="flex items-center gap-3">
             <Badge variant="outline" className="text-xs">
@@ -339,9 +369,10 @@ export default function InterviewPage() {
                       size="xl"
                       className="glow-purple px-12 text-base"
                       onClick={handleFinish}
+                      disabled={isSaving}
                     >
-                      Enter Workspace
-                      <ArrowRight className="h-4 w-4 ml-1" />
+                      {isSaving ? "Saving..." : "Enter Workspace"}
+                      {!isSaving && <ArrowRight className="h-4 w-4 ml-1" />}
                     </Button>
                   </div>
 

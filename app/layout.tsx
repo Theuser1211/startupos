@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { AuthProvider } from "@/lib/supabase/auth-context";
 import { Analytics } from "@vercel/analytics/react";
+import { branding } from "@/lib/branding";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -20,34 +21,43 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const { company, urls, paths, metadata: meta } = branding;
+
 export const metadata: Metadata = {
-  title: {
-    default: "StartupOS — The Operating System for Modern Founders",
-    template: "%s — StartupOS",
-  },
-  description:
-    "Build your startup with AI-powered insights, brand analysis, revenue modeling, and strategic roadmaps. The complete founder toolkit.",
-  keywords: ["startup", "founder", "AI", "business", "brand", "roadmap"],
+  title: meta.title,
+  description: meta.description,
+  keywords: meta.keywords,
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" },
+      { url: paths.icon, type: "image/svg+xml" },
+      { url: paths.logoSymbol, sizes: "any" },
+      { url: paths.favicon, sizes: "any" },
     ],
-    apple: { url: "/icon.svg" },
+    apple: [
+      { url: paths.logoSymbol },
+      { url: paths.icon },
+    ],
   },
   openGraph: {
-    title: "StartupOS — The Operating System for Modern Founders",
-    description:
-      "Build your startup with AI-powered insights, brand analysis, revenue modeling, and strategic roadmaps.",
-    url: "https://startupos.app",
-    siteName: "StartupOS",
+    title: meta.openGraph.title,
+    description: meta.openGraph.description,
+    url: urls.website,
+    siteName: meta.openGraph.siteName,
     type: "website",
+    images: [
+      {
+        url: paths.logoFull,
+        width: branding.logoDimensions.full.width,
+        height: branding.logoDimensions.full.height,
+        alt: company.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StartupOS — The Operating System for Modern Founders",
-    description:
-      "Build your startup with AI-powered insights, brand analysis, revenue modeling, and strategic roadmaps.",
+    title: meta.twitter.title,
+    description: meta.twitter.description,
+    images: [paths.logoFull],
   },
   robots: {
     index: true,

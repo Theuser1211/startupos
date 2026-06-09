@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Sparkles, Check, X, Loader2, ArrowRight } from "lucide-react";
+import { Check, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/supabase/auth-context";
@@ -96,13 +97,14 @@ export default function PricingPage() {
       {/* Header */}
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-5 w-auto"
+            />
           </Link>
           <nav className="flex items-center gap-4">
             <Link href="/features" className="text-xs text-muted-foreground hover:text-foreground transition-colors">

@@ -15,6 +15,72 @@ const FALLBACK_MODELS = [
   "openrouter/free",
 ] as const;
 
+/* ─── Jargon Blacklist ─── */
+
+const BANNED_PHRASES = [
+  "leverage", "disrupt", "synergy", "ecosystem", "scalable",
+  "innovative", "game-changing", "revolutionary", "cutting-edge",
+  "next-gen", "seamless", "end-to-end", "world-class", "best-in-class",
+  "empower", "transform", "streamline", "unlock", "next-generation",
+  "groundbreaking",
+];
+
+/* ─── Validation Functions ─── */
+
+function containsJargon(text: string): string[] {
+  const lower = text.toLowerCase();
+  return BANNED_PHRASES.filter(phrase => lower.includes(phrase));
+}
+
+function hasFabricatedUrl(blueprint: StartupBlueprint): boolean {
+  const url = blueprint.website.url;
+  // Only "yourstartup.example.com" is allowed
+  return url !== "yourstartup.example.com" && !url.includes("example.com");
+}
+
+function validateBlueprintQuality(blueprint: StartupBlueprint): { valid: boolean; issues: string[] } {
+  const issues: string[] = [];
+
+  // Check jargon in key text fields
+  const textFields = [
+    blueprint.tagline,
+    blueprint.problem,
+    blueprint.solution,
+    blueprint.brand.mission,
+    blueprint.verdict.summary,
+    ...blueprint.roast.items.map(i => i.feedback),
+  ].join(" ");
+
+  const jargonFound = containsJargon(textFields);
+  if (jargonFound.length > 0) {
+    issues.push(`Jargon detected: ${jargonFound.join(", ")}`);
+  }
+
+  // Check URL hallucination
+  if (hasFabricatedUrl(blueprint)) {
+    issues.push(`Fabricated URL: ${blueprint.website.url}`);
+  }
+
+  // Check tagline length
+  if (blueprint.tagline.split(" ").length > 8) {
+    issues.push(`Tagline too long: ${blueprint.tagline.split(" ").length} words (max 8)`);
+  }
+
+  // Check revenue realism
+  const maxProjection = Math.max(...blueprint.revenue.projections.map(p => p.projected));
+  if (blueprint.companySnapshot.stage === "Ideation" && maxProjection > 5000) {
+    issues.push(`Unrealistic revenue for ideation: $${maxProjection.toLocaleString()}/mo (max $5K)`);
+  }
+  if (blueprint.companySnapshot.stage === "Pre-Seed" && maxProjection > 20000) {
+    issues.push(`Unrealistic revenue for pre-seed: $${maxProjection.toLocaleString()}/mo (max $20K)`);
+  }
+  if (blueprint.companySnapshot.stage === "Seed" && maxProjection > 100000) {
+    issues.push(`Unrealistic revenue for seed: $${maxProjection.toLocaleString()}/mo (max $100K)`);
+  }
+
+  return { valid: issues.length === 0, issues };
+}
+
 /* ─── Model Tester ─── */
 
 /**
@@ -120,6 +186,14 @@ export async function generateOpenRouterBlueprint(
         `[OpenRouter] Zod validation failed for ${model}:`,
         result.error.format(),
       );
+      continue;
+    }
+
+    // Quality validation — check for jargon, URL hallucination, etc.
+    const qualityCheck = validateBlueprintQuality(result.data as StartupBlueprint);
+    if (!qualityCheck.valid) {
+      console.warn(`[OpenRouter] Quality check failed for ${model}:`, qualityCheck.issues);
+      // Continue to next model — quality issues are retried
       continue;
     }
 

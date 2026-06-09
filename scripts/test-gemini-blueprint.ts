@@ -7,10 +7,10 @@
  */
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
+const apiKey = process.env.GOOGLE_API_KEY;
 
-const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
 if (!apiKey) {
-  console.error("ERROR: NEXT_PUBLIC_GOOGLE_API_KEY is not set");
+  console.error("ERROR: GOOGLE_API_KEY is not set");
   process.exit(1);
 }
 
@@ -314,12 +314,12 @@ async function main() {
     console.log("[Test] Cleaned JSON length:", cleanJson.length, "chars\n");
 
     // Parse JSON
-    let parsed: any;
+    let parsed: Record<string, unknown>;
     try {
-      parsed = JSON.parse(cleanJson);
+      parsed = JSON.parse(cleanJson) as Record<string, unknown>;
       console.log("[Test] ✅ JSON parsed successfully");
-    } catch (e: any) {
-      console.error("[Test] ❌ JSON Parse Error:", e.message);
+    } catch (e: unknown) {
+      console.error("[Test] ❌ JSON Parse Error:", e instanceof Error ? e.message : String(e));
       console.log("\n=== Last 500 chars ===");
       console.log(cleanJson.substring(Math.max(0, cleanJson.length - 500)));
       process.exit(1);
@@ -357,7 +357,7 @@ async function main() {
     console.log("Confidence:", bp.verdict.confidence + "% (" + bp.verdict.confidenceLabel + ")");
     console.log("Dimensions:");
     for (const [key, dim] of Object.entries(bp.verdict.dimensions)) {
-      console.log(`  ${key}: ${(dim as any).score}/100 — ${(dim as any).label}`);
+      console.log(`  ${key}: ${(dim as { score: number; label: string }).score}/100 — ${(dim as { score: number; label: string }).label}`);
     }
     console.log("Strengths:", bp.verdict.strengths.map(s => s.dimension + " (" + s.score + ")").join(", "));
     console.log("Weaknesses:", bp.verdict.weaknesses.map(w => w.dimension + " (" + w.score + ")").join(", "));
@@ -367,9 +367,9 @@ async function main() {
 
     console.log("\n[Test] ✅ SUCCESS: Complete AI-generated blueprint produced and validated!");
     console.log("[Test] generationMode would be: ai");
-  } catch (e: any) {
-    console.error("[Test] ❌ Error:", e.message);
-    console.error(e.stack?.substring(0, 500));
+  } catch (e: unknown) {
+    console.error("[Test] ❌ Error:", e instanceof Error ? e.message : String(e));
+    if (e instanceof Error) console.error(e.stack?.substring(0, 500));
     process.exit(1);
   }
 }

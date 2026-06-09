@@ -1,16 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Eye, EyeOff, Loader2, Check } from "lucide-react";
+import { Eye, EyeOff, Loader2, Check } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-context";
 import Link from "next/link";
 
 export default function SignUpPage() {
-  const router = useRouter();
   const { signUp } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -92,13 +91,15 @@ export default function SignUpPage() {
       >
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600">
-              <Sparkles className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-lg font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/" className="inline-flex items-center justify-center mb-6">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
           <h1 className="text-2xl font-display font-bold mb-2">Create your account</h1>
           <p className="text-sm text-muted-foreground">

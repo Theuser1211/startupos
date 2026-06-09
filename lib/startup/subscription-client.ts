@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { Subscription, SubscriptionPlan } from "@/lib/types";
+import type { SubscriptionPlan } from "@/lib/types";
 
 declare global {
   interface Window {

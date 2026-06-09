@@ -145,21 +145,46 @@ export function BlueprintProvider({ children }: { children: ReactNode }) {
       
       const data = await res.json();
 
-      // The blueprint data is stored as a plain object — parse and validate
-      const blueprintData = data.blueprint as StartupBlueprint;
-      if (!blueprintData || !blueprintData.startupName) {
-        throw new Error("Invalid blueprint data.");
-      }
-
       // Also store interview data for reference
       if (data.interview_data) {
         setInterviewData(data.interview_data as InterviewData);
         localStorage.setItem("startupos-founder", JSON.stringify(data.interview_data));
       }
 
-      setBlueprint(blueprintData);
-      setGenerationMode("deterministic");
-      setGenerationStatus("success");
+      // Check if blueprint data exists and is valid
+      const blueprintData = data.blueprint as StartupBlueprint;
+      if (blueprintData && blueprintData.startupName) {
+        // Blueprint already generated — use it directly
+        setBlueprint(blueprintData);
+        setGenerationMode("deterministic");
+        setGenerationStatus("success");
+      } else if (data.interview_data) {
+        // Blueprint is null (created from interview) — generate it now
+        const interviewPayload = data.interview_data as InterviewData;
+        setInterviewData(interviewPayload);
+        const result = await generateBlueprintOrchestrator(interviewPayload, { mode: "deterministic" });
+        setBlueprint(result.blueprint);
+        setGenerationMode(result.mode);
+        setGenerationError(result.error);
+        setGenerationStatus("success");
+
+        // Save the generated blueprint back to Supabase
+        try {
+          await fetch("/api/blueprints", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id,
+              name: result.blueprint.startupName || "My Startup",
+              blueprint: result.blueprint,
+            }),
+          });
+        } catch {
+          // Best-effort — auto-save will catch it
+        }
+      } else {
+        throw new Error("Invalid blueprint data.");
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load saved blueprint.";
       setError(message);
@@ -195,7 +220,7 @@ export function BlueprintProvider({ children }: { children: ReactNode }) {
     try {
       const stored = localStorage.getItem("startupos-founder");
       if (!stored) {
-        setIsLoading(false);
+        setIsLoading(false); // eslint-disable-line react-hooks/set-state-in-effect
         setGenerationStatus("idle");
         return;
       }

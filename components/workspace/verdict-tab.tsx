@@ -19,18 +19,15 @@ import {
   Sparkles,
   Scale,
   Swords,
-  CheckCircle2,
   XCircle,
   BarChart3,
   Clock,
   Users,
-  Target,
   Globe,
   DollarSign,
   Zap,
   HelpCircle,
 } from "lucide-react";
-import type { VerdictDimensions } from "@/lib/startup/verdict-engine";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -105,36 +102,6 @@ const dimensionMeta: Record<string, { icon: typeof Award; label: string }> = {
   distribution:  { icon: Zap,         label: "Distribution" },
   revenue:       { icon: DollarSign,  label: "Revenue" },
 };
-
-/* ─── Mini Bar Gauge ─── */
-
-function MiniBar({ value, label, icon: Icon }: { value: number; label: string; icon: typeof Award }) {
-  const color = value >= 70 ? "bg-emerald-500" : value >= 50 ? "bg-amber-500" : "bg-red-500";
-  const bgColor = value >= 70 ? "bg-emerald-500/10" : value >= 50 ? "bg-amber-500/10" : "bg-red-500/10";
-  const textColor = value >= 70 ? "text-emerald-400" : value >= 50 ? "text-amber-400" : "text-red-400";
-
-  return (
-    <div className="flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-white/[0.02]">
-      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${bgColor}`}>
-        <Icon className={`h-4 w-4 ${textColor}`} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-medium text-foreground/80">{label}</span>
-          <span className={`text-xs font-bold tabular-nums ${textColor}`}>{value}</span>
-        </div>
-        <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
-          <motion.div
-            className={`h-full rounded-full ${color}`}
-            initial={{ width: 0 }}
-            animate={{ width: `${value}%` }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ─── Score Gauge ─── */
 
@@ -670,7 +637,7 @@ export function VerdictTab() {
               <div className="flex-1">
                 <h3 className="text-sm font-semibold mb-1">How this verdict works</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong> (size & growth), <strong>Timing</strong> (market readiness), <strong>Competition</strong> (landscape & moats), <strong>Defensibility</strong> (barriers to entry), <strong>Founder-Fit</strong> (domain expertise), <strong>Distribution</strong> (go-to-market), and <strong>Revenue</strong> (unit economics). Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each). Your verdict is independent of the Startup Roast — it's a forward-looking assessment, not a critique.
+                  StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong> (size & growth), <strong>Timing</strong> (market readiness), <strong>Competition</strong> (landscape & moats), <strong>Defensibility</strong> (barriers to entry), <strong>Founder-Fit</strong> (domain expertise), <strong>Distribution</strong> (go-to-market), and <strong>Revenue</strong> (unit economics). Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each). Your verdict is independent of the Startup Roast &mdash; it&apos;s a forward-looking assessment, not a critique.
                 </p>
               </div>
             </div>

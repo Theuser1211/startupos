@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
     // Verify webhook signature
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      console.warn("[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET not configured — skipping verification");
-      return NextResponse.json({ status: "ok" });
+      console.error("[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET not configured");
+      return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
     }
 
     const isValid = verifyWebhookSignature(body, signature, webhookSecret);

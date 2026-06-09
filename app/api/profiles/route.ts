@@ -26,12 +26,14 @@ export async function GET() {
         .single();
 
       if (insertError) {
-        return NextResponse.json({ error: insertError.message }, { status: 500 });
+        console.error("[Profiles API] Insert error:", insertError.message);
+        return NextResponse.json({ error: "Failed to create profile" }, { status: 500 });
       }
 
       return NextResponse.json(newProfile);
     }
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Profiles API] Fetch error:", error.message);
+    return NextResponse.json({ error: "Failed to load profile" }, { status: 500 });
   }
 
   return NextResponse.json(data);
@@ -75,7 +77,8 @@ export async function PUT(request: NextRequest) {
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[Profiles API] Update error:", error.message);
+    return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
   }
 
   return NextResponse.json(data);

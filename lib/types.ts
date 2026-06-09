@@ -164,7 +164,23 @@ export interface GeneratedWebsite {
   template: string | null;
   deployment_url: string | null;
   deployment_status: DeploymentStatus;
+  deployment_logs: string[] | null;
+  deployment_provider: string | null;
   content: Record<string, unknown>;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Deployment {
+  id: string;
+  user_id: string;
+  website_id: string;
+  startup_id: string | null;
+  provider: string;
+  deployment_url: string | null;
+  deployment_status: DeploymentStatus;
+  deployment_logs: string[];
   metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;

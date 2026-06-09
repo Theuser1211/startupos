@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 const footerLinks = [
@@ -29,17 +29,19 @@ export function Footer() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center group">
             <motion.div
-              className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-secondary"
-              whileHover={{ scale: 1.1, rotate: -5 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Sparkles className="h-3.5 w-3.5 text-white" />
+              <Image
+                src="/logo-full.png"
+                alt="StartupOS"
+                width={1536}
+                height={1024}
+                className="h-6 w-auto"
+              />
             </motion.div>
-            <span className="text-sm font-bold tracking-tight">
-              Startup<span className="text-primary">OS</span>
-            </span>
           </Link>
         </motion.div>
 

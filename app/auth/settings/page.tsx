@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Sparkles, Loader2, Check, Eye, EyeOff, AlertTriangle, ArrowLeft, LogOut,
+  Loader2, Check, Eye, EyeOff, AlertTriangle, ArrowLeft, LogOut,
 } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-context";
 import Link from "next/link";
@@ -109,13 +110,14 @@ export default function SettingsPage() {
       {/* Header */}
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
+          <Link href="/">
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-5 w-auto"
+            />
           </Link>
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="sm" asChild>
