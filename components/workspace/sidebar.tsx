@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
@@ -14,7 +15,12 @@ import {
   Scale,
   LucideIcon,
   Sparkles,
+  FolderOpen,
+  Loader2,
+  Copy,
+  Check,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface Tab {
@@ -39,16 +45,56 @@ interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   founderName?: string;
+  blueprintId?: string;
+  isPublished?: boolean;
+  shareToken?: string | null;
+  onPublishToggle?: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, founderName }: SidebarProps) {
+export function Sidebar({
+  activeTab,
+  onTabChange,
+  founderName,
+  blueprintId,
+  isPublished,
+  shareToken,
+  onPublishToggle,
+}: SidebarProps) {
+  const [publishing, setPublishing] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const shareUrl = shareToken
+    ? `${typeof window !== "undefined" ? window.location.origin : ""}/public/${shareToken}`
+    : null;
+
+  const handlePublish = async () => {
+    if (!onPublishToggle || publishing) return;
+    setPublishing(true);
+    try {
+      onPublishToggle();
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+  const handleCopyUrl = async () => {
+    if (!shareUrl) return;
+    await navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-glass-border bg-background/50 backdrop-blur-xl">
       {/* Logo */}
-      <div className="flex items-center gap-2 h-14 px-5 border-b border-glass-border">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/20">
-          <Sparkles className="h-3.5 w-3.5 text-white" />
-        </div>
+      <div className="flex items-center gap-2.5 h-14 px-5 border-b border-glass-border">
+        <Image
+          src="/logo-square.png"
+          alt="StartupOS"
+          width={1254}
+          height={1254}
+          className="h-7 w-7 shrink-0"
+          priority
+        />
         <span className="text-sm font-bold tracking-tight">
           Startup<span className="text-primary">OS</span>
         </span>
@@ -101,8 +147,58 @@ export function Sidebar({ activeTab, onTabChange, founderName }: SidebarProps) {
         })}
       </nav>
 
+      {/* Publish section */}
+      {blueprintId && (
+        <div className="px-3 py-3 border-t border-glass-border space-y-2">
+          {isPublished && shareUrl && (
+            <div className="flex items-center gap-1 rounded-lg bg-primary/5 border border-primary/20 px-3 py-2">
+              <Globe className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-[11px] text-muted-foreground truncate flex-1">
+                {shareUrl}
+              </span>
+              <button
+                onClick={handleCopyUrl}
+                className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+                title="Copy URL"
+              >
+                {copied ? (
+                  <Check className="h-3.5 w-3.5 text-green-500" />
+                ) : (
+                  <Copy className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </div>
+          )}
+          <button
+            onClick={handlePublish}
+            disabled={publishing}
+            className={cn(
+              "flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-200",
+              isPublished
+                ? "bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20"
+                : "bg-primary text-primary-foreground hover:bg-primary/90",
+              publishing && "opacity-50 cursor-not-allowed"
+            )}
+          >
+            {publishing ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Globe className="h-3.5 w-3.5" />
+            )}
+            {publishing ? "Publishing..." : isPublished ? "Published" : "Publish"}
+          </button>
+        </div>
+      )}
+
       {/* Back link */}
-      <div className="px-3 py-3 border-t border-glass-border">
+      <div className="px-3 py-3 border-t border-glass-border space-y-1">
+        <Link
+          href="/blueprints"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+        >
+          <FolderOpen className="h-3.5 w-3.5" />
+          My Blueprints
+        </Link>
         <Link
           href="/"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
