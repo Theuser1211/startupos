@@ -67,6 +67,13 @@ export interface StartupBlueprint {
     recommendations: string[];
   };
 
+  competitors: {
+    name: string;
+    strength: string;
+    weakness: string;
+    opportunity: string;
+  }[];
+
   revenue: {
     model: string;
     pricing: string;
@@ -287,9 +294,23 @@ const logoConcepts: Record<string, { description: string; style: string }[]> = {
 
 const industryProfiles = {
   ai: {
-    tagline: (idea: string) => `${idea} — intelligent automation for the modern enterprise`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Ship AI models in days, not months",
+        "Production ML without the PhD",
+        "AI infrastructure that just works",
+        "From prototype to production fast",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Legacy AI infrastructure is bloated, expensive, and requires PhD-level expertise to manage.",
     solutionMeta: "A streamlined AI platform that delivers production-ready models in days, not months, without the enterprise overhead.",
+    competitors: [
+      { name: "Hugging Face", strength: "Massive open-source model library, strong community", weakness: "Not enterprise-ready, no managed infrastructure", opportunity: "Enterprise layer on top of open models" },
+      { name: "Replicate", strength: "Easy model deployment, good developer experience", weakness: "Limited to inference, no training/customization", opportunity: "Full lifecycle ML platform" },
+      { name: "Modal", strength: "Serverless GPU compute, fast scaling", weakness: "Infrastructure-only, no model management", opportunity: "End-to-end ML platform with model registry" },
+      { name: "Anyscale", strength: "Ray-based distributed computing, enterprise-grade", weakness: "Complex setup, requires ML expertise", opportunity: "Simplified ML infrastructure for non-experts" },
+    ],
     icpTitle: "VP of AI / ML Engineering",
     icpRole: "Technical decision-maker at a mid-market company",
     icpCompanySize: "50-500 employees",
@@ -371,9 +392,23 @@ const industryProfiles = {
     ],
   },
   fintech: {
-    tagline: (idea: string) => `${idea} — modern financial infrastructure for the next generation`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Compliance without the chaos",
+        "Financial infrastructure that scales",
+        "Banking tech for the modern era",
+        "Launch fintech products in weeks",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Legacy financial systems are built on 40-year-old mainframes that cost millions to maintain and take years to update.",
     solutionMeta: "A modern, API-first financial platform that lets you launch, scale, and comply in weeks instead of quarters.",
+    competitors: [
+      { name: "Stripe", strength: "Best-in-class developer experience, global payments", weakness: "High fees for SMBs, limited lending/credit products", opportunity: "Vertical-specific FinTech (healthcare, real estate)" },
+      { name: "Plaid", strength: "Banking data aggregation leader, wide integration", weakness: "Data read-only, no transaction processing", opportunity: "Full-stack financial infrastructure" },
+      { name: "Unit", strength: "Banking-as-a-service, fast integration", weakness: "Limited to US market, no international expansion", opportunity: "Global BaaS platform with multi-currency" },
+      { name: "Marqeta", strength: "Card issuing infrastructure, real-time controls", weakness: "Complex integration, enterprise-only pricing", opportunity: "Simplified card issuing for SMBs" },
+    ],
     icpTitle: "CTO / Head of Engineering",
     icpRole: "Engineering leader at a financial institution",
     icpCompanySize: "200-2000 employees",
@@ -455,9 +490,23 @@ const industryProfiles = {
     ],
   },
   healthtech: {
-    tagline: (idea: string) => `${idea} — transforming healthcare delivery through technology`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Healthcare that heals the system",
+        "Clinical tools that save time",
+        "Patient care without the paperwork",
+        "Healthcare tech built for doctors",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Healthcare systems are fragmented, paper-heavy, and prioritize billing over patient outcomes.",
     solutionMeta: "A unified digital health platform that connects patients, providers, and payers in one seamless experience.",
+    competitors: [
+      { name: "Epic Systems", strength: "Dominant EMR provider, deep hospital integration", weakness: "Terrible UX, expensive, requires IT teams to operate", opportunity: "UX-first alternative for clinics" },
+      { name: "DrChrono", strength: "iPad-native EMR, good mobile experience", weakness: "Limited to ambulatory care, no hospital features", opportunity: "Full-stack clinic management platform" },
+      { name: "ZeOmega", strength: "Population health management, analytics", weakness: "Complex implementation, enterprise-only", opportunity: "Simplified analytics for small practices" },
+      { name: "Health Catalyst", strength: "Data analytics platform, outcome tracking", weakness: "Requires massive data infrastructure", opportunity: "Lightweight analytics for SMB healthcare" },
+    ],
     icpTitle: "Chief Medical Information Officer",
     icpRole: "Clinical technology decision-maker at a hospital system",
     icpCompanySize: "500-5000+ employees",
@@ -524,7 +573,15 @@ const industryProfiles = {
     ],
   },
   ecommerce: {
-    tagline: (idea: string) => `${idea} — reimagining retail for the digital age`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Retail that reads the room",
+        "Shopping experiences that convert",
+        "E-commerce built to scale",
+        "Your store, everywhere",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "E-commerce platforms are generic templates that don't adapt to unique product categories or customer segments.",
     solutionMeta: "An adaptive commerce platform that optimizes every touchpoint from discovery to delivery.",
     icpTitle: "Head of E-Commerce",
@@ -588,7 +645,15 @@ const industryProfiles = {
     ],
   },
   devtools: {
-    tagline: (idea: string) => `${idea} — tools that make developers' lives easier`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Code that ships itself",
+        "Dev tools that feel magical",
+        "Build faster, break less",
+        "Developer experience perfected",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "The modern dev toolchain has exploded in complexity — teams manage 15+ tools just to ship one feature.",
     solutionMeta: "A unified developer platform that consolidates the toolchain into one seamless workflow.",
     icpTitle: "VP of Engineering",
@@ -657,7 +722,15 @@ const industryProfiles = {
     ],
   },
   climate: {
-    tagline: (idea: string) => `${idea} — technology for a sustainable future`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Climate tech that pays for itself",
+        "Green solutions, real returns",
+        "Sustainability without sacrifice",
+        "Clean tech for the bottom line",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Climate tech solutions exist but are fragmented, expensive to deploy, and don't integrate with existing industrial infrastructure.",
     solutionMeta: "An integrated climate platform that makes sustainability measurable, manageable, and monetizable.",
     icpTitle: "Chief Sustainability Officer",
@@ -726,7 +799,15 @@ const industryProfiles = {
     ],
   },
   edtech: {
-    tagline: (idea: string) => `${idea} — education that adapts to every learner`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Learning that adapts to you",
+        "Teaching tools that actually work",
+        "Education built for the future",
+        "Students learn faster, teachers teach better",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Education is still one-size-fits-all, delivered through PDFs and video lectures.",
     solutionMeta: "An adaptive learning platform that personalizes content, pace, and assessment for every student.",
     icpTitle: "Director of Curriculum & Instruction",
@@ -795,7 +876,15 @@ const industryProfiles = {
     ],
   },
   gaming: {
-    tagline: (idea: string) => `${idea} — play meets purpose`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Games that make you think",
+        "Play with purpose",
+        "Gaming meets meaning",
+        "Entertainment that matters",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Game development is increasingly centralized around a few engines and platforms.",
     solutionMeta: "A platform that democratizes game development with AI-powered tools and cross-platform deployment.",
     icpTitle: "Indie Game Studio Lead",
@@ -864,7 +953,15 @@ const industryProfiles = {
     ],
   },
   creator: {
-    tagline: (idea: string) => `${idea} — empower the creator economy`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Create more, manage less",
+        "Creator tools that scale",
+        "Your content, your empire",
+        "Build your audience, own your income",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Creators rely on 8+ platforms, 15+ tools, and manual workflows to run what is essentially a media business.",
     solutionMeta: "An all-in-one creator operating system that handles content production, distribution, monetization, and analytics.",
     icpTitle: "Full-Time Creator",
@@ -933,7 +1030,15 @@ const industryProfiles = {
     ],
   },
   marketplace: {
-    tagline: (idea: string) => `${idea} — connect supply with demand, seamlessly`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Match buyers and sellers fast",
+        "Marketplaces that actually work",
+        "Connect supply with demand",
+        "Trade without friction",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Marketplaces suffer from the cold-start problem: no buyers without sellers, no sellers without buyers.",
     solutionMeta: "A managed marketplace platform that jumpstarts both sides through intelligent matching and trust infrastructure.",
     icpTitle: "VP of Growth",
@@ -1002,7 +1107,15 @@ const industryProfiles = {
     ],
   },
   hardware: {
-    tagline: (idea: string) => `${idea} — hardware that just works`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Hardware that disappears",
+        "Physical products, digital brain",
+        "Smart hardware, simple setup",
+        "Build it, ship it, love it",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Hardware development is slow, capital-intensive, and unforgiving — one bad batch can kill the company.",
     solutionMeta: "A hardware development platform that streamlines prototyping, manufacturing, and distribution.",
     icpTitle: "VP of Hardware Engineering",
@@ -1071,7 +1184,15 @@ const industryProfiles = {
     ],
   },
   services: {
-    tagline: (idea: string) => `${idea} — professional services, reimagined`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Services that scale with you",
+        "Expert help, on demand",
+        "Professional services, modernized",
+        "Get expert advice fast",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "Professional services firms still operate on emails, spreadsheets, and 1990s CRM systems.",
     solutionMeta: "A modern practice management platform that automates operations, client communication, and compliance.",
     icpTitle: "Managing Partner",
@@ -1140,7 +1261,15 @@ const industryProfiles = {
     ],
   },
   saas: {
-    tagline: (idea: string) => `${idea} — software that scales with your business`,
+    tagline: (_idea: string) => {
+      const taglines = [
+        "Software that grows with you",
+        "Business tools that work",
+        "Solve real problems, make real money",
+        "Built for how you work",
+      ];
+      return taglines[Math.floor(Math.random() * taglines.length)];
+    },
     problemMeta: "SMBs buy too many point solutions that don't talk to each other, creating data silos and workflow friction.",
     solutionMeta: "An integrated SaaS platform that replaces 5 tools with one, unified through a shared data model.",
     icpTitle: "VP of Operations",
@@ -1283,7 +1412,7 @@ function getHigherTier(price?: string): string {
 
 /* ─── Revenue descriptions ─── */
 
-const revenueDescriptions: Record<string, string> = {
+const _revenueDescriptions: Record<string, string> = {
   subscription: "Recurring subscription with monthly or annual billing cycles",
   usage: "Pay-as-you-go metered billing based on consumption",
   "one-time": "Perpetual license or one-time purchase with optional maintenance",
@@ -1321,39 +1450,71 @@ const problemRoastModifiers: Record<string, {
 
 const defaultProfileKey = "saas";
 
+/* ─── Default competitors generator ─── */
+
+function getDefaultCompetitors(industry: string): { name: string; strength: string; weakness: string; opportunity: string }[] {
+  const defaults: Record<string, { name: string; strength: string; weakness: string; opportunity: string }[]> = {
+    saas: [
+      { name: "Salesforce", strength: "Market leader, massive ecosystem", weakness: "Complex, expensive, slow to innovate", opportunity: "Simplified vertical SaaS" },
+      { name: "HubSpot", strength: "Great UX, strong marketing", weakness: "Limited customization, pricing creep", opportunity: "Affordable alternative for SMBs" },
+      { name: "Zoho", strength: "Affordable, wide product suite", weakness: "Fragmented products, weak integrations", opportunity: "Unified platform with better UX" },
+    ],
+    ecommerce: [
+      { name: "Shopify", strength: "Dominant platform, huge app ecosystem", weakness: "Generic templates, high transaction fees", opportunity: "Vertical-specific commerce" },
+      { name: "WooCommerce", strength: "Open-source, customizable", weakness: "Requires technical setup, hosting complexity", opportunity: "Managed WooCommerce alternative" },
+      { name: "BigCommerce", strength: "Headless commerce, B2B features", weakness: "Smaller ecosystem, developer-heavy", opportunity: "No-code B2B commerce" },
+    ],
+    creator: [
+      { name: "Patreon", strength: "Dominant creator platform, strong brand", weakness: "High fees, limited customization", opportunity: "White-label creator tools" },
+      { name: "Substack", strength: "Simple newsletter monetization", weakness: "Email-only, limited product types", opportunity: "Multi-product creator platform" },
+      { name: "Gumroad", strength: "Easy digital product sales", weakness: "Basic features, no subscription management", opportunity: "Full creator commerce suite" },
+    ],
+    marketplace: [
+      { name: "Upwork", strength: "Largest freelance marketplace", weakness: "Race to bottom pricing, trust issues", opportunity: "Curated expert marketplace" },
+      { name: "Fiverr", strength: "Brand recognition, easy to use", weakness: "Low-quality offerings, high fees", opportunity: "Premium service marketplace" },
+      { name: "Toptal", strength: "Vetted talent, enterprise focus", weakness: "Expensive, limited talent pool", opportunity: "Mid-market vetted marketplace" },
+    ],
+  };
+  return defaults[industry] || defaults.saas;
+}
+
 /* ─── Revenue projection generator ─── */
 
 function generateRevenueProjections(
   stage: string,
-  businessModel: string,
+  _businessModel: string,
   monthsToProject: number
 ): { month: string; projected: number; actual: number | null }[] {
-  const isPreRevenue = stage === "ideation" || stage === "pre-seed";
   const results: { month: string; projected: number; actual: number | null }[] = [];
+
+  // Stage-based revenue caps (REALISTIC)
+  const stageCaps: Record<string, { maxMonthly: number; startMonthly: number; growthRate: number }> = {
+    ideation:    { maxMonthly: 5000,    startMonthly: 0,     growthRate: 1.4 },
+    "pre-seed":  { maxMonthly: 20000,   startMonthly: 1000,  growthRate: 1.35 },
+    seed:        { maxMonthly: 100000,  startMonthly: 5000,  growthRate: 1.25 },
+    growth:      { maxMonthly: 1000000, startMonthly: 50000, growthRate: 1.2 },
+  };
+
+  const cap = stageCaps[stage] || stageCaps.ideation;
 
   for (let i = 0; i < monthsToProject && i < months.length; i++) {
     const month = months[i % 12];
     const year = i >= 12 ? 1 : 0;
     const label = year === 0 ? month : `${month} '${String((new Date().getFullYear() + year) % 100).padStart(2, "0")}`;
 
-    if (isPreRevenue && i < 3) {
-      // First 3 months: $0
+    if (stage === "ideation" && i < 6) {
+      // Ideation: first 6 months are $0 (customer discovery phase)
       results.push({ month: label, projected: 0, actual: i === 0 ? 0 : null });
-    } else if (isPreRevenue) {
-      // Slow ramp from $1K → $50K
-      const factor = Math.pow(1.5, i - 3);
-      const projected = Math.round(Math.min(1000 * factor, 500000));
-      results.push({ month: label, projected, actual: null });
-    } else if (stage === "seed") {
-      // Seed: starting from $5K, growing
-      const factor = Math.pow(1.3, i);
-      const projected = Math.round(Math.min(5000 * factor, 500000));
-      results.push({ month: label, projected, actual: i < 2 ? Math.round(projected * 0.8) : null });
+    } else if (stage === "pre-seed" && i < 3) {
+      // Pre-seed: first 3 months are $0 (building MVP)
+      results.push({ month: label, projected: 0, actual: null });
     } else {
-      // Growth: starting from $50K
-      const factor = Math.pow(1.25, i);
-      const projected = Math.round(Math.min(50000 * factor, 2000000));
-      results.push({ month: label, projected, actual: i < 3 ? Math.round(projected * (1 - 0.15 * (3 - i))) : null });
+      // Realistic growth curve with noise
+      const monthsFromStart = stage === "ideation" ? i - 6 : stage === "pre-seed" ? i - 3 : i;
+      const baseGrowth = Math.pow(cap.growthRate, monthsFromStart);
+      const noise = 0.85 + Math.random() * 0.3; // 15% variance
+      const projected = Math.round(Math.min(cap.startMonthly * baseGrowth * noise, cap.maxMonthly));
+      results.push({ month: label, projected, actual: null });
     }
   }
 
@@ -1362,9 +1523,9 @@ function generateRevenueProjections(
 
 /* ─── URL generator ─── */
 
-function generateUrl(startupName: string): string {
-  const base = startupName.toLowerCase().replace(/[^a-z0-9]+/g, "").slice(0, 15);
-  return `${base}.io`;
+function generateUrl(_startupName: string): string {
+  // NEVER fabricate URLs — use placeholder to prevent hallucination
+  return "yourstartup.example.com";
 }
 
 /* ─── Stage label ─── */
@@ -1398,7 +1559,7 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
   const profile = industryProfiles[data.industry as keyof typeof industryProfiles] || industryProfiles[defaultProfileKey];
   const stageMod = stageModifiers[data.stage] || stageModifiers.ideation;
   const problemMod = problemRoastModifiers[data.problem];
-  const customerType = data.targetCustomer;
+  const _customerType = data.targetCustomer;
 
   // Extract startup name from the idea text (first 2-3 words)
   const words = data.idea.trim().split(/\s+/);
@@ -1472,6 +1633,9 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
   // Build ICP (domain-aware v2)
   const icp = composeIcp(data, profile);
 
+  // Get competitors (from profile or defaults)
+  const competitors = (profile as { competitors?: { name: string; strength: string; weakness: string; opportunity: string }[] }).competitors || getDefaultCompetitors(data.industry);
+
   // Build revenue
   const revenueModel = stageMod.revenueModel(data.businessModel, data.priceRange);
   const revenuePricing = stageMod.revenuePricing(data.businessModel, data.priceRange);
@@ -1492,25 +1656,25 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
     {
       quarter: "Phase 1: Foundation",
       items: [
-        { title: roadmapTasks[0]?.title || "Market research", description: roadmapTasks[0]?.description || "Customer discovery interviews", status: "in-progress" as const },
-        { title: roadmapTasks[1]?.title || "Core feature development", description: roadmapTasks[1]?.description || "Beta launch to 10 customers", status: "planned" as const },
-        { title: roadmapTasks[2]?.title || "Feedback collection", description: roadmapTasks[2]?.description || "Iterate based on user input", status: "planned" as const },
+        { title: roadmapTasks[0]?.title || "Complete 20 customer interviews", description: roadmapTasks[0]?.description || "Interview 20 target customers, document pain points, identify 3 design partners", status: "in-progress" as const },
+        { title: roadmapTasks[1]?.title || "Ship MVP core feature", description: roadmapTasks[1]?.description || "Build and deploy the single most important feature, get 5 beta users", status: "planned" as const },
+        { title: roadmapTasks[2]?.title || "Validate willingness to pay", description: roadmapTasks[2]?.description || "Collect $500+ in pre-orders or letters of intent", status: "planned" as const },
       ],
     },
     {
-      quarter: "Phase 2: Market Launch",
+      quarter: "Phase 2: Product-Market Fit",
       items: [
-        { title: "Public launch", description: "Full product release to market", status: "planned" as const },
-        { title: "Growth marketing campaigns", description: "Multi-channel customer acquisition", status: "planned" as const },
-        { title: "Customer success program", description: "Onboarding and retention infrastructure", status: "planned" as const },
+        { title: "Launch to 50 early adopters", description: "Onboard 50 users, achieve 40%+ weekly retention", status: "planned" as const },
+        { title: "Iterate based on usage data", description: "Ship 3 feature iterations based on user feedback, measure NPS > 40", status: "planned" as const },
+        { title: "Achieve first revenue", description: "Convert 10% of free users to paid, reach $2K MRR", status: "planned" as const },
       ],
     },
     {
-      quarter: "Phase 3: Scale",
+      quarter: "Phase 3: Growth",
       items: [
-        { title: "Enterprise feature set", description: "SSO, RBAC, and compliance certifications", status: "planned" as const },
-        { title: "Partnership & integration network", description: "Ecosystem expansion through APIs", status: "planned" as const },
-        { title: "Fundraising preparation", description: "Target: metrics-driven Series A/B round", status: "planned" as const },
+        { title: "Scale acquisition channels", description: "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably", status: "planned" as const },
+        { title: "Hire first employee", description: "Bring on a full-stack engineer or sales lead to accelerate growth", status: "planned" as const },
+        { title: "Hit $10K MRR", description: "Reach $10K MRR with 100+ paying customers", status: "planned" as const },
       ],
     },
   ];
@@ -1550,7 +1714,7 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
   // Personalize verdict summary with startup name
   verdict.summary = `${startupName}: ${verdict.summary}`;
 
-  return {
+  const blueprint = {
     startupName,
     tagline,
 
@@ -1567,6 +1731,8 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
 
     icp,
 
+    competitors,
+
     revenue,
 
     roadmap,
@@ -1581,4 +1747,73 @@ export function generateBlueprint(data: InterviewData): StartupBlueprint {
       items: roastItems,
     },
   };
+
+  // Post-generation jargon cleaning
+  const bannedPhrases = [
+    "leverage", "disrupt", "synergy", "ecosystem", "scalable",
+    "innovative", "game-changing", "revolutionary", "cutting-edge",
+    "next-gen", "seamless", "end-to-end", "world-class", "best-in-class",
+    "empower", "transform", "streamline", "unlock", "next-generation",
+    "groundbreaking",
+  ];
+
+  function cleanJargon(text: string): string {
+    let cleaned = text;
+    for (const phrase of bannedPhrases) {
+      const regex = new RegExp(`\\b${phrase}\\b`, "gi");
+      cleaned = cleaned.replace(regex, "");
+    }
+    // Clean up double spaces
+    cleaned = cleaned.replace(/\s{2,}/g, " ").trim();
+    return cleaned;
+  }
+
+  // Clean jargon from key text fields
+  blueprint.tagline = cleanJargon(blueprint.tagline) as typeof blueprint.tagline;
+  blueprint.problem = cleanJargon(blueprint.problem) as typeof blueprint.problem;
+  blueprint.solution = cleanJargon(blueprint.solution) as typeof blueprint.solution;
+  blueprint.brand.mission = cleanJargon(blueprint.brand.mission) as typeof blueprint.brand.mission;
+  blueprint.verdict.summary = cleanJargon(blueprint.verdict.summary) as typeof blueprint.verdict.summary;
+  blueprint.roast.verdict = cleanJargon(blueprint.roast.verdict);
+
+  // Clean jargon from insights
+  blueprint.insights = blueprint.insights.map((insight: any) => ({
+    ...insight,
+    title: cleanJargon(insight.title),
+    description: cleanJargon(insight.description),
+  }));
+
+  // Clean jargon from website
+  blueprint.website.summary = cleanJargon(blueprint.website.summary) as typeof blueprint.website.summary;
+  blueprint.website.strengths = blueprint.website.strengths.map(cleanJargon) as typeof blueprint.website.strengths;
+  blueprint.website.improvements = blueprint.website.improvements.map(cleanJargon) as typeof blueprint.website.improvements;
+  blueprint.website.recommendations = blueprint.website.recommendations.map(cleanJargon) as typeof blueprint.website.recommendations;
+
+  // Clean jargon from ICP
+  blueprint.icp.description = cleanJargon(blueprint.icp.description);
+  blueprint.icp.painPoints = blueprint.icp.painPoints.map(cleanJargon);
+  blueprint.icp.goals = blueprint.icp.goals.map(cleanJargon);
+  blueprint.icp.objections = blueprint.icp.objections.map(cleanJargon);
+  blueprint.icp.recommendations = blueprint.icp.recommendations.map(cleanJargon);
+
+  // Clean jargon from roast
+  blueprint.roast.risks = blueprint.roast.risks.map(cleanJargon);
+  blueprint.roast.recommendations = blueprint.roast.recommendations.map(cleanJargon);
+  blueprint.roast.items = blueprint.roast.items.map((item: any) => ({
+    ...item,
+    feedback: cleanJargon(item.feedback),
+  }));
+
+  // Clean jargon from verdict
+  blueprint.verdict.fatalRisks = blueprint.verdict.fatalRisks.map(cleanJargon);
+  blueprint.verdict.strengths = blueprint.verdict.strengths.map((s: any) => ({
+    ...s,
+    explanation: cleanJargon(s.explanation),
+  }));
+  blueprint.verdict.weaknesses = blueprint.verdict.weaknesses.map((w: any) => ({
+    ...w,
+    explanation: cleanJargon(w.explanation),
+  }));
+
+  return blueprint;
 }
