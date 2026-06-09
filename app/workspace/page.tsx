@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "@/components/workspace/sidebar";
@@ -14,12 +14,12 @@ import { RevenueTab } from "@/components/workspace/revenue-tab";
 import { RoadmapTab } from "@/components/workspace/roadmap-tab";
 import { RoastTab } from "@/components/workspace/roast-tab";
 import { BlueprintProvider, useBlueprint } from "@/lib/startup/blueprint-context";
-import { ToastProvider } from "@/components/ui/toast";
+import { ToastProvider, useToast } from "@/components/ui/toast";
 import { useAuth } from "@/lib/supabase/auth-context";
-import { useToast } from "@/components/ui/toast";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
-import { Menu, X, Sparkles, ChevronRight, AlertTriangle, Loader2, LayoutDashboard, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import { Menu, X, ChevronRight, AlertTriangle, Loader2, LayoutDashboard, BookmarkCheck, Cloud, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
 const tabComponents: Record<string, React.ComponentType> = {
@@ -52,37 +52,146 @@ function WorkspaceContent() {
   const [activeTab, setActiveTab] = useState("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, updateProfile } = useAuth();
-  const { blueprint, isLoading, error, generationStatus, loadSavedBlueprint } = useBlueprint();
+  const { blueprint, isLoading, error, loadSavedBlueprint } = useBlueprint();
+  const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [publishStatus, setPublishStatus] = useState<{ isPublished: boolean; shareToken: string | null }>({ isPublished: false, shareToken: null });
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  // Load saved blueprint from Supabase if ?id= param is present
+  // Refs to track save state across renders (avoid stale closure issues)
+  const savedBlueprintIdRef = useRef<string | null>(null);
+  const lastSavedRef = useRef<number>(0);
+  const isSavingRef = useRef(false);
+  const updateProfileRef = useRef(updateProfile);
+  useEffect(() => {
+    updateProfileRef.current = updateProfile;
+  }, [updateProfile]);
+
+  // Load saved blueprint from Supabase if ?id= param is present,
+  // otherwise try to load the most recent blueprint for this user
   useEffect(() => {
     if (blueprintId) {
       loadSavedBlueprint(blueprintId);
+    } else if (user) {
+      // No ?id= — check if user has a recent blueprint in Supabase
+      (async () => {
+        try {
+          const res = await fetch("/api/blueprints");
+          if (res.ok) {
+            const blueprints = await res.json();
+            if (blueprints?.length > 0) {
+              // Track this ID for auto-save and load the blueprint
+              savedBlueprintIdRef.current = blueprints[0].id;
+              loadSavedBlueprint(blueprints[0].id);
+            }
+          }
+        } catch {
+          // Best-effort — fall through to localStorage generation
+        }
+      })();
+    }
+  }, [blueprintId, user]);
+
+  // Once a saved blueprint is loaded, track its ID for subsequent auto-saves
+  useEffect(() => {
+    if (blueprintId && !savedBlueprintIdRef.current) {
+      savedBlueprintIdRef.current = blueprintId;
     }
   }, [blueprintId]);
 
-  const handleSaveBlueprint = async () => {
-    if (!blueprint || !user) return;
-    setIsSaving(true);
+  // Fetch publish status when blueprint loads
+  useEffect(() => {
+    if (!blueprintId || !user) return;
+    (async () => {
+      try {
+        const res = await fetch(`/api/blueprints?id=${blueprintId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setPublishStatus({
+            isPublished: data.visibility === "public",
+            shareToken: data.share_token ?? null,
+          });
+        }
+      } catch {
+        // Best-effort — ignore fetch failure
+      }
+    })();
+  }, [blueprintId, user]);
+
+  const handlePublishToggle = useCallback(async () => {
+    if (!blueprintId) return;
+    setIsPublishing(true);
+    try {
+      const action = publishStatus.isPublished ? "unpublish" : "publish";
+      const res = await fetch("/api/blueprints/publish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: blueprintId, action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPublishStatus({
+          isPublished: data.visibility === "public",
+          shareToken: data.share_token ?? null,
+        });
+        toast({
+          title: action === "publish" ? "Blueprint published" : "Blueprint unpublished",
+          message: action === "publish"
+            ? "Your blueprint is now publicly viewable."
+            : "Your blueprint is no longer public.",
+          variant: "success",
+        });
+      } else {
+        const err = await res.json().catch(() => ({ error: "Failed" }));
+        toast({ title: "Publish failed", message: err.error || "Could not update publish status.", variant: "error" });
+      }
+    } catch {
+      toast({ title: "Publish failed", message: "A network error occurred.", variant: "error" });
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [blueprintId, publishStatus.isPublished, toast]);
+
+  // Core save function — used by both manual save and auto-save
+  const performSave = useCallback(async (isAuto: boolean): Promise<boolean> => {
+    if (!blueprint || !user) return false;
+    if (isSavingRef.current) return false;
+
+    isSavingRef.current = true;
+    if (isAuto) {
+      setAutoSaveStatus("saving");
+    } else {
+      setIsSaving(true);
+    }
+
     try {
       const stored = localStorage.getItem("startupos-founder");
       const interviewData = stored ? JSON.parse(stored) : {};
       const ideaText = interviewData.idea || blueprint.startupName || "";
 
-      // Check if a blueprint with this idea already exists (prevents duplicates)
-      const existingRes = await fetch(`/api/blueprints?idea=${encodeURIComponent(ideaText)}`);
-      const existing = existingRes.ok ? await existingRes.json() : null;
+      let id = savedBlueprintIdRef.current;
 
-      let res;
-      if (existing?.id) {
+      // First save — need to find or create the blueprint
+      if (!id) {
+        // Check if a blueprint with this idea already exists
+        const existingRes = await fetch(`/api/blueprints?idea=${encodeURIComponent(ideaText)}`);
+        const existing = existingRes.ok ? await existingRes.json() : null;
+
+        if (existing?.id) {
+          id = existing.id;
+          savedBlueprintIdRef.current = id;
+        }
+      }
+
+      let res: Response;
+      if (id) {
         // Update existing blueprint
         res = await fetch("/api/blueprints", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            id: existing.id,
+            id,
             name: blueprint.startupName || "My Startup",
             blueprint,
             interview_data: interviewData,
@@ -105,26 +214,123 @@ function WorkspaceContent() {
       }
 
       if (res.ok) {
-        setIsSaved(true);
+        const data = await res.json();
+        // After creation, store the ID so subsequent saves use PUT
+        if (!savedBlueprintIdRef.current && data?.id) {
+          savedBlueprintIdRef.current = data.id;
+          id = data.id;
+        }
 
-        // Also save interview data to user profile settings for cross-device access
+        lastSavedRef.current = Date.now();
+
+        if (isAuto) {
+          setAutoSaveStatus("saved");
+        }
+
+        // Save interview data to user profile (best-effort)
         try {
-          await updateProfile({
+          updateProfileRef.current({
             settings: {
               lastInterview: interviewData,
               lastBlueprintName: blueprint.startupName,
-              lastBlueprintId: existing?.id || null,
+              lastBlueprintId: savedBlueprintIdRef.current,
             },
           });
         } catch {
           // Profile save is best-effort
         }
+
+        return true;
       }
+
+      if (isAuto) {
+        setAutoSaveStatus("error");
+      }
+      return false;
     } catch {
-      console.warn("Failed to save blueprint");
+      if (isAuto) {
+        setAutoSaveStatus("error");
+      } else {
+        toast({ title: "Save failed", message: "Could not save blueprint. Check your connection.", variant: "error" });
+      }
+      return false;
     } finally {
-      setIsSaving(false);
+      isSavingRef.current = false;
+      if (!isAuto) {
+        setIsSaving(false);
+      }
     }
+  }, [blueprint, user, toast]);
+
+  // Auto-save on tab change
+  useEffect(() => {
+    if (!blueprint || !user) return;
+    // Debounce: wait 500ms after tab switch to avoid rapid saves
+    const timer = setTimeout(() => {
+      performSave(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [activeTab, blueprint, user, performSave]);
+
+  // Periodic auto-save every 30 seconds
+  useEffect(() => {
+    if (!blueprint || !user) return;
+
+    const interval = setInterval(() => {
+      // Only save if at least 5 seconds have passed since last save
+      // (prevents redundant saves when tab-switch just saved)
+      if (Date.now() - lastSavedRef.current < 5000) return;
+      performSave(true);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [blueprint, user, performSave]);
+
+  // Save on page unload/navigation away
+  const blueprintRef = useRef(blueprint);
+  useEffect(() => {
+    blueprintRef.current = blueprint;
+  }, [blueprint]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const handleBeforeUnload = () => {
+      const currentBlueprint = blueprintRef.current;
+      if (!currentBlueprint || isSavingRef.current) return;
+
+      try {
+        const stored = localStorage.getItem("startupos-founder");
+        if (!stored) return;
+
+        const interviewData = JSON.parse(stored);
+        navigator.sendBeacon("/api/blueprints/autosave", JSON.stringify({
+          id: savedBlueprintIdRef.current,
+          blueprint: currentBlueprint,
+          interview_data: interviewData,
+        }));
+      } catch {
+        // Best-effort — silently ignore
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [user]);
+
+  // Reset save status indicator after "saved" shows for 3s
+  useEffect(() => {
+    if (autoSaveStatus === "saved") {
+      const timer = setTimeout(() => {
+        setAutoSaveStatus("idle");
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [autoSaveStatus]);
+
+  // Manual save handler (for the retry/force-save button)
+  const handleSaveBlueprint = async () => {
+    await performSave(false);
   };
 
   // Loading state — skeleton already handled by loading.tsx, but show spinner for regeneration
@@ -188,6 +394,10 @@ function WorkspaceContent() {
           setMobileNavOpen(false);
         }}
         founderName={blueprint?.startupName || ""}
+        blueprintId={blueprintId || savedBlueprintIdRef.current || undefined}
+        isPublished={publishStatus.isPublished}
+        shareToken={publishStatus.shareToken}
+        onPublishToggle={handlePublishToggle}
       />
 
       {/* Mobile Header */}
@@ -202,14 +412,13 @@ function WorkspaceContent() {
             {mobileNavOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-primary to-secondary">
-              <Sparkles className="h-3 w-3 text-white" />
-            </div>
-            <span className="text-sm font-bold">
-              Startup<span className="text-primary">OS</span>
-            </span>
-          </div>
+          <Image
+            src="/logo-square.png"
+            alt="StartupOS"
+            width={1254}
+            height={1254}
+            className="h-6 w-6"
+          />
 
           <Link href="/" className="text-xs text-muted-foreground hover:text-primary" aria-label="Exit workspace">
             Exit
@@ -278,31 +487,39 @@ function WorkspaceContent() {
       {/* Main Content */}
       <main className="flex-1 min-h-screen lg:pl-64">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 lg:pt-8 pb-16">
-          {/* Save to account banner */}
-          {blueprint && user && !isSaved && (
+          {/* Auto-save / sign-up-to-save indicator */}
+          {blueprint && user && (
             <div className="flex items-center justify-end gap-2 mb-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSaveBlueprint}
-                disabled={isSaving}
-                className="text-xs gap-1.5"
-              >
-                {isSaving ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <BookmarkPlus className="h-3 w-3" />
-                )}
-                Save to My Blueprints
-              </Button>
-            </div>
-          )}
-          {blueprint && user && isSaved && (
-            <div className="flex items-center justify-end gap-2 mb-4">
-              <span className="text-xs text-emerald-400 flex items-center gap-1.5">
-                <BookmarkCheck className="h-3 w-3" />
-                Saved to your blueprints
-              </span>
+              {autoSaveStatus === "saving" && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <Cloud className="h-3 w-3 animate-pulse" />
+                  Auto-saving...
+                </span>
+              )}
+              {autoSaveStatus === "saved" && (
+                <span className="text-xs text-emerald-400 flex items-center gap-1.5">
+                  <BookmarkCheck className="h-3 w-3" />
+                  Auto-saved
+                </span>
+              )}
+              {autoSaveStatus === "error" && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-amber-400 flex items-center gap-1.5">
+                    <AlertTriangle className="h-3 w-3" />
+                    Save failed
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSaveBlueprint}
+                    disabled={isSaving}
+                    className="text-xs h-6 px-2 gap-1"
+                  >
+                    <RefreshCw className="h-3 w-3" />
+                    Retry
+                  </Button>
+                </div>
+              )}
             </div>
           )}
           {blueprint && !user && (
