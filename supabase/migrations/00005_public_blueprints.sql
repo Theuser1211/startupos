@@ -4,7 +4,7 @@
 -- Add new columns to blueprints table
 ALTER TABLE blueprints
   ADD COLUMN visibility TEXT DEFAULT 'private' CHECK (visibility IN ('private', 'public')),
-  ADD COLUMN share_token TEXT UNIQUE NULL,
+  ADD COLUMN share_token TEXT NULL,
   ADD COLUMN public_sections JSONB DEFAULT '["tagline","verdict","roadmap","roast"]',
   ADD COLUMN public_views INTEGER DEFAULT 0;
 
