@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Share2, Copy, Twitter, Linkedin, Mail, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Share2, Copy, Globe, Link, Mail, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ShareMenuProps {
@@ -14,6 +14,11 @@ interface ShareMenuProps {
 export function ShareMenu({ shareUrl, startupName, tagline, className }: ShareMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [canNativeShare, setCanNativeShare] = useState(false);
+
+  useEffect(() => {
+    setCanNativeShare(!!navigator.share);
+  }, []);
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(shareUrl);
@@ -56,7 +61,7 @@ export function ShareMenu({ shareUrl, startupName, tagline, className }: ShareMe
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-white/10 rounded-lg shadow-xl z-50 overflow-hidden">
-            {navigator.share && (
+            {canNativeShare && (
               <button
                 onClick={handleNativeShare}
                 className="w-full flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
@@ -82,7 +87,7 @@ export function ShareMenu({ shareUrl, startupName, tagline, className }: ShareMe
               rel="noopener noreferrer"
               className="w-full flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
             >
-              <Twitter className="w-4 h-4" />
+              <Globe className="w-4 h-4" />
               Twitter / X
             </a>
             <a
@@ -91,7 +96,7 @@ export function ShareMenu({ shareUrl, startupName, tagline, className }: ShareMe
               rel="noopener noreferrer"
               className="w-full flex items-center gap-3 px-4 py-3 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
             >
-              <Linkedin className="w-4 h-4" />
+              <Link className="w-4 h-4" />
               LinkedIn
             </a>
             <a
