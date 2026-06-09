@@ -13,6 +13,10 @@ export interface Database {
           stage: string;
           blueprint: Record<string, unknown>;
           interview_data: Record<string, unknown>;
+          visibility: "private" | "public";
+          share_token: string | null;
+          public_sections: string[];
+          public_views: number;
           created_at: string;
           updated_at: string;
         };
@@ -25,6 +29,10 @@ export interface Database {
           stage: string;
           blueprint: Record<string, unknown>;
           interview_data: Record<string, unknown>;
+          visibility?: "private" | "public";
+          share_token?: string | null;
+          public_sections?: string[];
+          public_views?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -37,6 +45,10 @@ export interface Database {
           stage?: string;
           blueprint?: Record<string, unknown>;
           interview_data?: Record<string, unknown>;
+          visibility?: "private" | "public";
+          share_token?: string | null;
+          public_sections?: string[];
+          public_views?: number;
           created_at?: string;
           updated_at?: string;
         };
