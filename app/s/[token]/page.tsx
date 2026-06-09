@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { StartupOSBadge } from "@/components/startup/startuos-badge";
 import { ShareMenu } from "@/components/startup/share-menu";
@@ -25,7 +26,7 @@ interface PublicBlueprintResponse {
   shareUrl: string;
 }
 
-async function fetchPublicBlueprint(token: string): Promise<PublicBlueprintResponse | null> {
+const fetchPublicBlueprint = cache(async (token: string): Promise<PublicBlueprintResponse | null> => {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -58,10 +59,11 @@ async function fetchPublicBlueprint(token: string): Promise<PublicBlueprintRespo
   if (publicSections.includes("competitors")) response.competitors = blueprint.competitors;
 
   return response;
-}
+});
 
-export async function generateMetadata({ params }: { params: { token: string } }): Promise<Metadata> {
-  const blueprint = await fetchPublicBlueprint(params.token);
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
+  const { token } = await params;
+  const blueprint = await fetchPublicBlueprint(token);
 
   if (!blueprint) {
     return { title: "Blueprint Not Found" };
@@ -76,7 +78,7 @@ export async function generateMetadata({ params }: { params: { token: string } }
       title: blueprint.startupName,
       description: blueprint.tagline,
       type: "website",
-      url: `${baseUrl}/s/${params.token}`,
+      url: `${baseUrl}/s/${token}`,
     },
     twitter: {
       card: "summary_large_image",
@@ -84,19 +86,19 @@ export async function generateMetadata({ params }: { params: { token: string } }
       description: blueprint.tagline,
     },
     alternates: {
-      canonical: `${baseUrl}/s/${params.token}`,
+      canonical: `${baseUrl}/s/${token}`,
     },
   };
 }
 
-function VerdictCard({ verdict }: { verdict: Verdict }) {
-  const badgeColors: Record<string, string> = {
-    pass: "bg-green-500/20 text-green-400 border-green-500/30",
-    conditional: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    "needs-work": "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    fail: "bg-red-500/20 text-red-400 border-red-500/30",
-  };
+const badgeColors: Record<string, string> = {
+  pass: "bg-green-500/20 text-green-400 border-green-500/30",
+  conditional: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+  "needs-work": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  fail: "bg-red-500/20 text-red-400 border-red-500/30",
+};
 
+function VerdictCard({ verdict }: { verdict: Verdict }) {
   return (
     <div className="p-6 rounded-xl border border-white/10 bg-white/5">
       <div className="flex items-center justify-between mb-4">
@@ -230,8 +232,9 @@ function CompetitorsSection({ competitors }: { competitors: Competitor[] }) {
   );
 }
 
-export default async function PublicBlueprintPage({ params }: { params: { token: string } }) {
-  const blueprint = await fetchPublicBlueprint(params.token);
+export default async function PublicBlueprintPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
+  const blueprint = await fetchPublicBlueprint(token);
 
   if (!blueprint) {
     notFound();
