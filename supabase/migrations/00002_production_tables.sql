@@ -290,9 +290,8 @@ CREATE INDEX IF NOT EXISTS idx_usage_tracking_feature ON usage_tracking(feature)
 CREATE INDEX IF NOT EXISTS idx_usage_tracking_user_feature ON usage_tracking(user_id, feature);
 CREATE INDEX IF NOT EXISTS idx_usage_tracking_created_at ON usage_tracking(created_at DESC);
 
--- Daily usage summary (materialized query helper)
-CREATE INDEX IF NOT EXISTS idx_usage_tracking_daily ON usage_tracking(user_id, feature, created_at)
-  WHERE created_at >= date_trunc('day', now());
+-- Daily usage query support (user + feature + date range scans)
+CREATE INDEX IF NOT EXISTS idx_usage_tracking_user_date ON usage_tracking(user_id, created_at DESC);
 
 -- ============================================================
 -- 8. AUDIT LOGS — security and activity trail
