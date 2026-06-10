@@ -33,7 +33,6 @@ cp .env.example .env.local
 
 | Variable | Purpose |
 |----------|---------|
-| `NEXT_PUBLIC_GOOGLE_API_KEY` | Legacy Gemini fallback (not currently used) |
 | `NEXT_PUBLIC_RAZORPAY_KEY_ID` | Razorpay live key for payments |
 | `RAZORPAY_KEY_SECRET` | Razorpay secret (server only) |
 | `NEXT_PUBLIC_SITE_URL` | Set to your production domain for OG tags |
