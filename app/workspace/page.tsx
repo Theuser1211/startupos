@@ -91,7 +91,7 @@ function WorkspaceContent() {
         }
       })();
     }
-  }, [blueprintId, user]);
+  }, [blueprintId, user, loadSavedBlueprint]);
 
   // Once a saved blueprint is loaded, track its ID for subsequent auto-saves
   useEffect(() => {

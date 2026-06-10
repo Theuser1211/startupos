@@ -235,7 +235,7 @@ export function BlueprintProvider({ children }: { children: ReactNode }) {
             _generationMode: result.mode,
             generationMetadata: result.blueprint.generationMetadata,
           };
-          await fetch("/api/blueprints", {
+          const saveRes = await fetch("/api/blueprints", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -244,8 +244,11 @@ export function BlueprintProvider({ children }: { children: ReactNode }) {
               blueprint: blueprintForStorage,
             }),
           });
+          if (!saveRes.ok) {
+            console.warn("[BlueprintContext] Failed to persist generated blueprint — auto-save will retry");
+          }
         } catch {
-          // Best-effort — auto-save will catch it
+          console.warn("[BlueprintContext] Error persisting generated blueprint — auto-save will retry");
         }
       } else {
         throw new Error("Invalid blueprint data.");
