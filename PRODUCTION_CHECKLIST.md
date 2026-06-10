@@ -3,7 +3,7 @@
 ## Critical
 
 - [x] Signup works — fixed `signUp()` to pass `emailRedirectTo` so confirmation email links to callback handler
-- [ ] Login works
+- [x] Login works — added user-friendly error messages for invalid credentials, email not confirmed, rate limit
 - [ ] Duplicate emails blocked
 - [ ] Session persistence works
 - [ ] Blueprint generation works

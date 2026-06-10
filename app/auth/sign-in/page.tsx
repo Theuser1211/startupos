@@ -29,7 +29,16 @@ function SignInForm() {
 
     const { error } = await signIn(email, password);
     if (error) {
-      setError(error);
+      // Provide user-friendly messages for common auth errors
+      if (error.toLowerCase().includes("invalid credentials") || error.toLowerCase().includes("invalid login")) {
+        setError("Invalid email or password. Please try again.");
+      } else if (error.toLowerCase().includes("email not confirmed")) {
+        setError("Please confirm your email address before signing in. Check your inbox.");
+      } else if (error.toLowerCase().includes("rate limit")) {
+        setError("Too many attempts. Please wait a moment and try again.");
+      } else {
+        setError(error);
+      }
       setIsLoading(false);
     } else {
       router.push(redirect);
