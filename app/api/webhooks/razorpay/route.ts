@@ -122,8 +122,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ status: "ok" });
   } catch (error) {
-    console.error("[Razorpay Webhook] Error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown webhook error";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("[Razorpay Webhook] Unhandled error:", errorMessage);
+    if (errorStack) {
+      console.error("[Razorpay Webhook] Stack:", errorStack);
+    }
     // Always return 200 to acknowledge receipt (Razorpay retries on non-200)
-    return NextResponse.json({ status: "ok" });
+    // but log the error for monitoring
+    return NextResponse.json({ status: "ok", error: errorMessage });
   }
 }

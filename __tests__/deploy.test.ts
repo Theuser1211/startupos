@@ -17,33 +17,72 @@ const { singleMock, updateMock, insertMock, eqMock, selectMock, orderMock, limit
 });
 
 vi.mock("@/lib/supabase/service", () => ({
-  createServiceClient: () => {
-    // Each call creates a fresh object. Methods are the shared mock instances.
-    // mockReturnThis() returns `this` at call time, which is this object.
-    return {
-      from: vi.fn(function (this: Record<string, unknown>) {
-        // from() returns `this` so chaining works on the client object
-        return this;
-      }),
-      insert: insertMock,
-      update: updateMock,
-      select: selectMock,
-      eq: eqMock,
-      order: orderMock,
-      limit: limitMock,
-      single: singleMock,
-    };
-  },
+  createServiceClient: () => ({
+    from: vi.fn(function (this: Record<string, unknown>) {
+      return this;
+    }),
+    insert: insertMock,
+    update: updateMock,
+    select: selectMock,
+    eq: eqMock,
+    order: orderMock,
+    limit: limitMock,
+    single: singleMock,
+  }),
 }));
+
+// Minimal valid WebsiteSpec for tests
+function createMockSpec(overrides: Record<string, unknown> = {}) {
+  return {
+    version: "1.0" as const,
+    visualStyle: {
+      primary: "#6366f1",
+      secondary: "#8b5cf6",
+      accent: "#06b6d4",
+      background: "#0a0a0f",
+      surface: "#12121a",
+      radius: "12px",
+      fontHeading: "Inter",
+      fontBody: "Inter",
+      heroScale: "balanced" as const,
+      spacing: "100px",
+    },
+    layoutType: "single-page" as const,
+    sectionOrder: ["hero", "cta"],
+    sections: [
+      {
+        id: "hero",
+        type: "hero" as const,
+        variant: 0,
+        heading: "TestCo",
+        subheading: "Built for teams",
+        body: "We help teams move faster.",
+        items: [
+          { title: "Users", description: "Active users", meta: "10K+" },
+        ],
+      },
+    ],
+    copy: {
+      tagline: "Move faster",
+      ctaPrimary: "Get Started",
+      ctaSecondary: "Learn More",
+      ctaSubtext: "Free trial, no credit card.",
+    },
+    metadata: {
+      provider: "groq",
+      model: "llama-3.3-70b",
+      generatedAt: new Date().toISOString(),
+    },
+    ...overrides,
+  };
+}
 
 const mockFetch = vi.fn();
 
 beforeEach(() => {
-  // Clear fetch mock
   mockFetch.mockClear();
   vi.stubGlobal("fetch", mockFetch);
 
-  // Use mockClear (not mockReset!) to preserve mockReturnThis() implementations
   singleMock.mockClear();
   updateMock.mockClear();
   insertMock.mockClear();
@@ -53,7 +92,6 @@ beforeEach(() => {
   limitMock.mockClear();
 });
 
-// Helper to load deploy module fresh (clears module cache so process.env is re-read)
 async function freshDeploy() {
   vi.resetModules();
   return await import("@/lib/startup/deploy");
@@ -65,7 +103,6 @@ describe("deployToVercel — no VERCEL_TOKEN", () => {
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "test-key");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
 
-    // The code creates a deployment record first, so singleMock MUST return valid data
     singleMock.mockResolvedValue({
       data: { id: "deploy-1", user_id: "user-456", website_id: "website-123" },
       error: null,
@@ -74,7 +111,7 @@ describe("deployToVercel — no VERCEL_TOKEN", () => {
     const { deployToVercel } = await freshDeploy();
 
     const result = await deployToVercel({
-      html: "<html><body>Hello</body></html>",
+      websiteSpec: createMockSpec(),
       startupName: "TestCo",
       websiteId: "website-123",
       userId: "user-456",
@@ -93,15 +130,12 @@ describe("deployToVercel — with VERCEL_TOKEN", () => {
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "test-key");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");
 
-    // First single() call: insert().select().single() — return deployment record
     singleMock
       .mockResolvedValueOnce({
         data: { id: "deploy-1", user_id: "user-456", website_id: "website-123" },
         error: null,
       });
 
-    // First fetch: create Vercel deployment
-    // Second fetch: poll for status (returns READY)
     mockFetch
       .mockResolvedValueOnce({
         ok: true,
@@ -123,7 +157,7 @@ describe("deployToVercel — with VERCEL_TOKEN", () => {
     const { deployToVercel } = await freshDeploy();
 
     const result = await deployToVercel({
-      html: "<html><body>Hello</body></html>",
+      websiteSpec: createMockSpec(),
       startupName: "TestCo",
       websiteId: "website-123",
       userId: "user-456",
@@ -133,7 +167,6 @@ describe("deployToVercel — with VERCEL_TOKEN", () => {
     expect(result.status).toBe("deployed");
     expect(result.url).toBe("https://testco-abc123.vercel.app");
 
-    // Verify the Vercel API was called with correct auth
     const createCall = mockFetch.mock.calls[0];
     expect(createCall[0]).toBe("https://api.vercel.com/v13/deployments");
     expect(createCall[1].headers.Authorization).toBe("Bearer test-vercel-token");
@@ -158,7 +191,7 @@ describe("deployToVercel — with VERCEL_TOKEN", () => {
     const { deployToVercel } = await freshDeploy();
 
     const result = await deployToVercel({
-      html: "<html><body>Hello</body></html>",
+      websiteSpec: createMockSpec(),
       startupName: "TestCo",
       websiteId: "website-123",
       userId: "user-456",
@@ -185,7 +218,7 @@ describe("deployToVercel — with VERCEL_TOKEN", () => {
     const { deployToVercel } = await freshDeploy();
 
     const result = await deployToVercel({
-      html: "<html><body>Hello</body></html>",
+      websiteSpec: createMockSpec(),
       startupName: "TestCo",
       websiteId: "website-123",
       userId: "user-456",
@@ -209,7 +242,7 @@ describe("retryDeployment", () => {
     expect(result).toBeNull();
   });
 
-  it("should return null if website has no HTML content", async () => {
+  it("should return null if website has no valid WebsiteSpec", async () => {
     vi.stubEnv("VERCEL_TOKEN", "test-vercel-token");
     vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "test-key");
     vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", "https://test.supabase.co");

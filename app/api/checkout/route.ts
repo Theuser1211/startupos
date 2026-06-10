@@ -3,7 +3,19 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { createOrder } from "@/lib/razorpay";
 import { apiLimiter } from "@/lib/security/rate-limit";
-import type { SubscriptionPlan } from "@/lib/types";
+import { z } from "zod";
+
+const CheckoutSchema = z.object({
+  plan: z.enum(["starter", "pro"]),
+  interval: z.enum(["monthly", "yearly"]),
+});
+
+type CheckoutRequest = z.infer<typeof CheckoutSchema>;
+
+const PRICES: Record<string, Record<string, number>> = {
+  starter: { monthly: 99900, yearly: 999000 },
+  pro: { monthly: 299900, yearly: 2999000 },
+} as const;
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,32 +37,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { plan, interval } = body as {
-      plan: SubscriptionPlan;
-      interval: "monthly" | "yearly";
-    };
-
-    if (!["starter", "pro"].includes(plan)) {
+    const parsed = CheckoutSchema.safeParse(body);
+    if (!parsed.success) {
       return NextResponse.json(
-        { error: "Invalid plan. Choose 'starter' or 'pro'." },
+        { error: `Invalid request: ${parsed.error.issues.map(i => i.message).join(", ")}` },
         { status: 400 },
       );
     }
+    const { plan, interval } = parsed.data as CheckoutRequest;
 
-    if (!["monthly", "yearly"].includes(interval)) {
-      return NextResponse.json(
-        { error: "Invalid interval. Choose 'monthly' or 'yearly'." },
-        { status: 400 },
-      );
-    }
-
-    // Price configuration
-    const prices: Record<string, Record<string, number>> = {
-      starter: { monthly: 99900, yearly: 999000 },
-      pro: { monthly: 299900, yearly: 2999000 },
-    };
-
-    const amount = prices[plan]?.[interval];
+    const amount = PRICES[plan]?.[interval];
     if (!amount) {
       return NextResponse.json({ error: "Invalid pricing configuration" }, { status: 500 });
     }

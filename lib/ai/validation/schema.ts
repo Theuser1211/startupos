@@ -131,6 +131,13 @@ export const StartupBlueprintSchema = z.object({
     colors: z.array(ColorSchema),
     typography: z.object({ heading: z.string(), body: z.string() }),
   }),
+  generationMetadata: z.object({
+    provider: z.string(),
+    model: z.string(),
+    generatedAt: z.string(),
+    generationTime: z.number(),
+  }).optional(),
+
   logos: z.array(LogoSchema),
   icp: z.object({
     title: z.string(),
@@ -165,6 +172,6 @@ export const StartupBlueprintSchema = z.object({
     items: z.array(RoastItemSchema),
   }),
   verdict: VerdictSchema,
-});
+}).passthrough(); // allow extra fields like _generationMode
 
 export type ValidatedStartupBlueprint = z.infer<typeof StartupBlueprintSchema>;

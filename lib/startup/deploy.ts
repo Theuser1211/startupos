@@ -1,17 +1,20 @@
 /**
  * Vercel Deployment Client for StartupOS
  *
- * Deploys generated HTML landing pages to Vercel using the REST API.
+ * Takes a WebsiteSpec, renders it to HTML server-side, and deploys to Vercel.
  * Requires VERCEL_TOKEN environment variable to be set.
  *
  * Flow:
- * 1. Prepare deployment files (the HTML content)
- * 2. Call Vercel REST API to create a deployment
- * 3. Poll for deployment status
- * 4. Return the deployment URL
+ * 1. Render WebsiteSpec → HTML
+ * 2. Prepare deployment files
+ * 3. Call Vercel REST API to create a deployment
+ * 4. Poll for deployment status
+ * 5. Return the deployment URL
  */
 
 import { createServiceClient } from "@/lib/supabase/service";
+import type { WebsiteSpec } from "@/lib/startup/website-spec";
+import { validateWebsiteSpec } from "@/lib/startup/website-spec";
 
 /* ─── Types ─── */
 
@@ -20,7 +23,7 @@ export type DeploymentProvider = "vercel";
 export type DeploymentStatus = "pending" | "building" | "deployed" | "failed";
 
 export interface DeployOptions {
-  html: string;
+  websiteSpec: WebsiteSpec;
   startupName: string;
   websiteId: string;
   userId: string;
@@ -213,10 +216,24 @@ async function pollDeploymentStatus(
  * 4. Update the generated_websites record with the URL
  */
 export async function deployToVercel(options: DeployOptions): Promise<DeployResult> {
-  const { html, startupName, websiteId, userId, startupId } = options;
+  const { websiteSpec, startupName, websiteId, userId, startupId } = options;
 
   resetLogs();
   log(`Starting deployment for "${startupName}"...`);
+
+  // Step 0: Render WebsiteSpec to HTML
+  const { renderSpecToHtml } = await import("@/lib/startup/render-spec-to-html");
+  const html = renderSpecToHtml(websiteSpec);
+
+  if (!html) {
+    log("Failed to render WebsiteSpec to HTML");
+    return {
+      success: false,
+      url: null,
+      status: "failed",
+      logs: getLogs(),
+    };
+  }
 
   const supabase = createServiceClient();
 
@@ -350,16 +367,16 @@ export async function retryDeployment(
     return null;
   }
 
-  const html = (website.content as { html?: string })?.html;
+  const spec = (website.content as { websiteSpec?: WebsiteSpec })?.websiteSpec;
   const startupName = (website.metadata as { startupName?: string })?.startupName || "Startup";
 
-  if (!html) {
-    console.error("[Deploy] No HTML content found for website:", websiteId);
+  if (!spec || !validateWebsiteSpec(spec).success) {
+    console.error("[Deploy] No valid WebsiteSpec found for website:", websiteId);
     return null;
   }
 
   return deployToVercel({
-    html,
+    websiteSpec: spec,
     startupName,
     websiteId,
     userId,

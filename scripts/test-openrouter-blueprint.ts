@@ -1,15 +1,12 @@
 /**
- * Test script: Verifies OpenRouter can generate a full Startup Blueprint
- * that passes Zod validation.
+ * Test script: Verifies AI blueprint generation via providers
+ * (Groq → DeepSeek).
  *
  * Usage: 
- *   OPENROUTER_API_KEY=sk-or-... npx tsx scripts/test-openrouter-blueprint.ts
- *
- * Note: This script reads from process.env directly (not .env.local).
- * Pass the API key as an environment variable when running.
+ *   npx tsx scripts/test-openrouter-blueprint.ts
  */
 import type { InterviewData } from "@/lib/types";
-import { generateOpenRouterBlueprint } from "@/lib/ai/openrouter";
+import { generateBlueprintAI } from "@/lib/ai/providers";
 
 const TEST_DATA: InterviewData = {
   idea: "AI lawyer for startups",
@@ -22,19 +19,20 @@ const TEST_DATA: InterviewData = {
 };
 
 async function main() {
-  console.log("[Test] Starting OpenRouter Blueprint Generation Test...\n");
+  console.log("[Test] Starting AI Blueprint Generation Test...\n");
   console.log("[Test] Input:", JSON.stringify(TEST_DATA, null, 2), "\n");
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
-    console.error("[Test] ❌ OPENROUTER_API_KEY is not set in environment");
-    console.error("[Test]    Add it to .env.local and try again");
-    process.exit(1);
-  }
-  console.log("[Test] ✅ OPENROUTER_API_KEY is set\n");
-
   try {
-    const blueprint = await generateOpenRouterBlueprint(TEST_DATA);
+    const result = await generateBlueprintAI(TEST_DATA);
+    const { blueprint, report } = result;
+
+    console.log("=== GENERATION REPORT ===\n");
+    console.log("  Provider:         ", report.provider);
+    console.log("  Model:            ", report.model);
+    console.log("  Duration:         ", report.durationMs, "ms");
+    console.log("  Input tokens:     ", report.inputTokens);
+    console.log("  Output tokens:    ", report.outputTokens);
+    console.log("");
 
     console.log("=== BLUEPRINT SUMMARY ===\n");
     console.log("  Startup Name:     ", blueprint.startupName);
@@ -79,16 +77,12 @@ async function main() {
     console.log("  Suggested Pivot:  ", blueprint.verdict.suggestedPivot ?? "None");
     console.log("  Improvement Paths:", blueprint.verdict.improvementPaths.length);
 
-    console.log("\n[Test] ✅ SUCCESS: OpenRouter generated a valid, validated blueprint!");
-    console.log("[Test]    Generation completed using AI mode.\n");
+    console.log("\n[Test] ✅ SUCCESS: AI blueprint generated!");
+    console.log(`[Test]    Provider: ${report.provider}, ${report.durationMs}ms, ${report.outputTokens} tokens\n`);
   } catch (err) {
-    console.error("\n[Test] ❌ FAILED: OpenRouter blueprint generation failed.\n");
+    console.error("\n[Test] ❌ FAILED: AI blueprint generation failed.\n");
     console.error("Error:", err instanceof Error ? err.message : String(err));
-    console.error("\n[Test]    This could mean:");
-    console.error("    - All OpenRouter free models are rate-limited");
-    console.error("    - The API key is invalid or expired");
-    console.error("    - Network connectivity issues");
-    console.error("\n[Test]    The app will fall back to the deterministic engine in this case.\n");
+    console.error("\n[Test]    All AI providers failed. Please try again later.\n");
     process.exit(1);
   }
 }

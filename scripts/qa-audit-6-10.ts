@@ -3,7 +3,7 @@
  * Usage: $env:OPENROUTER_API_KEY="sk-or-..."; npx tsx scripts/qa-audit-6-10.ts
  */
 import type { InterviewData } from "@/lib/types";
-import { generateOpenRouterBlueprint } from "@/lib/ai/openrouter";
+import { generateBlueprintAI } from "@/lib/ai/providers";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 
 const CASES: { id: number; label: string; data: InterviewData }[] = [
@@ -83,12 +83,7 @@ function sleep(ms: number) {
 async function main() {
   mkdirSync("test-output", { recursive: true });
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
-    console.error("Set OPENROUTER_API_KEY env var");
-    process.exit(1);
-  }
-  console.log(`API Key: ${apiKey.substring(0, 12)}...`);
+  console.log("Using AI providers (Groq → DeepSeek)");
 
   // Check which already exist
   const existing: Record<number, boolean> = {};
@@ -120,10 +115,11 @@ async function main() {
 
     while (retries < maxRetries) {
       try {
-        const bp = await generateOpenRouterBlueprint(c.data);
-        writeFileSync(`test-output/qa-bp-${c.id}.json`, JSON.stringify(bp, null, 2));
-        results.push({ id: c.id, label: c.label, ok: true, name: bp.startupName });
-        console.log(`  ✅ "${bp.startupName}" — ${bp.tagline.substring(0, 60)}...`);
+        const result = await generateBlueprintAI(c.data);
+        writeFileSync(`test-output/qa-bp-${c.id}.json`, JSON.stringify(result.blueprint, null, 2));
+        results.push({ id: c.id, label: c.label, ok: true, name: result.blueprint.startupName });
+        console.log(`  ✅ "${result.blueprint.startupName}" — ${result.blueprint.tagline.substring(0, 60)}...`);
+        console.log(`  📊 ${result.report.provider} / ${result.report.model} — ${result.report.durationMs}ms, ${result.report.outputTokens} tokens`);
         break;
       } catch (err) {
         const msg = err instanceof Error ? err.message : "failed";

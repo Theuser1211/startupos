@@ -10,7 +10,7 @@
 import { z } from "zod";
 import type { InterviewData } from "@/lib/types";
 import { StartupBlueprintSchema } from "@/lib/ai/validation/schema";
-import { generateOpenRouterBlueprint } from "@/lib/ai/openrouter";
+import { generateBlueprintAI } from "@/lib/ai/providers";
 import { writeFileSync, mkdirSync } from "fs";
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -402,13 +402,7 @@ async function main() {
   console.log("  Generating 5 blueprints and scoring each section");
   console.log("█".repeat(72));
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
-    console.error("\n❌ OPENROUTER_API_KEY not set. Run with:");
-    console.error('   $env:OPENROUTER_API_KEY="sk-or-..."; npx tsx scripts/qa-blueprint-quality.ts\n');
-    process.exit(1);
-  }
-  console.log(`\n✅ API Key loaded: ${apiKey.substring(0, 12)}...`);
+  console.log("\n✅ Using AI providers (Groq → DeepSeek)");
 
   // Ensure output dir
   mkdirSync("test-output", { recursive: true });
@@ -424,13 +418,14 @@ async function main() {
     console.log(`${"─".repeat(60)}`);
 
     try {
-      const bp = await generateOpenRouterBlueprint(tc.data);
-      blueprints.push({ id: tc.id, label: tc.label, blueprint: bp });
+      const result = await generateBlueprintAI(tc.data);
+      blueprints.push({ id: tc.id, label: tc.label, blueprint: result.blueprint });
 
       // Save raw JSON
-      writeFileSync(`test-output/qa-bp-${tc.id}.json`, JSON.stringify(bp, null, 2));
+      writeFileSync(`test-output/qa-bp-${tc.id}.json`, JSON.stringify(result.blueprint, null, 2));
 
-      console.log(`  ✅ Generated: "${bp.startupName}" — ${bp.tagline}`);
+      console.log(`  ✅ Generated: "${result.blueprint.startupName}" — ${result.blueprint.tagline}`);
+      console.log(`  📊 ${result.report.provider} / ${result.report.model} — ${result.report.durationMs}ms, ${result.report.outputTokens} tokens`);
       console.log(`  📄 Saved to test-output/qa-bp-${tc.id}.json`);
     } catch (err) {
       console.error(`  ❌ Failed: ${err instanceof Error ? err.message : "unknown"}`);

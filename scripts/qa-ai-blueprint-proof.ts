@@ -2,7 +2,7 @@
  * QA PROOF SCRIPT: Verifies AI Blueprint Generation End-to-End
  *
  * This script proves that a REAL AI-generated blueprint reaches the Workspace.
- * It logs every step: API key, request, response, JSON parse, Zod validation.
+ * It tests the full provider chain: Groq → DeepSeek.
  *
  * Usage:
  *   npx tsx scripts/qa-ai-blueprint-proof.ts
@@ -11,7 +11,7 @@
 import { z } from "zod";
 import type { InterviewData } from "@/lib/types";
 import { StartupBlueprintSchema } from "@/lib/ai/validation/schema";
-import { generateOpenRouterBlueprint } from "@/lib/ai/openrouter";
+import { generateBlueprintAI } from "@/lib/ai/providers";
 import { generateBlueprintOrchestrator } from "@/lib/ai/engine/orchestrator";
 import { buildPrompt } from "@/lib/ai/gemini";
 
@@ -30,16 +30,6 @@ const TEST_DATA: InterviewData = {
   priceRange: "$50-200",
   problem: "cost",
 };
-
-const OPENROUTER_BASE = "https://openrouter.ai/api/v1/chat/completions";
-
-const FALLBACK_MODELS = [
-  "google/gemma-4-31b-it:free",
-  "qwen/qwen3-next-80b-a3b-instruct:free",
-  "deepseek/deepseek-chat:free",
-  "moonshotai/kimi-k2.6:free",
-  "openrouter/free",
-] as const;
 
 /* ═══════════════════════════════════════════════════════════════════
    QA LOGGING HELPERS
@@ -74,113 +64,67 @@ async function main() {
 
   const results: { step: string; pass: boolean; detail: string }[] = [];
 
-  /* ─── STEP 1: Verify OPENROUTER_API_KEY is loaded ─── */
+  /* ─── STEP 1: Verify API keys are loaded ─── */
 
-  logStep(1, "Verify OPENROUTER_API_KEY is loaded");
+  logStep(1, "Verify AI provider API keys are loaded");
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  const keyLoaded = !!apiKey;
-  const keyPrefix = apiKey ? apiKey.substring(0, 12) + "..." : "NOT SET";
+  const groqKey = process.env.GROQ_API_KEY;
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const groqLoaded = !!groqKey;
+  const deepseekLoaded = !!deepseekKey;
 
-  logResult("OPENROUTER_API_KEY present", keyLoaded, keyPrefix);
-  results.push({
-    step: "1. API Key",
-    pass: keyLoaded,
-    detail: keyPrefix,
-  });
+  logResult("GROQ_API_KEY present", groqLoaded, groqLoaded ? `${groqKey.substring(0, 8)}...` : "NOT SET");
+  logResult("DEEPSEEK_API_KEY present", deepseekLoaded, deepseekLoaded ? `${deepseekKey.substring(0, 8)}...` : "NOT SET");
+  results.push({ step: "1a. Groq Key", pass: groqLoaded, detail: groqLoaded ? "set" : "missing" });
+  results.push({ step: "1b. DeepSeek Key", pass: deepseekLoaded, detail: deepseekLoaded ? "set" : "missing" });
 
-  if (!keyLoaded) {
-    console.error("\n  FATAL: Cannot proceed without OPENROUTER_API_KEY.");
-    console.error("  Set it in .env.local or pass as env variable.\n");
+  if (!groqLoaded && !deepseekLoaded) {
+    console.error("\n  FATAL: No AI provider keys found. Set GROQ_API_KEY or DEEPSEEK_API_KEY in .env.local.\n");
     process.exit(1);
   }
 
-  /* ─── STEP 2: Test OpenRouter API call directly ─── */
+  /* ─── STEP 2: Test provider chain (Groq → DeepSeek) ─── */
 
-  logStep(2, "Test OpenRouter API call (raw fetch)");
+  logStep(2, "Test AI provider chain (Groq → DeepSeek)");
 
   const prompt = buildPrompt(TEST_DATA);
-  let rawResponseModel: string | null = null;
-  let rawResponseContent: string | null = null;
-  let rawResponseOk = false;
+  console.log(`\n  ${INFO} Prompt length: ${prompt.length} chars`);
+  console.log(`  ${INFO} Calling generateBlueprintAI (tries Groq first, then DeepSeek)...`);
 
-  for (const model of FALLBACK_MODELS) {
-    console.log(`\n  ${INFO} Trying model: ${model}`);
-    console.log(`  ${INFO} POST ${OPENROUTER_BASE}`);
-    console.log(`  ${INFO} Headers: { Content-Type: application/json, Authorization: Bearer ${keyPrefix}, X-Title: StartupOS }`);
+  let rawResult: Awaited<ReturnType<typeof generateBlueprintAI>> | null = null;
+  let rawOk = false;
 
-    try {
-      const body = {
-        model,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.7,
-        max_tokens: 8192,
-      };
+  try {
+    const startTime = Date.now();
+    rawResult = await generateBlueprintAI(TEST_DATA);
+    const elapsed = Date.now() - startTime;
 
-      console.log(`  ${INFO} Body: { model: "${model}", messages: [1 user msg], temperature: 0.7, max_tokens: 8192 }`);
-      console.log(`  ${INFO} Request sent...`);
+    console.log(`  ${INFO} Response received in ${elapsed}ms`);
+    console.log(`  ${INFO} Provider: ${rawResult.report.provider}`);
+    console.log(`  ${INFO} Model: ${rawResult.report.model}`);
+    console.log(`  ${INFO} Output tokens: ${rawResult.report.outputTokens}`);
 
-      const startTime = Date.now();
-      const response = await fetch(OPENROUTER_BASE, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://startupos.app",
-          "X-Title": "StartupOS",
-        },
-        body: JSON.stringify(body),
-      });
-
-      const elapsed = Date.now() - startTime;
-      console.log(`  ${INFO} Response received in ${elapsed}ms — HTTP ${response.status} ${response.statusText}`);
-
-      if (!response.ok) {
-        const errText = await response.text().catch(() => "unknown");
-        console.log(`  ${WARN} Model ${model} returned ${response.status}: ${errText.substring(0, 150)}`);
-        continue;
-      }
-
-      const data = await response.json();
-      const content: string | undefined = data.choices?.[0]?.message?.content?.trim();
-
-      if (!content) {
-        console.log(`  ${WARN} Model ${model} returned empty content`);
-        continue;
-      }
-
-      rawResponseModel = model;
-      rawResponseContent = content;
-      rawResponseOk = true;
-
-      console.log(`  ${INFO} Raw response length: ${content.length} chars`);
-      console.log(`  ${INFO} First 200 chars of raw response:`);
-      console.log(`  │ ${content.substring(0, 200).replace(/\n/g, "\n  │ ")}`);
-
-      logResult("OpenRouter API call succeeded", true, `model=${model}, status=${response.status}, time=${elapsed}ms`);
-      results.push({
-        step: "2. API Call",
-        pass: true,
-        detail: `model=${model}, HTTP ${response.status}, ${elapsed}ms`,
-      });
-      break;
-    } catch (err) {
-      console.log(`  ${WARN} Model ${model} threw: ${err instanceof Error ? err.message : "unknown error"}`);
-    }
-  }
-
-  if (!rawResponseOk) {
-    logResult("OpenRouter API call succeeded", false, "All models failed");
-    results.push({ step: "2. API Call", pass: false, detail: "All models failed" });
-    console.log(`\n  ${FAIL} Cannot proceed without a successful API response.`);
+    rawOk = true;
+    logResult("AI provider chain succeeded", true, `provider=${rawResult.report.provider}, model=${rawResult.report.model}, time=${elapsed}ms`);
+    results.push({
+      step: "2. Provider Chain",
+      pass: true,
+      detail: `provider=${rawResult.report.provider}, model=${rawResult.report.model}, ${elapsed}ms`,
+    });
+  } catch (err) {
+    logResult("AI provider chain succeeded", false, err instanceof Error ? err.message : "unknown error");
+    results.push({ step: "2. Provider Chain", pass: false, detail: "All providers failed" });
+    console.log(`\n  ${FAIL} Cannot proceed without a successful AI response.`);
     process.exit(1);
   }
 
-  /* ─── STEP 3: Show exact model used ─── */
+  /* ─── STEP 3: Show exact provider/model used ─── */
 
-  logStep(3, "Exact model used");
-  console.log(`  ${PASS} Model: ${rawResponseModel}`);
-  results.push({ step: "3. Model", pass: true, detail: rawResponseModel! });
+  logStep(3, `Provider and model used: ${rawResult!.report.provider} / ${rawResult!.report.model}`);
+
+  const providerModel = `${rawResult!.report.provider} / ${rawResult!.report.model}`;
+  logResult("Provider identified", true, providerModel);
+  results.push({ step: "3. Provider", pass: true, detail: providerModel });
 
   /* ─── STEP 4: Log request/response/parse/validation ─── */
 
@@ -189,26 +133,16 @@ async function main() {
   // 4a. Request sent (already logged above)
   logResult("Request sent", true, `prompt length=${prompt.length} chars`);
 
-  // 4b. Response received (already logged above)
-  logResult("Response received", true, `content length=${rawResponseContent!.length} chars`);
+  // 4b. Response received
+  const content = ""; // Content is encapsulated in the result
+  logResult("Content received", true, `startupName=${rawResult!.blueprint.startupName}`);
 
-  // 4c. JSON parse
-  console.log(`\n  ${INFO} Parsing JSON...`);
-  let parsed: unknown;
-  try {
-    const cleanJson = rawResponseContent!.replace(/^```json?\n?/, "").replace(/\n?```$/, "");
-    parsed = JSON.parse(cleanJson);
-    logResult("JSON parsed", true, `type=${typeof parsed}, keys=${Object.keys(parsed as Record<string, unknown>).join(", ")}`);
-  } catch (parseError) {
-    logResult("JSON parsed", false, parseError instanceof Error ? parseError.message : "parse error");
-    results.push({ step: "4c. JSON Parse", pass: false, detail: "parse error" });
-    console.log(`\n  ${FAIL} JSON parse failed. Cannot continue.`);
-    process.exit(1);
-  }
+  // 4c. JSON parse (done internally by generateBlueprintAI)
+  logResult("JSON parsed", true, "done by generateBlueprintAI");
 
-  // 4d. Zod validation
-  console.log(`\n  ${INFO} Running Zod validation against StartupBlueprintSchema...`);
-  const zodResult = StartupBlueprintSchema.safeParse(parsed);
+  // 4d. Zod validation (already validated inside generateBlueprintAI)
+  console.log(`\n  ${INFO} Validating blueprint against StartupBlueprintSchema...`);
+  const zodResult = StartupBlueprintSchema.safeParse(rawResult!.blueprint);
 
   if (zodResult.success) {
     logResult("Zod validated", true, "All fields match StartupBlueprintSchema");
@@ -220,18 +154,18 @@ async function main() {
     process.exit(1);
   }
 
-  /* ─── STEP 5: Verify generationMode === "ai" ─── */
+  /* ─── STEP 5: Verify generationMode is set correctly ─── */
 
-  logStep(5, 'Verify generationMode === "ai"');
+  logStep(5, "Verify generation mode reflects the provider used");
 
-  console.log(`  ${INFO} Running through orchestrator with mode="ai"...`);
-  const orchestratorResult = await generateBlueprintOrchestrator(TEST_DATA, { mode: "ai" });
+  console.log(`  ${INFO} Running through orchestrator...`);
+  const orchestratorResult = await generateBlueprintOrchestrator(TEST_DATA);
 
-  const modeIsAi = orchestratorResult.mode === "ai";
-  logResult('generationMode === "ai"', modeIsAi, `mode="${orchestratorResult.mode}"`);
+  const modeMatches = orchestratorResult.mode === rawResult!.report.provider;
+  logResult("generationMode matches provider", modeMatches, `mode="${orchestratorResult.mode}"`);
   results.push({
     step: "5. Mode",
-    pass: modeIsAi,
+    pass: modeMatches,
     detail: `mode="${orchestratorResult.mode}"`,
   });
 
@@ -243,7 +177,6 @@ async function main() {
 
   logStep(6, `Generate blueprint for: "${QA_IDE}"`);
 
-  console.log(`  ${INFO} Using orchestrator-generated blueprint from Step 5...`);
   const blueprint = orchestratorResult.blueprint;
 
   logResult("Blueprint generated", true, `startupName="${blueprint.startupName}"`);
@@ -255,10 +188,12 @@ async function main() {
 
   // 7a. Terminal logs summary
   console.log(`\n  ── TERMINAL LOGS SUMMARY ──`);
-  console.log(`  ${INFO} API Key loaded: ${keyLoaded ? "YES" : "NO"}`);
-  console.log(`  ${INFO} Model used: ${rawResponseModel}`);
-  console.log(`  ${INFO} Response length: ${rawResponseContent!.length} chars`);
-  console.log(`  ${INFO} JSON parse: SUCCESS`);
+  console.log(`  ${INFO} Groq key loaded: ${groqLoaded ? "YES" : "NO"}`);
+  console.log(`  ${INFO} DeepSeek key loaded: ${deepseekLoaded ? "YES" : "NO"}`);
+  console.log(`  ${INFO} Provider used: ${orchestratorResult.mode}`);
+  console.log(`  ${INFO} Model used: ${rawResult!.report.model}`);
+  console.log(`  ${INFO} Generation duration: ${rawResult!.report.durationMs}ms`);
+  console.log(`  ${INFO} Output tokens: ${rawResult!.report.outputTokens}`);
   console.log(`  ${INFO} Zod validation: SUCCESS`);
   console.log(`  ${INFO} Generation mode: ${orchestratorResult.mode}`);
   console.log(`  ${INFO} Blueprint startup name: ${blueprint.startupName}`);

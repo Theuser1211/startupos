@@ -3,7 +3,7 @@
  * Usage: $env:OPENROUTER_API_KEY="sk-or-..."; npx tsx scripts/qa-generate-fresh.ts
  */
 import type { InterviewData } from "@/lib/types";
-import { generateOpenRouterBlueprint } from "@/lib/ai/openrouter";
+import { generateBlueprintAI } from "@/lib/ai/providers";
 import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 
 const CASES: { id: number; label: string; data: InterviewData }[] = [
@@ -82,28 +82,20 @@ function sleep(ms: number) {
 async function main() {
   mkdirSync("test-output", { recursive: true });
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
-    console.error("Set OPENROUTER_API_KEY env var");
-    process.exit(1);
-  }
-  console.log(`API Key: ${apiKey.substring(0, 12)}...`);
-
-  // Check which already exist and are AI-generated (smaller files are deterministic)
+  // Check which already exist
   const existing: Record<number, boolean> = {};
   for (const c of CASES) {
     const path = `test-output/qa-bp-${c.id}.json`;
     if (existsSync(path)) {
       const size = readFileSync(path).length;
-      // AI-generated are ~9-10KB, deterministic are ~15-16KB
-      existing[c.id] = size < 12000;
-      console.log(`  #${c.id} exists (${size} bytes) — ${existing[c.id] ? "AI" : "deterministic"}`);
+      existing[c.id] = true;
+      console.log(`  #${c.id} exists (${size} bytes)`);
     }
   }
 
   const toGenerate = CASES.filter((c) => !existing[c.id]);
   if (toGenerate.length === 0) {
-    console.log("\nAll 5 already AI-generated. Regenerating all...");
+    console.log("\nAll 5 already exist. Regenerating all...");
   } else {
     console.log(`\nNeed to generate: ${toGenerate.map((c) => `#${c.id}`).join(", ")}`);
   }
@@ -116,10 +108,11 @@ async function main() {
     console.log(`${"─".repeat(50)}`);
 
     try {
-      const bp = await generateOpenRouterBlueprint(c.data);
-      writeFileSync(`test-output/qa-bp-${c.id}.json`, JSON.stringify(bp, null, 2));
-      results.push({ id: c.id, label: c.label, ok: true, name: bp.startupName });
-      console.log(`  ✅ "${bp.startupName}" — ${bp.tagline.substring(0, 60)}...`);
+      const result = await generateBlueprintAI(c.data);
+      writeFileSync(`test-output/qa-bp-${c.id}.json`, JSON.stringify(result.blueprint, null, 2));
+      results.push({ id: c.id, label: c.label, ok: true, name: result.blueprint.startupName });
+      console.log(`  ✅ "${result.blueprint.startupName}" — ${result.blueprint.tagline.substring(0, 60)}...`);
+      console.log(`  📊 ${result.report.provider} / ${result.report.model} — ${result.report.durationMs}ms, ${result.report.outputTokens} tokens`);
     } catch (err) {
       results.push({ id: c.id, label: c.label, ok: false });
       console.error(`  ❌ ${err instanceof Error ? err.message : "failed"}`);

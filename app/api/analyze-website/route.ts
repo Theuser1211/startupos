@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { aiGenerate } from "@/lib/ai/client";
+import { apiLimiter } from "@/lib/security/rate-limit";
 
 interface AnalyzeResult {
   url: string;
@@ -48,6 +49,15 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate limiting — AI analysis costs money
+    const rateResult = apiLimiter.check(`analyze:${user.id}`);
+    if (rateResult.blocked) {
+      return NextResponse.json(
+        { error: "Too many analysis requests. Please try again later." },
+        { status: 429 },
+      );
     }
 
     const { url } = await request.json();

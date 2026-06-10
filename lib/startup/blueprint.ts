@@ -48,6 +48,14 @@ export interface StartupBlueprint {
     typography: { heading: string; body: string };
   };
 
+  /** Metadata about how this blueprint was generated */
+  generationMetadata?: {
+    provider: string;
+    model: string;
+    generatedAt: string;
+    generationTime: number;
+  };
+
   logos: {
     id: string;
     description: string;

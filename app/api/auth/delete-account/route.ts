@@ -21,36 +21,27 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Delete user data in order (cascading deletes handle related tables)
-    const { error: bpError } = await supabase
-      .from("blueprints")
-      .delete()
-      .eq("user_id", user.id);
-    if (bpError) console.error("Error deleting blueprints:", bpError);
+    // Delete user data — ordered by dependency (child before parent)
+    const cleanupOps = [
+      { table: "deployments", label: "deployments" },
+      { table: "custom_domains", label: "custom domains" },
+      { table: "website_generation_jobs", label: "website generation jobs" },
+      { table: "generated_websites", label: "websites" },
+      { table: "generated_logos", label: "logos" },
+      { table: "audit_logs", label: "audit logs" },
+      { table: "usage_tracking", label: "usage tracking" },
+      { table: "subscriptions", label: "subscriptions" },
+      { table: "blueprints", label: "blueprints" },
+      { table: "startups", label: "startups" },
+    ];
 
-    const { error: stError } = await supabase
-      .from("startups")
-      .delete()
-      .eq("user_id", user.id);
-    if (stError) console.error("Error deleting startups:", stError);
-
-    const { error: lgError } = await supabase
-      .from("generated_logos")
-      .delete()
-      .eq("user_id", user.id);
-    if (lgError) console.error("Error deleting logos:", lgError);
-
-    const { error: wsError } = await supabase
-      .from("generated_websites")
-      .delete()
-      .eq("user_id", user.id);
-    if (wsError) console.error("Error deleting websites:", wsError);
-
-    const { error: utError } = await supabase
-      .from("usage_tracking")
-      .delete()
-      .eq("user_id", user.id);
-    if (utError) console.error("Error deleting usage tracking:", utError);
+    for (const { table, label } of cleanupOps) {
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq("user_id", user.id);
+      if (error) console.error(`Error deleting ${label}:`, error);
+    }
 
     // Use service role client to delete the auth user (admin operation)
     const serviceClient = createServiceClient();

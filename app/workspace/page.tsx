@@ -52,7 +52,7 @@ function WorkspaceContent() {
   const [activeTab, setActiveTab] = useState("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user, updateProfile } = useAuth();
-  const { blueprint, isLoading, error, loadSavedBlueprint } = useBlueprint();
+  const { blueprint, isLoading, error, generationMessage, generationStatus, loadSavedBlueprint } = useBlueprint();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [autoSaveStatus, setAutoSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -333,13 +333,32 @@ function WorkspaceContent() {
     await performSave(false);
   };
 
-  // Loading state — skeleton already handled by loading.tsx, but show spinner for regeneration
+  // Loading state with progressive generation messages
   if (isLoading && !blueprint) {
     return (
       <div className="flex min-h-screen bg-background items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
-          <p className="text-sm text-muted-foreground">Loading your workspace...</p>
+        <div className="text-center space-y-4" role="status" aria-label={generationMessage || "Generating"}>
+          <div className="relative mx-auto h-12 w-12">
+            <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+            <motion.div
+              className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {generationMessage || "Generating your startup blueprint..."}
+          </p>
+          <div className="flex gap-1 justify-center" aria-hidden="true">
+            {[0, 1, 2, 3].map((i) => (
+              <motion.div
+                key={i}
+                className="h-1.5 w-6 rounded-full bg-primary/40"
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );

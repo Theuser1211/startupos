@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { StartupBlueprint } from "@/lib/startup/blueprint";
+import { generousLimiter } from "@/lib/security/rate-limit";
 
 export async function GET(
   request: NextRequest,
@@ -27,11 +28,16 @@ export async function GET(
       return NextResponse.json({ error: "Blueprint not found" }, { status: 404 });
     }
 
-    supabase
-      .from("blueprints")
-      .update({ public_views: (data.public_views || 0) + 1 })
-      .eq("share_token", token)
-      .then(() => {});
+    // Rate-limit view counting per IP to prevent abuse
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "127.0.0.1";
+    const viewRateResult = generousLimiter.check(`public-view:${token}:${ip}`);
+    if (!viewRateResult.blocked) {
+      supabase
+        .from("blueprints")
+        .update({ public_views: (data.public_views || 0) + 1 })
+        .eq("share_token", token)
+        .then(() => {});
+    }
 
     const blueprint = data.blueprint as unknown as StartupBlueprint;
 

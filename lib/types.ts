@@ -233,6 +233,30 @@ export interface AuditLog {
   created_at: string;
 }
 
+/* ─── Website Generation Job ─── */
+
+export type GenerationJobStatus = "queued" | "generating" | "completed" | "failed";
+
+export interface WebsiteGenerationJob {
+  id: string;
+  user_id: string;
+  startup_id: string | null;
+  blueprint_id: string | null;
+  status: GenerationJobStatus;
+  website_spec: Record<string, unknown> | null;
+  provider: string | null;
+  model: string | null;
+  prompt_tokens: number | null;
+  output_tokens: number | null;
+  duration_ms: number | null;
+  error_message: string | null;
+  retry_count: number;
+  created_at: string;
+  started_at: string | null;
+  completed_at: string | null;
+  notified_at: string | null;
+}
+
 /** Feature names for usage tracking */
 export const USAGE_FEATURES = {
   BLUEPRINT_GENERATE: "blueprint_generate",

@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 export const maxDuration = 60;
 import { createServiceClient } from "@/lib/supabase/service";
 import { deployToVercel } from "@/lib/startup/deploy";
+import { validateWebsiteSpec, type WebsiteSpec } from "@/lib/startup/website-spec";
+import { apiLimiter } from "@/lib/security/rate-limit";
 import { trackEvent } from "@/lib/analytics";
 
 /**
@@ -12,9 +14,10 @@ import { trackEvent } from "@/lib/analytics";
  *
  * Body:
  *   websiteId: string  (the generated_websites record ID)
+ *   websiteSpec?: WebsiteSpec  (optional — if not provided, loaded from DB)
  *
  * Response:
- *   { success, deployment } or { error }
+ *   { success, url, status, logs } or { error }
  */
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -24,48 +27,64 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Rate limiting by user
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "127.0.0.1";
+  const rateResult = apiLimiter.check(`deploy:${ip}`);
+  if (rateResult.blocked) {
+    return NextResponse.json(
+      { error: "Too many deployment requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   try {
     const body = await request.json();
-    const { websiteId } = body;
+    const { websiteId, websiteSpec: rawSpec } = body;
 
+    // websiteId is required
     if (!websiteId) {
       return NextResponse.json({ error: "websiteId is required" }, { status: 400 });
     }
 
-    // Fetch the website record — verify ownership
+    // Verify ownership: fetch the website record
     const { data: website, error: fetchError } = await supabase
       .from("generated_websites")
-      .select("*")
+      .select("id, user_id, content, metadata")
       .eq("id", websiteId)
-      .eq("user_id", user.id)
       .single();
 
     if (fetchError || !website) {
-      console.error("[Deployments API] Fetch error:", fetchError?.message);
-      return NextResponse.json(
-        { error: "Website not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Website not found" }, { status: 404 });
     }
 
-    // Extract HTML content
-    const html = (website.content as { html?: string })?.html;
-    if (!html) {
-      return NextResponse.json(
-        { error: "No HTML content to deploy. Generate the website first." },
-        { status: 400 },
-      );
+    if (website.user_id !== user.id) {
+      return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
-    const startupName = (website.metadata as { startupName?: string })?.startupName || "Startup";
+    // Resolve WebsiteSpec: use passed spec or load from DB
+    let websiteSpec: WebsiteSpec;
+    if (rawSpec) {
+      const validation = validateWebsiteSpec(rawSpec);
+      if (!validation.success) {
+        return NextResponse.json({ error: `Invalid WebsiteSpec: ${validation.error}` }, { status: 400 });
+      }
+      websiteSpec = validation.data;
+    } else {
+      const storedSpec = (website.content as Record<string, unknown>)?.websiteSpec as WebsiteSpec | undefined;
+      if (!storedSpec) {
+        return NextResponse.json({ error: "No WebsiteSpec found. Generate the website first." }, { status: 400 });
+      }
+      websiteSpec = storedSpec;
+    }
 
-    // Execute the deployment (async — client will poll for status)
+    const startupName = (websiteSpec.sections || []).find(s => s.type === "hero")?.heading || "Startup";
+
+    // Execute the deployment
     const result = await deployToVercel({
-      html,
+      websiteSpec,
       startupName,
       websiteId: website.id,
       userId: user.id,
-      startupId: website.startup_id || undefined,
     });
 
     // Track the deployment event
@@ -74,19 +93,8 @@ export async function POST(request: NextRequest) {
       provider: "vercel",
     });
 
-    // Fetch the deployment record that was created
-    const serviceClient = createServiceClient();
-    const { data: deployment } = await serviceClient
-      .from("deployments")
-      .select("*")
-      .eq("website_id", websiteId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
-
     return NextResponse.json({
       success: result.success,
-      deployment: deployment || null,
       url: result.url,
       status: result.status,
       logs: result.logs,

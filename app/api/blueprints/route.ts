@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { apiLimiter } from "@/lib/security/rate-limit";
 
 // GET /api/blueprints — list all blueprints for the current user
 export async function GET(request: NextRequest) {
@@ -73,6 +74,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  // Rate limiting
+  const rateResult = apiLimiter.check(`blueprints:${user.id}`);
+  if (rateResult.blocked) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429 },
+    );
+  }
+
   const body = await request.json();
   const { name, idea, industry, stage, blueprint, interview_data } = body;
 
@@ -111,6 +121,15 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  // Rate limiting
+  const rateResult = apiLimiter.check(`blueprints:${user.id}`);
+  if (rateResult.blocked) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429 },
+    );
+  }
+
   const body = await request.json();
   const { id, name, blueprint, interview_data } = body;
 
@@ -146,6 +165,15 @@ export async function DELETE(request: NextRequest) {
 
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  // Rate limiting (stricter for deletion)
+  const rateResult = apiLimiter.check(`blueprints:${user.id}`);
+  if (rateResult.blocked) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429 },
+    );
   }
 
   const { searchParams } = new URL(request.url);
