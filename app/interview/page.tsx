@@ -247,10 +247,20 @@ export default function InterviewPage() {
       if (res.ok) {
         const saved = await res.json();
         router.push(`/workspace?id=${saved.id}`);
-      } else {
-        // Save failed — workspace will still work from localStorage
-        router.push("/workspace");
+        return;
       }
+
+      const body = await res.json().catch(() => null);
+      const authError = res.status === 401 ||
+        (body && typeof body.error === "string" && body.error.toLowerCase().includes("not authenticated"));
+
+      if (authError) {
+        router.push(`/auth/sign-in?redirect=${encodeURIComponent("/workspace")}`);
+        return;
+      }
+
+      // Save failed for another reason — still let the user continue via localStorage.
+      router.push("/workspace");
     } catch {
       router.push("/workspace");
     } finally {
