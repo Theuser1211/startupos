@@ -38,7 +38,14 @@ export default function SignUpPage() {
 
     const { error } = await signUp(email, password);
     if (error) {
-      setError(error);
+      // Provide user-friendly messages for common Supabase auth errors
+      if (error.toLowerCase().includes("already registered") || error.toLowerCase().includes("already exists")) {
+        setError("This email is already registered. Try signing in instead.");
+      } else if (error.toLowerCase().includes("rate limit")) {
+        setError("Too many attempts. Please wait a moment and try again.");
+      } else {
+        setError(error);
+      }
       setIsLoading(false);
     } else {
       setIsSuccess(true);

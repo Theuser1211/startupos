@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/supabase/auth-context";
-import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut } from "lucide-react";
+import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
 interface BlueprintSummary {
@@ -26,7 +26,7 @@ export default function BlueprintsPage() {
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchBlueprints = async () => {
+  const fetchBlueprints = useCallback(async () => {
     try {
       setIsLoading(true);
       const res = await fetch("/api/blueprints");
@@ -40,7 +40,7 @@ export default function BlueprintsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -95,14 +95,12 @@ export default function BlueprintsPage() {
               className="h-5 w-auto"
             />
           </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              {user?.email}
-            </span>
-            <Button variant="ghost" size="sm" onClick={handleSignOut}>
-              <LogOut className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline ml-1.5">Sign Out</span>
-            </Button>
+          <div className="flex items-center gap-2">
+            {/* Profile dropdown */}
+            <ProfileDropdown
+              email={user?.email || ""}
+              onSignOut={handleSignOut}
+            />
           </div>
         </div>
       </header>
@@ -229,6 +227,73 @@ export default function BlueprintsPage() {
           </div>
         )}
       </main>
+    </div>
+  );
+}
+
+/* ─── Profile Dropdown ─── */
+
+function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const initial = email?.charAt(0).toUpperCase() || "U";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-label="User menu"
+        aria-expanded={open}
+        className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+      >
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-[10px] font-bold text-white">
+          {initial}
+        </div>
+        <span className="hidden sm:inline max-w-[140px] truncate">{email}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          className="absolute right-0 top-full mt-1 w-52 rounded-xl border border-glass-border bg-background/95 backdrop-blur-xl shadow-xl z-50 overflow-hidden"
+        >
+          <div className="px-3 py-2.5 border-b border-glass-border">
+            <p className="text-xs font-medium truncate">{email}</p>
+            <p className="text-[10px] text-muted-foreground">Signed in</p>
+          </div>
+          <div className="p-1">
+            <Link
+              href="/auth/settings"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+            >
+              <Settings className="h-3.5 w-3.5" />
+              Account Settings
+            </Link>
+            <button
+              onClick={() => { setOpen(false); onSignOut(); }}
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-red-400 hover:bg-red-500/5 transition-colors"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Sign Out
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }

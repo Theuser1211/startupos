@@ -53,7 +53,31 @@ export async function POST(request: NextRequest) {
 
     const serviceClient = createServiceClient();
 
-    // Step 1: Create job record (queued)
+    // Step 1: Pre-create the website record so we have an ID for deployment
+    const { data: website, error: websiteError } = await serviceClient
+      .from("generated_websites")
+      .insert({
+        user_id: user.id,
+        startup_id: startupId || null,
+        deployment_status: "pending",
+        content: {},
+        metadata: {
+          startupName: blueprint.startupName,
+          blueprintId: blueprintId || null,
+        },
+      })
+      .select()
+      .single();
+
+    if (websiteError || !website) {
+      log.error("Failed to create website record", { error: websiteError?.message || "Unknown" });
+      return NextResponse.json(
+        { error: "Failed to create website record" },
+        { status: 500 },
+      );
+    }
+
+    // Step 2: Create job record (queued), linked to the website
     const { data: job, error: insertError } = await serviceClient
       .from("website_generation_jobs")
       .insert({
@@ -74,7 +98,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Step 2: Enqueue the background job via Inngest
+    // Step 3: Enqueue the background job via Inngest
     const prompt = buildWebsiteSpecPrompt(blueprint);
 
     try {
@@ -82,6 +106,7 @@ export async function POST(request: NextRequest) {
         name: "website-spec/generate",
         data: {
           jobId: job.id,
+          websiteId: website.id,
           userId: user.id,
           startupName: blueprint.startupName,
           prompt,
@@ -114,11 +139,14 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Step 3: Return the job ID immediately — client polls for completion
+    // Step 4: Return the job ID and website ID — client polls for completion
     return NextResponse.json({
       job: {
         id: job.id,
         status: "queued",
+      },
+      website: {
+        id: website.id,
       },
     });
   } catch (error) {

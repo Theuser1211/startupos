@@ -35,6 +35,7 @@ export function WebsiteTab() {
   // Generation state
   const [genPhase, setGenPhase] = useState<GenPhase>("idle");
   const [genJobId, setGenJobId] = useState<string | null>(null);
+  const [websiteId, setWebsiteId] = useState<string | null>(null);
   const [websiteSpec, setWebsiteSpec] = useState<WebsiteSpec | null>(null);
   const [genError, setGenError] = useState<string | null>(null);
   const [genMetadata, setGenMetadata] = useState<{ provider: string; model: string } | null>(null);
@@ -74,6 +75,12 @@ export function WebsiteTab() {
 
         const data = await res.json();
         const job = data.job as WebsiteGenerationJob;
+
+        // Store websiteId from the pre-created website record (if present)
+        const website = data.website as { id?: string } | undefined;
+        if (website?.id) {
+          setWebsiteId(website.id);
+        }
 
         if (job.status === "completed") {
           setGenPhase("completed");
@@ -135,6 +142,12 @@ export function WebsiteTab() {
 
       const data = await res.json();
       const job = data.job as WebsiteGenerationJob;
+      const website = data.website as { id?: string } | undefined;
+
+      // Store websiteId from the pre-created record
+      if (website?.id) {
+        setWebsiteId(website.id);
+      }
 
       if (job.status === "completed") {
         // AI finished synchronously (fast path)
@@ -181,7 +194,10 @@ export function WebsiteTab() {
       const res = await fetch("/api/deployments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ websiteSpec }),
+        body: JSON.stringify({
+          websiteSpec,
+          websiteId: websiteId, // Pass the pre-created website ID
+        }),
       });
 
       if (!res.ok) {

@@ -1,14 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
+import { getAiBaseUrl, getAiApiKey, isProxyConfigured } from "@/lib/ai/config";
 
 let client: GoogleGenAI | null = null;
 
 export function getGeminiClient(): GoogleGenAI {
   if (!client) {
-    const apiKey = process.env.GOOGLE_API_KEY;
+    const proxyKey = getAiApiKey();
+    const googleKey = process.env.GOOGLE_API_KEY;
+    const apiKey = proxyKey ?? googleKey;
+
     if (!apiKey) {
-      throw new Error("GOOGLE_API_KEY environment variable is not set.");
+      throw new Error("No API key configured. Set AI_API_KEY or GOOGLE_API_KEY.");
     }
-    client = new GoogleGenAI({ apiKey });
+
+    const options: Record<string, string> = { apiKey };
+
+    // Route through AI_BASE_URL proxy when configured
+    if (isProxyConfigured()) {
+      options.baseURL = getAiBaseUrl();
+    }
+
+    client = new GoogleGenAI(options as unknown as ConstructorParameters<typeof GoogleGenAI>[0]);
   }
   return client;
 }

@@ -1,6 +1,8 @@
 /* ─── DeepSeek API Provider ─── */
 
-const DEEPSEEK_BASE = "https://api.deepseek.com/chat/completions";
+import { getAiBaseUrl, getAiApiKey, isProxyConfigured } from "@/lib/ai/config";
+
+const DEEPSEEK_DEFAULT_BASE = "https://api.deepseek.com/chat/completions";
 const DEEPSEEK_MODEL = "deepseek-chat";
 
 /** @internal Result type — matches ProviderResult in index.ts */
@@ -12,21 +14,36 @@ export interface ProviderResult {
   inputTokens: number;
 }
 
+function getDeepSeekEndpoint(): string {
+  if (isProxyConfigured()) {
+    return `${getAiBaseUrl()}/chat/completions`;
+  }
+  return DEEPSEEK_DEFAULT_BASE;
+}
+
+function getDeepSeekApiKey(): string | null {
+  const proxyKey = getAiApiKey();
+  if (proxyKey) return proxyKey;
+  return process.env.DEEPSEEK_API_KEY ?? null;
+}
+
 /**
  * Calls the DeepSeek API with a prompt and returns the generated content + metrics.
+ * Routes through AI_BASE_URL proxy when configured, otherwise uses the default DeepSeek endpoint.
  * Returns null on any failure (network, auth, rate-limit, etc.)
  */
 export async function callDeepSeek(prompt: string): Promise<ProviderResult | null> {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
+  const apiKey = getDeepSeekApiKey();
+  const baseUrl = getDeepSeekEndpoint();
   const startTime = Date.now();
 
   if (!apiKey) {
-    console.warn("[DeepSeek] DEEPSEEK_API_KEY is not configured — skipping provider");
+    console.warn("[DeepSeek] No API key configured (DEEPSEEK_API_KEY or AI_API_KEY) — skipping provider");
     return null;
   }
 
   try {
-    const response = await fetch(DEEPSEEK_BASE, {
+    const response = await fetch(baseUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +62,7 @@ export async function callDeepSeek(prompt: string): Promise<ProviderResult | nul
     if (!response.ok) {
       const errorBody = await response.text().catch(() => "unknown error");
       console.warn(
-        `[DeepSeek] Model ${DEEPSEEK_MODEL} returned ${response.status} after ${durationMs}ms: ${errorBody.substring(0, 200)}`,
+        `[DeepSeek] Endpoint returned ${response.status} after ${durationMs}ms: ${errorBody.substring(0, 200)}`,
       );
       return null;
     }
@@ -56,12 +73,12 @@ export async function callDeepSeek(prompt: string): Promise<ProviderResult | nul
     const inputTokens: number = data.usage?.prompt_tokens ?? 0;
 
     if (!content) {
-      console.warn(`[DeepSeek] Model ${DEEPSEEK_MODEL} returned empty content after ${durationMs}ms`);
+      console.warn(`[DeepSeek] Model returned empty content after ${durationMs}ms`);
       return null;
     }
 
     console.log(
-      `[DeepSeek] Success: ${DEEPSEEK_MODEL} — ${durationMs}ms, ${inputTokens} in / ${outputTokens} out`,
+      `[DeepSeek] Success — ${durationMs}ms, ${inputTokens} in / ${outputTokens} out`,
     );
 
     return {
@@ -74,7 +91,7 @@ export async function callDeepSeek(prompt: string): Promise<ProviderResult | nul
   } catch (err) {
     const durationMs = Date.now() - startTime;
     console.warn(
-      `[DeepSeek] Model ${DEEPSEEK_MODEL} threw after ${durationMs}ms:`,
+      `[DeepSeek] Request threw after ${durationMs}ms:`,
       err instanceof Error ? err.message : "unknown error",
     );
     return null;

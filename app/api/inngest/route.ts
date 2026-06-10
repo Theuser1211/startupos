@@ -15,8 +15,9 @@
 import { serve } from "inngest/next";
 import { inngest } from "@/lib/inngest/client";
 import { generateWebsiteSpecFn } from "@/app/api/websites/spec/functions";
+import { generateLogoFn } from "@/app/api/logos/functions";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [generateWebsiteSpecFn],
+  functions: [generateWebsiteSpecFn, generateLogoFn],
 });

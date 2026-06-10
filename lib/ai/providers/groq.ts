@@ -1,6 +1,8 @@
 /* ─── Groq API Provider ─── */
 
-const GROQ_BASE = "https://api.groq.com/openai/v1/chat/completions";
+import { getAiBaseUrl, getAiApiKey, isProxyConfigured } from "@/lib/ai/config";
+
+const GROQ_DEFAULT_BASE = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 /** @internal Result type — matches ProviderResult in index.ts */
@@ -12,21 +14,36 @@ export interface ProviderResult {
   inputTokens: number;
 }
 
+function getGroqEndpoint(): string {
+  if (isProxyConfigured()) {
+    return `${getAiBaseUrl()}/chat/completions`;
+  }
+  return GROQ_DEFAULT_BASE;
+}
+
+function getGroqApiKey(): string | null {
+  const proxyKey = getAiApiKey();
+  if (proxyKey) return proxyKey;
+  return process.env.GROQ_API_KEY ?? null;
+}
+
 /**
  * Calls the Groq API with a prompt and returns the generated content + metrics.
+ * Routes through AI_BASE_URL proxy when configured, otherwise uses the default Groq endpoint.
  * Returns null on any failure (network, auth, rate-limit, etc.)
  */
 export async function callGroq(prompt: string): Promise<ProviderResult | null> {
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = getGroqApiKey();
+  const baseUrl = getGroqEndpoint();
   const startTime = Date.now();
 
   if (!apiKey) {
-    console.warn("[Groq] GROQ_API_KEY is not configured — skipping provider");
+    console.warn("[Groq] No API key configured (GROQ_API_KEY or AI_API_KEY) — skipping provider");
     return null;
   }
 
   try {
-    const response = await fetch(GROQ_BASE, {
+    const response = await fetch(baseUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +62,7 @@ export async function callGroq(prompt: string): Promise<ProviderResult | null> {
     if (!response.ok) {
       const errorBody = await response.text().catch(() => "unknown error");
       console.warn(
-        `[Groq] Model ${GROQ_MODEL} returned ${response.status} after ${durationMs}ms: ${errorBody.substring(0, 200)}`,
+        `[Groq] Endpoint returned ${response.status} after ${durationMs}ms: ${errorBody.substring(0, 200)}`,
       );
       return null;
     }
@@ -56,12 +73,12 @@ export async function callGroq(prompt: string): Promise<ProviderResult | null> {
     const inputTokens: number = data.usage?.prompt_tokens ?? 0;
 
     if (!content) {
-      console.warn(`[Groq] Model ${GROQ_MODEL} returned empty content after ${durationMs}ms`);
+      console.warn(`[Groq] Model returned empty content after ${durationMs}ms`);
       return null;
     }
 
     console.log(
-      `[Groq] Success: ${GROQ_MODEL} — ${durationMs}ms, ${inputTokens} in / ${outputTokens} out`,
+      `[Groq] Success — ${durationMs}ms, ${inputTokens} in / ${outputTokens} out`,
     );
 
     return {
@@ -74,7 +91,7 @@ export async function callGroq(prompt: string): Promise<ProviderResult | null> {
   } catch (err) {
     const durationMs = Date.now() - startTime;
     console.warn(
-      `[Groq] Model ${GROQ_MODEL} threw after ${durationMs}ms:`,
+      `[Groq] Request threw after ${durationMs}ms:`,
       err instanceof Error ? err.message : "unknown error",
     );
     return null;

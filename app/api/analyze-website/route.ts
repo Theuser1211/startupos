@@ -150,46 +150,9 @@ Be honest and critical. Focus on actionable improvements. Consider mobile respon
       performance: parsed.performance,
       overall: parsed.overall,
     };
-  } catch {
-    // Fallback if AI fails: return heuristic analysis
-    return {
-      url,
-      brand: {
-        score: 65,
-        strengths: ["Domain name is relevant", "Brand appears established"],
-        improvements: ["Consider stronger brand messaging above the fold", "Add trust signals (testimonials, case studies)"],
-      },
-      seo: {
-        score: 60,
-        strengths: ["Website is indexed and accessible"],
-        improvements: ["Add meta descriptions if missing", "Improve heading hierarchy (h1 → h2 → h3)", "Add alt text to images"],
-      },
-      ux: {
-        score: 65,
-        strengths: ["Website is functional and navigable"],
-        improvements: ["Reduce cognitive load on landing page", "Improve mobile navigation", "Add clear CTA buttons"],
-      },
-      copywriting: {
-        score: 60,
-        strengths: ["Content is present and readable"],
-        improvements: ["Strengthen value proposition in hero section", "Use more benefit-driven language", "Break up long paragraphs"],
-      },
-      performance: {
-        score: 55,
-        strengths: ["Website loads"],
-        improvements: ["Optimize image sizes and formats", "Minimize CSS and JavaScript", "Consider using a CDN", "Implement lazy loading"],
-      },
-      overall: {
-        score: 61,
-        summary: "The website is functional but has significant room for improvement across branding, SEO, and performance. Prioritizing the recommendations below will improve conversion rates and search visibility.",
-        recommendations: [
-          "Improve page load speed — optimize images and reduce render-blocking resources",
-          "Strengthen the above-the-fold value proposition with clearer benefit-driven copy",
-          "Add social proof elements (testimonials, case studies, client logos)",
-          "Implement proper heading hierarchy and meta tags for SEO",
-          "Add prominent, action-oriented CTA buttons throughout the page",
-        ],
-      },
-    };
+  } catch (err) {
+    // No fallback — failure is better than fake heuristic data
+    console.error("[Analyze Website] AI analysis failed:", err);
+    throw new Error("AI analysis failed. Please try again.");
   }
 }

@@ -24,6 +24,7 @@ supabase db push
 | `00004_custom_domains.sql` | Custom domains table |
 | `00005_public_blueprints.sql` | Public blueprint sharing |
 | `00006_website_jobs.sql` | Website generation job queue |
+| `00007_logo_jobs.sql` | Logo generation job queue |
 
 ## Adding New Migrations
 

@@ -62,6 +62,7 @@ export function LogoTab() {
   const [selectedView, setSelectedView] = useState<"icon" | "full" | "mono">("icon");
   const [regenerating, setRegenerating] = useState(false);
   const [logos, setLogos] = useState<LogoDisplay[]>([]);
+  const [logoError, setLogoError] = useState<string | null>(null);
   const [brandAnalysis, setBrandAnalysis] = useState<{
     suggestedStyle: string;
     iconConcepts: string[];
@@ -74,6 +75,7 @@ export function LogoTab() {
     if (!blueprint) return;
 
     setRegenerating(true);
+    setLogoError(null);
     try {
       const res = await fetch("/api/logos", {
         method: "POST",
@@ -88,18 +90,20 @@ export function LogoTab() {
 
       if (res.ok) {
         const data = await res.json();
-        setLogos(data.logos || []);
+        if (data.logos) {
+          setLogos(data.logos);
+        } else {
+          // API returned success but no logos — treat as failure
+          setLogoError("No logos were generated. Please try again.");
+        }
+      } else {
+        const errData = await res.json().catch(() => ({ error: "Logo generation failed" }));
+        setLogoError(errData.error || "Logo generation failed. Please try again.");
       }
-    } catch {
-      // Fallback to local generation
-      const { serializeLogos } = await import("@/lib/startup/logo-generator");
-      const localLogos = serializeLogos(
-        blueprint.startupName,
-        interviewData?.industry || "saas",
-        blueprint.brand.colors,
-        blueprint.brand.tone,
-      );
-      setLogos(localLogos);
+    } catch (err) {
+      // No fallback — failure is better than fake logos
+      console.error("[LogoTab] Logo generation failed:", err);
+      setLogoError(err instanceof Error ? err.message : "Logo generation failed. Please try again.");
     } finally {
       setRegenerating(false);
     }
@@ -340,10 +344,21 @@ export function LogoTab() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg">
               <ImageIcon className="h-8 w-8 text-white" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Generating Logo Concepts</h3>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
-              Creating SVG logos tailored to {blueprint.startupName}&apos;s brand identity...
-            </p>
+            {logoError ? (
+              <>
+                <h3 className="text-lg font-semibold mb-2 text-red-400">Generation Failed</h3>
+                <p className="text-sm text-red-400/80 max-w-md mx-auto mb-6">
+                  {logoError}
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 className="text-lg font-semibold mb-2">Generate Logo Concepts</h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
+                  Create SVG logos tailored to {blueprint.startupName}&apos;s brand identity.
+                </p>
+              </>
+            )}
             <Button
               onClick={generateLogos}
               disabled={regenerating}

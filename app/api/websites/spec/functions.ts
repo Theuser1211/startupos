@@ -20,6 +20,7 @@ export type WebsiteSpecGenerateEvent = {
   name: "website-spec/generate";
   data: {
     jobId: string;
+    websiteId: string;
     userId: string;
     startupName: string;
     prompt: string;
@@ -80,7 +81,7 @@ export const generateWebsiteSpecFn = inngest.createFunction(
     triggers: { event: "website-spec/generate" },
   },
   async ({ event, step }) => {
-    const { jobId, userId, startupName, prompt, blueprintId, startupId } =
+    const { jobId, websiteId, userId, startupName, prompt, blueprintId, startupId } =
       event.data as WebsiteSpecGenerateEvent["data"];
 
     const serviceClient = createServiceClient();
@@ -188,6 +189,25 @@ export const generateWebsiteSpecFn = inngest.createFunction(
         .update(updates)
         .eq("id", jobId);
 
+      // On success, update the pre-created generated_websites record with the spec
+      if (aiSuccess && specResult) {
+        const spec = specResult as Record<string, unknown>;
+        const sectionCount = Array.isArray(spec.sections) ? spec.sections.length : 0;
+
+        await serviceClient
+          .from("generated_websites")
+          .update({
+            content: { websiteSpec: specResult },
+            metadata: {
+              startupName,
+              provider: aiProvider,
+              model: aiModel,
+              sections: sectionCount,
+            },
+          })
+          .eq("id", websiteId);
+      }
+
       log.info("Generation complete", {
         jobId,
         status: finalStatus,
@@ -197,7 +217,7 @@ export const generateWebsiteSpecFn = inngest.createFunction(
       });
 
       return { success: aiSuccess, specResult, aiProvider, durationMs };
-    });
+    }) as { success: boolean; specResult: unknown; aiProvider: string; durationMs: number };
 
     // Step 3: Send email notification (fire-and-forget if it fails)
     if (result.success && result.specResult) {
