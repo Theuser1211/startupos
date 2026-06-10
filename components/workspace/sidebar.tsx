@@ -206,6 +206,20 @@ export function Sidebar({
           My Blueprints
         </Link>
         <Link
+          href="/auth/settings"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+        >
+          <LayoutDashboard className="h-3.5 w-3.5" />
+          Settings
+        </Link>
+        <Link
+          href="/billing"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+        >
+          <DollarSign className="h-3.5 w-3.5" />
+          Billing
+        </Link>
+        <Link
           href="/"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
         >

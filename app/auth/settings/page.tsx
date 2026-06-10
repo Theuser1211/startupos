@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Loader2, Check, Eye, EyeOff, AlertTriangle, ArrowLeft, LogOut,
+  User, Building2, Briefcase, CreditCard,
 } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-context";
 import Link from "next/link";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, updateEmail, updatePassword, deleteAccount, signOut } = useAuth();
+  const { user, profile, updateEmail, updatePassword, updateProfile, deleteAccount, signOut } = useAuth();
 
   const [newEmail, setNewEmail] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -243,11 +244,103 @@ export default function SettingsPage() {
           )}
         </motion.section>
 
+        {/* Profile Info */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+          className="rounded-2xl border border-glass-border bg-glass-bg p-6 space-y-4"
+        >
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <User className="h-4 w-4 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold">Profile Information</h2>
+              <p className="text-xs text-muted-foreground">
+                Update your public profile details
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="displayName" className="block text-xs font-medium text-foreground mb-1.5">
+                Display Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="displayName"
+                  className="pl-9"
+                  placeholder="Your name"
+                  defaultValue={profile?.display_name || ""}
+                  onBlur={(e) => {
+                    const val = e.target.value.trim();
+                    if (val && val !== profile?.display_name) {
+                      updateProfile({ display_name: val });
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="companyName" className="block text-xs font-medium text-foreground mb-1.5">
+                Company Name
+              </label>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="companyName"
+                  className="pl-9"
+                  placeholder="Your startup or company"
+                  defaultValue={profile?.company_name || ""}
+                  onBlur={(e) => {
+                    const val = e.target.value.trim();
+                    if (val && val !== profile?.company_name) {
+                      updateProfile({ company_name: val });
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="role" className="block text-xs font-medium text-foreground mb-1.5">
+                Role
+              </label>
+              <div className="relative">
+                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="role"
+                  className="pl-9"
+                  placeholder="e.g. Founder, CEO, Developer"
+                  defaultValue={profile?.role || ""}
+                  onBlur={(e) => {
+                    const val = e.target.value.trim();
+                    if (val && val !== profile?.role) {
+                      updateProfile({ role: val });
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 pt-2">
+            <Link href="/billing">
+              <Button variant="outline" size="sm" className="gap-1.5">
+                <CreditCard className="h-3.5 w-3.5" />
+                Billing & Plan
+              </Button>
+            </Link>
+          </div>
+        </motion.section>
+
         {/* Delete Account */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.4, delay: 0.25 }}
           className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 space-y-4"
         >
           <div className="flex items-start gap-3">

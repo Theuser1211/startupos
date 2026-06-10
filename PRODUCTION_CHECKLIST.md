@@ -23,6 +23,6 @@
 
 ## Medium
 
-- [ ] Profile page
-- [ ] Settings page
-- [ ] Billing page
+- [x] Profile page — profile management (display_name, company_name, role) integrated into settings page with auto-save on blur
+- [x] Settings page — email change, password change, profile info, account deletion, link to billing
+- [x] Billing page — current plan with features, subscription details, usage limits, payment/security info, upgrade to /pricing

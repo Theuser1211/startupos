@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/supabase/auth-context";
-import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown } from "lucide-react";
+import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown, CreditCard } from "lucide-react";
 import Link from "next/link";
 
 interface BlueprintSummary {
@@ -283,6 +283,14 @@ function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () =>
             >
               <Settings className="h-3.5 w-3.5" />
               Account Settings
+            </Link>
+            <Link
+              href="/billing"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+            >
+              <CreditCard className="h-3.5 w-3.5" />
+              Billing & Plan
             </Link>
             <button
               onClick={() => { setOpen(false); onSignOut(); }}
