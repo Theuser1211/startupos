@@ -101,6 +101,18 @@ export async function POST(request: NextRequest) {
     // Step 3: Enqueue the background job via Inngest
     const prompt = buildWebsiteSpecPrompt(blueprint);
 
+    // Store prompt + websiteId in job metadata for retry capability
+    await serviceClient
+      .from("website_generation_jobs")
+      .update({
+        metadata: {
+          prompt,
+          websiteId: website.id,
+          startupName: blueprint.startupName,
+        },
+      })
+      .eq("id", job.id);
+
     try {
       await inngest.send({
         name: "website-spec/generate",

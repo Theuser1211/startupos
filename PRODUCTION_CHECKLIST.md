@@ -16,10 +16,10 @@
 
 ## High
 
-- [ ] Job queue
+- [x] Job queue — admin dashboard with listing, retry, cancel; retry metadata stored in job.metadata
 - [ ] Email notifications
-- [ ] Error logging
-- [ ] Admin jobs dashboard
+- [x] Error logging — structured `lib/error-logger.ts` persists errors to `audit_logs` table with auto-cleanup
+- [x] Admin jobs dashboard — tabbed admin UI with Overview, Job Queue (type toggle, filter, retry), Error Logs tabs
 
 ## Medium
 
