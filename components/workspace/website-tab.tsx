@@ -76,12 +76,6 @@ export function WebsiteTab() {
         const data = await res.json();
         const job = data.job as WebsiteGenerationJob;
 
-        // Store websiteId from the pre-created website record (if present)
-        const website = data.website as { id?: string } | undefined;
-        if (website?.id) {
-          setWebsiteId(website.id);
-        }
-
         if (job.status === "completed") {
           setGenPhase("completed");
           setWebsiteSpec(job.website_spec as WebsiteSpec);
@@ -144,7 +138,7 @@ export function WebsiteTab() {
       const job = data.job as WebsiteGenerationJob;
       const website = data.website as { id?: string } | undefined;
 
-      // Store websiteId from the pre-created record
+      // Store websiteId from the pre-created record (always present on success)
       if (website?.id) {
         setWebsiteId(website.id);
       }

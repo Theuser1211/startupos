@@ -7,7 +7,7 @@
 - [x] Duplicate emails blocked — enforced by Supabase auth + UI catches 'already registered' error
 - [x] Session persistence works — Supabase cookies + getSession() + onAuthStateChange
 - [x] Blueprint generation works — fixed useEffect deps, added logging on save failure
-- [ ] Website generation works
+- [x] Website generation works — cleaned up dead polling code, route pre-creates website record, Inngest stores spec on success
 - [ ] Deploy works
 - [ ] My Startups page works
 - [ ] Public pages work
