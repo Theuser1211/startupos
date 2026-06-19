@@ -22,9 +22,12 @@ const envSchema = z.object({
   FREELLM_API_KEY: z.string().optional(),
   OPENROUTER_API_KEY: z.string().optional(),
 
+  VERCEL_TOKEN: z.string().optional(),
+
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).default("info"),
 
-  AI_TIMEOUT_MS: z.coerce.number().default(45000),
+  AI_TIMEOUT_MS: z.coerce.number().default(60000),
+  WEBSITE_AI_TIMEOUT_MS: z.coerce.number().default(90000),
   JOB_TIMEOUT_MS: z.coerce.number().default(600000),
   JOB_MONITOR_INTERVAL_MS: z.coerce.number().default(30000),
 });

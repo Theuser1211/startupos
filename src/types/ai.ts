@@ -2,6 +2,11 @@ export interface AIProvider {
   name: string;
   generateBlueprint(prompt: string): Promise<BlueprintResult>;
   generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult>;
+  generateWebsitePage(
+    blueprint: BlueprintResult,
+    spec: WebsiteSpecResult,
+    page: PageSpec,
+  ): Promise<PageHTMLResult>;
 }
 
 export interface BlueprintResult {
@@ -49,20 +54,14 @@ export interface ComponentSpec {
   props: Record<string, unknown>;
 }
 
-export interface WebsiteResult {
-  pages: PageResult[];
-  assets: AssetResult[];
+export interface PageHTMLResult {
+  slug: string;
+  title: string;
+  html: string;
 }
 
-export interface PageResult {
-  name: string;
-  slug: string;
-  html: string;
+export interface WebsiteResult {
+  pages: PageHTMLResult[];
   css: string;
   js: string;
-}
-
-export interface AssetResult {
-  path: string;
-  content: string;
 }

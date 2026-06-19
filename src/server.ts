@@ -119,6 +119,7 @@ bootstrap().catch((err) => {
 
 process.on("SIGTERM", async () => {
   logger.info("SIGTERM received, shutting down...");
+  stopJobMonitor();
   await app.close();
   await prisma.$disconnect();
   await closeQueue();
@@ -127,6 +128,7 @@ process.on("SIGTERM", async () => {
 
 process.on("SIGINT", async () => {
   logger.info("SIGINT received, shutting down...");
+  stopJobMonitor();
   await app.close();
   await prisma.$disconnect();
   await closeQueue();

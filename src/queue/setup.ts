@@ -1,5 +1,6 @@
 import { Queue, Worker, QueueEvents } from "bullmq";
 import { env } from "../lib/env.js";
+import { logger } from "../lib/logger.js";
 
 const QUEUE_NAME = "startupos-generations";
 const connection = {
@@ -45,11 +46,11 @@ export function createWorker(
   });
 
   worker.on("completed", (job) => {
-    console.log(`Job ${job.id} completed`);
+    logger.info({ jobId: job.id }, "Worker job completed");
   });
 
   worker.on("failed", (job, err) => {
-    console.error(`Job ${job?.id} failed:`, err.message);
+    logger.error({ jobId: job?.id, error: err.message }, "Worker job failed");
   });
 
   return worker;

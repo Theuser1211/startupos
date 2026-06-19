@@ -1,9 +1,17 @@
 import { prisma } from "../db/client.js";
-import { generateBlueprintWithFallback, generateWebsiteSpecWithFallback } from "../services/ai/provider.js";
+import {
+  generateBlueprintWithFallback,
+  generateWebsiteSpecWithFallback,
+} from "../services/ai/provider.js";
+import { renderWebsite } from "../services/renderer/index.js";
+import { buildDeployFiles } from "../services/deploy/builder.js";
+import { VercelProvider } from "../services/deploy/vercel.js";
+import { verifyDeployment } from "../services/deploy/verify.js";
 import { logger } from "../lib/logger.js";
 import { createWorker } from "./setup.js";
 import { JobQueuePayload } from "../types/job.js";
 import { Job } from "bullmq";
+import { env } from "../lib/env.js";
 import { Prisma } from "@prisma/client";
 
 export function startWorker(): void {
@@ -146,11 +154,18 @@ async function handleWebsiteGeneration(
     const bpContent = blueprint.content as unknown as Parameters<typeof generateWebsiteSpecWithFallback>[0];
     const websiteSpec = await generateWebsiteSpecWithFallback(bpContent);
 
+    logger.info(
+      { jobId: job.data.jobId, pages: websiteSpec.pages.length },
+      "WebsiteSpec generated, starting page rendering",
+    );
+
+    const renderResult = await renderWebsite(bpContent, websiteSpec);
+
     const website = await prisma.website.create({
       data: {
         name: startupName,
-        content: {} as unknown as Prisma.InputJsonValue,
-        status: "spec_generated",
+        content: renderResult.website as unknown as Prisma.InputJsonValue,
+        status: "rendered",
         startupId,
         spec: {
           create: {
@@ -164,11 +179,26 @@ async function handleWebsiteGeneration(
       where: { id: job.data.jobId },
       data: {
         status: "COMPLETED",
-        result: { websiteId: website.id } as unknown as Prisma.InputJsonValue,
+        result: {
+          websiteId: website.id,
+          pagesGenerated: renderResult.stats.pagesGenerated,
+          pagesFallback: renderResult.stats.pagesFallback,
+          total: renderResult.stats.total,
+          fallbackPages: renderResult.stats.fallbackPages,
+          warnings: renderResult.stats.warnings,
+        } as unknown as Prisma.InputJsonValue,
       },
     });
 
-    logger.info({ jobId: job.data.jobId, websiteId: website.id }, "Website generation completed");
+    logger.info(
+      {
+        jobId: job.data.jobId,
+        websiteId: website.id,
+        pagesGenerated: renderResult.stats.pagesGenerated,
+        pagesFallback: renderResult.stats.pagesFallback,
+      },
+      "Website generation completed",
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
@@ -209,35 +239,93 @@ async function handleDeployment(
 
   try {
     const dep = await prisma.deployment.findUnique({ where: { id: deploymentId } });
-    if (dep?.status === "LIVE") {
+    if (dep?.status === "LIVE" && dep.url) {
       await prisma.job.update({
         where: { id: job.data.jobId },
         data: {
           status: "COMPLETED",
-          result: { deploymentId, url: dep.url } as unknown as Prisma.InputJsonValue,
+          result: { deploymentId, url: dep.url, provider: dep.provider } as unknown as Prisma.InputJsonValue,
         },
       });
       return;
     }
 
-    const updated = await prisma.deployment.updateMany({
-      where: { id: deploymentId, status: "BUILDING" },
-      data: { status: "LIVE", url: `https://${websiteId}.startupos.app` },
-    });
-
-    if (updated.count === 0) {
-      throw new Error("Deployment state transition invalid: expected BUILDING");
+    const website = await prisma.website.findUnique({ where: { id: websiteId } });
+    if (!website) {
+      throw new Error("Website not found");
     }
 
-    await prisma.job.update({
-      where: { id: job.data.jobId },
-      data: {
-        status: "COMPLETED",
-        result: { deploymentId, url: `https://${websiteId}.startupos.app` } as unknown as Prisma.InputJsonValue,
-      },
-    });
+    const websiteContent = website.content as unknown as import("../types/ai.js").WebsiteResult;
+    if (!websiteContent?.pages || websiteContent.pages.length === 0) {
+      throw new Error("Website has no rendered content");
+    }
 
-    logger.info({ jobId: job.data.jobId, deploymentId }, "Deployment completed");
+    const files = buildDeployFiles(websiteContent);
+    logger.info(
+      { jobId: job.data.jobId, deploymentId, fileCount: files.length },
+      "Built deployment files",
+    );
+
+    if (env.VERCEL_TOKEN) {
+      const provider = new VercelProvider();
+      const result = await provider.deploy(files, website.name);
+
+      await prisma.deployment.update({
+        where: { id: deploymentId },
+        data: {
+          status: "DEPLOYING",
+          url: result.url,
+          provider: result.provider,
+        },
+      });
+
+      logger.info({ deploymentId, url: result.url }, "Deployed to Vercel, verifying...");
+
+      const verification = await verifyDeployment(provider, result.url);
+
+      if (verification.reachable && verification.hasContent) {
+        await prisma.deployment.updateMany({
+          where: { id: deploymentId, status: "DEPLOYING" },
+          data: { status: "LIVE" },
+        });
+
+        await prisma.job.update({
+          where: { id: job.data.jobId },
+          data: {
+            status: "COMPLETED",
+            result: {
+              deploymentId,
+              url: result.url,
+              provider: result.provider,
+              verified: true,
+              statusCode: verification.statusCode,
+            } as unknown as Prisma.InputJsonValue,
+          },
+        });
+
+        logger.info({ jobId: job.data.jobId, deploymentId, url: result.url }, "Deployment completed and verified");
+      } else {
+        throw new Error(`Deployment verification failed: status=${verification.statusCode} hasContent=${verification.hasContent}`);
+      }
+    } else {
+      logger.warn("VERCEL_TOKEN not set, using mock deployment URL");
+      const mockUrl = `https://${websiteId}.startupos.app`;
+
+      await prisma.deployment.updateMany({
+        where: { id: deploymentId, status: "BUILDING" },
+        data: { status: "LIVE", url: mockUrl, provider: "mock" },
+      });
+
+      await prisma.job.update({
+        where: { id: job.data.jobId },
+        data: {
+          status: "COMPLETED",
+          result: { deploymentId, url: mockUrl, provider: "mock", verified: false } as unknown as Prisma.InputJsonValue,
+        },
+      });
+
+      logger.info({ jobId: job.data.jobId, deploymentId, url: mockUrl }, "Mock deployment completed");
+    }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 

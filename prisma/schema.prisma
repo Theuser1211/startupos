@@ -97,6 +97,7 @@ model Deployment {
   id        String           @id @default(uuid())
   status    DeploymentStatus @default(PENDING)
   url       String?
+  provider  String?
   error     String?
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
