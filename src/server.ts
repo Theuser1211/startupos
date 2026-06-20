@@ -110,7 +110,12 @@ async function bootstrap(): Promise<void> {
     request.log.info({ method: request.method, url: request.url }, "Incoming request");
   });
 
-  app.setErrorHandler((error: Error & { statusCode?: number }, _request, reply) => {
+  app.setErrorHandler((error: Error & { statusCode?: number }, request, reply) => {
+    const requestId = request.id;
+    logger.error(
+      { requestId, err: error, name: error?.name, message: error?.message, stack: error?.stack, statusCode: error?.statusCode },
+      "[GLOBAL-ERR] caught",
+    );
     if (error.statusCode === 429) {
       reply.status(429).send({
         error: "TooManyRequests",
