@@ -4,6 +4,7 @@ healthcheckPath = "/health"
 healthcheckTimeout = 10
 restartPolicyType = "always"
 restartPolicyMaxRetries = 5
+preDeployCommand = "npx prisma migrate deploy"
 
 [service]
 port = 3000
