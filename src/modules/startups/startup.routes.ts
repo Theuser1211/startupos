@@ -7,6 +7,74 @@ import {
 } from "./startup.handler.js";
 import { authenticate } from "../../middleware/auth.js";
 
+const startupResponse = {
+  type: "object",
+  properties: {
+    id: { type: "string" },
+    name: { type: "string" },
+    description: { type: ["string", "null"] },
+    logo: { type: ["string", "null"] },
+    industry: { type: ["string", "null"] },
+    createdAt: { type: "string", format: "date-time" },
+    updatedAt: { type: "string", format: "date-time" },
+    blueprint: {
+      type: ["object", "null"],
+      properties: {
+        id: { type: "string" },
+        content: { type: "object" },
+        createdAt: { type: "string", format: "date-time" },
+        updatedAt: { type: "string", format: "date-time" },
+      },
+    },
+    websites: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          name: { type: "string" },
+          content: { type: "object" },
+          status: { type: "string" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+          deployment: {
+            type: ["object", "null"],
+            properties: {
+              id: { type: "string" },
+              status: { type: "string" },
+              url: { type: ["string", "null"] },
+              provider: { type: ["string", "null"] },
+              error: { type: ["string", "null"] },
+              createdAt: { type: "string", format: "date-time" },
+              updatedAt: { type: "string", format: "date-time" },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+const startupListResponse = {
+  type: "object",
+  properties: {
+    id: { type: "string" },
+    name: { type: "string" },
+    description: { type: ["string", "null"] },
+    logo: { type: ["string", "null"] },
+    industry: { type: ["string", "null"] },
+    createdAt: { type: "string", format: "date-time" },
+    updatedAt: { type: "string", format: "date-time" },
+    _count: {
+      type: "object",
+      properties: {
+        websites: { type: "integer" },
+        jobs: { type: "integer" },
+      },
+    },
+  },
+};
+
 export async function startupRoutes(app: FastifyInstance): Promise<void> {
   app.addHook("preHandler", authenticate);
 
@@ -29,7 +97,7 @@ export async function startupRoutes(app: FastifyInstance): Promise<void> {
         201: {
           type: "object",
           properties: {
-            startup: { type: "object" },
+            startup: startupResponse,
           },
         },
       },
@@ -45,7 +113,10 @@ export async function startupRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            startups: { type: "array" },
+            startups: {
+              type: "array",
+              items: startupListResponse,
+            },
           },
         },
       },
@@ -68,7 +139,7 @@ export async function startupRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            startup: { type: "object" },
+            startup: startupResponse,
           },
         },
       },
