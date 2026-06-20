@@ -8,16 +8,36 @@ const QUEUE_NAME = "startupos-generations";
 function createRedisConnection() {
   if (env.REDIS_URL) {
     const useTLS = env.REDIS_URL.startsWith("rediss://");
-    return new Redis(env.REDIS_URL, {
+    const redis = new Redis(env.REDIS_URL, {
       maxRetriesPerRequest: null,
       ...(useTLS ? { tls: {} } : {}),
     });
+    redis.on("error", (err) => {
+      logger.error({ err }, "Redis connection error");
+    });
+    redis.on("connect", () => {
+      logger.info("Redis connected");
+    });
+    redis.on("ready", () => {
+      logger.info("Redis ready");
+    });
+    return redis;
   }
-  return new Redis({
+  const redis = new Redis({
     host: env.REDIS_HOST,
     port: env.REDIS_PORT,
     maxRetriesPerRequest: null,
   });
+  redis.on("error", (err) => {
+    logger.error({ err }, "Redis connection error");
+  });
+  redis.on("connect", () => {
+    logger.info("Redis connected");
+  });
+  redis.on("ready", () => {
+    logger.info("Redis ready");
+  });
+  return redis;
 }
 
 const connection = createRedisConnection();
@@ -39,6 +59,9 @@ export function getQueue(): Queue {
         removeOnFail: 50,
       },
     });
+    queue.on("error", (err) => {
+      logger.error({ err }, "Queue error");
+    });
   }
   return queue;
 }
@@ -46,6 +69,9 @@ export function getQueue(): Queue {
 export function getQueueEvents(): QueueEvents {
   if (!queueEvents) {
     queueEvents = new QueueEvents(QUEUE_NAME, { connection });
+    queueEvents.on("error", (err) => {
+      logger.error({ err }, "QueueEvents error");
+    });
   }
   return queueEvents;
 }
@@ -64,7 +90,11 @@ export function createWorker(
   });
 
   worker.on("failed", (job, err) => {
-    logger.error({ jobId: job?.id, error: err.message }, "Worker job failed");
+    logger.error({ jobId: job?.id, error: err?.message, stack: err?.stack }, "Worker job failed");
+  });
+
+  worker.on("error", (err) => {
+    logger.error({ err }, "Worker error");
   });
 
   return worker;

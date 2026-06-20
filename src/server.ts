@@ -68,6 +68,16 @@ async function bootstrap(): Promise<void> {
     timeWindow: "1 minute",
   });
 
+  const getSwaggerServers = () => {
+    if (env.PUBLIC_URL) {
+      return [{ url: env.PUBLIC_URL, description: "Production server" }];
+    }
+    if (env.NODE_ENV === "production") {
+      return [{ url: `https://${env.HOST}:${env.PORT}`, description: "Production server (fallback)" }];
+    }
+    return [{ url: `http://localhost:${env.PORT}`, description: "Development server" }];
+  };
+
   await app.register(swagger, {
     openapi: {
       info: {
@@ -75,9 +85,7 @@ async function bootstrap(): Promise<void> {
         description: "Backend API for StartupOS - AI-powered startup website generation",
         version: "2.0.0",
       },
-      servers: [
-        { url: `http://localhost:${env.PORT}`, description: "Development server" },
-      ],
+      servers: getSwaggerServers(),
       components: {
         securitySchemes: {
           bearerAuth: {

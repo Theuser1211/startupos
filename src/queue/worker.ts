@@ -15,26 +15,41 @@ import { env } from "../lib/env.js";
 import { Prisma } from "@prisma/client";
 
 export function startWorker(): void {
-  createWorker(async (job: Job<JobQueuePayload>) => {
+  const worker = createWorker(async (job: Job<JobQueuePayload>) => {
     const { type, startupId, payload } = job.data;
 
-    switch (type) {
-      case "BLUEPRINT_GENERATION": {
-        await handleBlueprintGeneration(job, startupId, payload);
-        break;
+    try {
+      switch (type) {
+        case "BLUEPRINT_GENERATION": {
+          await handleBlueprintGeneration(job, startupId, payload);
+          break;
+        }
+        case "WEBSITE_GENERATION": {
+          await handleWebsiteGeneration(job, startupId, payload);
+          break;
+        }
+        case "DEPLOYMENT": {
+          await handleDeployment(job, startupId, payload);
+          break;
+        }
+        default: {
+          throw new Error(`Unknown job type: ${type}`);
+        }
       }
-      case "WEBSITE_GENERATION": {
-        await handleWebsiteGeneration(job, startupId, payload);
-        break;
-      }
-      case "DEPLOYMENT": {
-        await handleDeployment(job, startupId, payload);
-        break;
-      }
-      default: {
-        throw new Error(`Unknown job type: ${type}`);
-      }
+    } catch (error) {
+      logger.error(
+        { err: error, jobId: job.id, type, startupId },
+        "Worker job processing failed",
+      );
+      throw error;
     }
+  });
+
+  worker.on("failed", (job, err) => {
+    logger.error(
+      { jobId: job?.id, error: err?.message, stack: err?.stack },
+      "Worker job failed permanently",
+    );
   });
 
   logger.info("Queue worker started");

@@ -6,6 +6,8 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   HOST: z.string().default("0.0.0.0"),
 
+  PUBLIC_URL: z.string().url().optional(),
+
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url().optional(),
 
