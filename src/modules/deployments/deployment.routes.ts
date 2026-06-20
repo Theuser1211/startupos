@@ -2,6 +2,20 @@ import { FastifyInstance } from "fastify";
 import { createDeploymentHandler, getDeploymentHandler } from "./deployment.handler.js";
 import { authenticate } from "../../middleware/auth.js";
 
+const deploymentResponse = {
+  type: "object",
+  properties: {
+    id: { type: "string" },
+    status: { type: "string" },
+    url: { type: ["string", "null"] },
+    provider: { type: ["string", "null"] },
+    error: { type: ["string", "null"] },
+    createdAt: { type: "string", format: "date-time" },
+    updatedAt: { type: "string", format: "date-time" },
+    websiteId: { type: "string" },
+  },
+};
+
 export async function deploymentRoutes(app: FastifyInstance): Promise<void> {
   app.addHook("preHandler", authenticate);
 
@@ -45,7 +59,7 @@ export async function deploymentRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            deployment: { type: "object" },
+            deployment: deploymentResponse,
           },
         },
       },

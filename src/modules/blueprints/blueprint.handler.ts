@@ -149,5 +149,10 @@ export async function getBlueprintHandler(
     throw new ForbiddenError("You do not own this blueprint");
   }
 
-  reply.send({ blueprint });
+  // Evidence logging for retrieval/serialization boundary
+  console.log("[BP-GET] DB blueprint content", JSON.stringify(blueprint.content, null, 2));
+  const payload = { blueprint };
+  console.log("[BP-GET] Reply payload", JSON.stringify(payload, null, 2));
+
+  reply.send(payload);
 }

@@ -6,11 +6,15 @@ const blueprintResponse = {
   type: "object",
   properties: {
     id: { type: "string" },
-    content: { type: "object" },
+    content: {
+      type: "object",
+      additionalProperties: true,
+    },
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
     startupId: { type: "string" },
   },
+  additionalProperties: false,
 };
 
 export async function blueprintRoutes(app: FastifyInstance): Promise<void> {

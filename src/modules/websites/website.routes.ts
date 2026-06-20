@@ -2,6 +2,21 @@ import { FastifyInstance } from "fastify";
 import { generateWebsiteHandler, getWebsiteHandler } from "./website.handler.js";
 import { authenticate } from "../../middleware/auth.js";
 
+const websiteResponse = {
+  type: "object",
+  properties: {
+    id: { type: "string" },
+    name: { type: "string" },
+    content: { type: "object", additionalProperties: true },
+    status: { type: "string" },
+    createdAt: { type: "string", format: "date-time" },
+    updatedAt: { type: "string", format: "date-time" },
+    startupId: { type: "string" },
+    spec: { type: ["object", "null"] },
+    deployment: { type: ["object", "null"] },
+  },
+};
+
 export async function websiteRoutes(app: FastifyInstance): Promise<void> {
   app.addHook("preHandler", authenticate);
 
@@ -45,7 +60,7 @@ export async function websiteRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            website: { type: "object" },
+            website: websiteResponse,
           },
         },
       },
