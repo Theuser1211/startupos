@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createDeploymentHandler, getDeploymentHandler } from "./deployment.handler.js";
+import { createDeploymentHandler, deployWebsiteHandler, getDeploymentHandler } from "./deployment.handler.js";
 import { authenticate } from "../../middleware/auth.js";
 
 const deploymentResponse = {
@@ -22,7 +22,7 @@ export async function deploymentRoutes(app: FastifyInstance): Promise<void> {
   app.post("/deployments/create", {
     schema: {
       tags: ["Deployments"],
-      description: "Create a deployment for a website",
+      description: "Queue a deployment job for a website (requires Redis/BullMQ)",
       security: [{ bearerAuth: [] }],
       body: {
         type: "object",
@@ -42,6 +42,31 @@ export async function deploymentRoutes(app: FastifyInstance): Promise<void> {
       },
     },
   }, createDeploymentHandler);
+
+  app.post("/deployments/deploy", {
+    schema: {
+      tags: ["Deployments"],
+      description: "Deploy a website synchronously (no Redis required). Returns the public URL directly.",
+      security: [{ bearerAuth: [] }],
+      body: {
+        type: "object",
+        required: ["websiteId"],
+        properties: {
+          websiteId: { type: "string", format: "uuid" },
+        },
+      },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            deployment: deploymentResponse,
+            verified: { type: "boolean" },
+            message: { type: "string" },
+          },
+        },
+      },
+    },
+  }, deployWebsiteHandler);
 
   app.get("/deployments/:id", {
     schema: {

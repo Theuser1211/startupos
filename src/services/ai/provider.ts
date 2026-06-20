@@ -4,6 +4,7 @@ import {
   WebsiteSpecResult,
   PageSpec,
   PageHTMLResult,
+  ThemeSpec,
 } from "../../types/ai.js";
 import { env } from "../../lib/env.js";
 import { logger } from "../../lib/logger.js";
@@ -126,58 +127,62 @@ export abstract class BaseAIProvider implements AIProvider {
     spec: WebsiteSpecResult,
     page: PageSpec,
   ): Array<{ role: string; content: string }> {
-    const systemPrompt = `You are an expert web developer. Generate a complete, production-ready HTML page for a startup website.
+    const sectionTypes = page.sections.map((s) => s.type).join(", ");
+    const systemPrompt = `You are an expert web designer and developer. Generate a premium, YC-grade startup landing page.
 
-CRITICAL: Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
-The JSON must have exactly three fields: "slug", "title", and "html".
+CRITICAL: Return ONLY JSON: { "slug": "...", "title": "...", "html": "<!DOCTYPE html>..." }. No markdown, no explanation.
 
-Requirements for the HTML:
-- The HTML must be a full document: <!DOCTYPE html>, <html>, <head>, <body>
-- Use semantic HTML5 (header, nav, main, section, footer)
-- Must be fully responsive (mobile-first with media queries)
-- All CSS must be inline in a <style> tag in <head>
-- Include the Inter font from Google Fonts
-- All content must be real, compelling marketing copy — no placeholder text
-- Include proper meta tags (charset, viewport, description)
-- The page must be self-contained (no external CSS/JS except Google Fonts)
-- Use CSS Grid or Flexbox for layout
-- Include hover effects on interactive elements
-- Include smooth scroll behavior
-- Do NOT use markdown fences in your response
-- Do NOT include TODO markers or placeholder text
+DESIGN STANDARDS:
+- Visual hierarchy: Large bold headings (2.5rem-4rem), clear subheadings (1.1rem-1.25rem), readable body (0.95rem-1rem)
+- Typography: Inter font, headings 700-800 weight, -0.02em to -0.04em letter-spacing, body 400 weight, 1.6-1.7 line-height
+- Generous whitespace: 96-128px section padding, 32-40px between cards
+- Cards: Clean white backgrounds, subtle borders (#e5e7eb), 12-16px radius, soft shadows on hover, translateY(-4px) lift
+- Buttons: 12-14px vertical padding, 24-32px horizontal, 8-12px radius, 600 weight, translateY hover lift
+- Dark mode via prefers-color-scheme: dark with proper dark surface/text/border colors
+- Animations: fadeIn + translateY(24px) on section entrance, stagger delays (0.1s-0.3s)
+- Responsive: 1024px (tablet grid), 768px (single column), 480px (compact padding)
+- Gradient text effects on hero headlines
+- Background gradients: radial gradient glow behind hero, linear gradient for CTA sections
+
+SECTION-SPECIFIC LAYOUTS:
+hero - Full-width with 50/50 split (text left, visual right). Badge above headline. Large headline with gradient text. Two CTAs. Decorative card stack or gradient shapes on right side.
+features - Section title + subtitle centered. 3-column grid of feature cards. Each card: colored icon circle, heading, description text. Hover: lift + shadow.
+pricing - Centered heading. 3-column grid of pricing cards. Featured tier with "Most Popular" badge. Price + period, feature list with checkmarks, CTA button. Clean card design.
+faq - Centered heading. Accordion list: click question to expand answer with smooth height transition, chevron rotation.
+problem/solution - Split section (50/50). Problem: pain point list with red X icons. Solution: checkmark list with primary color icons. Alternating layout.
+cta - Full-width gradient banner (primary->secondary). Large white heading, subtext, white button with primary text. Radial glow overlay.
+social-proof - Heading centered. Row of styled placeholder badges/logos.
 
 Theme:
-- Primary color: ${spec.theme.primaryColor}
-- Secondary color: ${spec.theme.secondaryColor}
-- Font family: ${spec.theme.fontFamily}
-- Border radius: ${spec.theme.borderRadius}
+- Primary: ${spec.theme.primaryColor} (CTAs, accents, buttons, link hover)
+- Secondary: ${spec.theme.secondaryColor} (gradients, decorative elements)
+- Font: ${spec.theme.fontFamily}, border-radius: ${spec.theme.borderRadius}
 
-Startup context:
-- Name: ${blueprint.name}
-- Industry: ${blueprint.industry}
-- Description: ${blueprint.description}
-- Target audience: ${blueprint.targetAudience}
-- Key features: ${blueprint.keyFeatures.join(", ")}
-- Solution: ${blueprint.solution}
+Startup: ${blueprint.name} (${blueprint.industry})
+Description: ${blueprint.description}
+Key features: ${blueprint.keyFeatures.join(", ")}
+Solution: ${blueprint.solution}
 
-Page to generate:
-- Name: ${page.name}
-- Slug: ${page.slug}
-- Sections (in order): ${page.sections.map((s) => s.type).join(", ")}
-- Section content: ${JSON.stringify(page.sections)}
+Page: "${page.name}" (${page.slug}), sections: ${sectionTypes}
+Section content: ${JSON.stringify(page.sections)}
 
-Return ONLY a JSON object with this exact structure:
-{
-  "slug": "${page.slug}",
-  "title": "${page.name}",
-  "html": "<!DOCTYPE html><html>...</html>"
-}`;
+RULES:
+- ALL CSS in <style> tag. ALL JS in <script> at end of body.
+- NO external deps except Google Fonts (Inter).
+- NO markdown fences, NO explanation text.
+- Real marketing copy from startup context above. NOT generic placeholder text.
+- Full <!DOCTYPE html> with proper <head> (meta charset, viewport, og tags, twitter card).
+- Responsive at 1024px, 768px, 480px.
+- Hover effects, smooth transitions, scroll animations.
+- Dark mode via prefers-color-scheme: dark.
+- NEVER generate fake testimonials, team members, stats, addresses, phone numbers, or company claims.
+- NEVER use "revolutionary", "game-changing", "best-in-class", "cutting-edge", "next-generation".`;
 
     return [
       { role: "system", content: systemPrompt },
       {
         role: "user",
-        content: `Generate the "${page.name}" page for ${blueprint.name}. Return ONLY the JSON object with the html field.`,
+        content: `Generate a premium ${page.name.toLowerCase()} page for ${blueprint.name}, a ${blueprint.industry} startup. Sections: ${sectionTypes}. Return ONLY the JSON.`,
       },
     ];
   }
@@ -237,8 +242,97 @@ Return ONLY valid JSON with this exact structure:
   }
 
   async generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult> {
-    const systemPrompt = `You are a website specification generator. Given a startup blueprint, generate a website spec.
-Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
+    const industry = blueprint.industry || "technology";
+    const systemPrompt = `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation. No code fences.
+
+CONSTRAINTS — NEVER fabricate:
+- NO fake testimonials, team members, statistics, customer logos, reviews, or company claims
+- NO fake addresses, phone numbers, email addresses, or social media handles
+- NO fake legal information (privacy policy terms, etc.)
+- Only include sections that can be populated truthfully from the blueprint data
+- Skip testimonials, team, stats, logo-cloud sections entirely — they require fabricated data
+- If you lack real data for a field, leave it empty or omit the section
+
+REQUIRED PAGE: Home ("/") with these sections in this order:
+
+1. hero — content includes:
+   - headline: A specific, benefit-driven headline (e.g. "Ship API integrations 10x faster" not "Revolutionary Integration Platform")
+   - subheadline: Clear value proposition expanding on the headline
+   - ctaText: Action-oriented primary CTA (e.g. "Start Building Free")
+   - ctaSecondary: Lower-friction secondary CTA (e.g. "See How It Works")
+
+2. problem (or "pain") — content includes:
+   - headline: Framing of the problem (e.g. "Building integrations is still painfully manual")
+   - description: Specific pain description from the blueprint's problemStatement
+   - painPoints: Array of 3-4 specific pain points derived from the blueprint
+
+3. solution (or "benefits") — content includes:
+   - headline: How the product solves the problem
+   - description: Solution from blueprint.solution
+   - benefits: Array of 3-4 specific benefits from the solution
+
+4. features — content includes:
+   - title: Section heading (e.g. "Everything you need to ship integrations")
+   - subtitle: Optional supporting text
+   - items: Array of feature objects, each with "title" and "description" (NOT plain strings). Derive from blueprint.keyFeatures. Make descriptions concrete and specific.
+
+5. pricing — content includes:
+   - headline: "Simple, transparent pricing" (or similar)
+   - subtitle: Description of the real monetization model from blueprint.monetization
+   - plans: Array of 2-3 plan objects with:
+     - name: Plan name (e.g. "Starter", "Pro", "Enterprise")
+     - price: Dollar amount string (e.g. "$29")
+     - period: "month" (omit for enterprise)
+     - description: One-line description
+     - features: Array of 4-6 specific features
+     - highlighted: true for the recommended tier (exactly 1 plan)
+
+6. faq — content includes:
+   - subtitle: Optional supporting text
+   - items: Array of 3-5 objects with "question" and "answer". Write real questions a potential customer would ask about this specific product category. Not generic industry questions.
+
+7. cta — content includes:
+   - headline: A compelling final CTA headline referencing the company name
+   - subheadline: Brief supporting message
+   - ctaText: Final action button text (e.g. "Get Started Free")
+
+OPTIONAL: social-proof — content includes:
+   - headline: "Trusted by teams building ..."
+   - items: Array of 3-5 placeholder company names (generic like "Company A", "Startup X") — these are clearly placeholders, not real logos
+
+OPTIONAL: 1 additional page (About, How It Works, or Features deep-dive):
+- Must derive ALL content from blueprint data
+- Do not create pages with fabricated or empty content
+
+COPYWRITING RULES:
+- Headlines must be specific to what this startup does. Compare:
+  BAD: "Revolutionary Platform for Modern Teams"
+  GOOD: "Automate your customer data pipelines in minutes"
+- Use concrete language from blueprint.keyFeatures and blueprint.solution
+- Focus on customer outcomes, not product features
+- Use the startup's target audience to inform tone and messaging
+- Avoid: "revolutionary", "game-changing", "best-in-class", "cutting-edge", "next-generation", "industry-leading"
+- Every word should pass the "so what?" test — does it tell the user why they should care?
+
+COLOR GUIDANCE for ${industry}:
+
+| Industry | Primary | Secondary | Why |
+|---|---|---|---|
+| Fintech/Finance | #0F766E | #14B8A6 | Trustworthy teal |
+| Healthcare | #059669 | #10B981 | Calming green |
+| DevTools/SaaS | #2563EB | #7C3AED | Bold blue-purple |
+| AI/ML | #7C3AED | #2563EB | Creative purple-blue |
+| E-commerce | #E11D48 | #BE185D | Energetic red |
+| Education | #7C3AED | #8B5CF6 | Approachable purple |
+| Security | #1E293B | #475569 | Strong dark |
+| Enterprise | #4F46E5 | #6366F1 | Trustworthy indigo |
+| Creative | #EC4899 | #F43F5E | Vibrant pink |
+| Other | #2563EB | #7C3AED | Versatile blue |
+
+Font: "Inter", borderRadius: "12px"
+
 Return ONLY valid JSON with this exact structure:
 {
   "pages": [
@@ -246,21 +340,29 @@ Return ONLY valid JSON with this exact structure:
       "name": "Home",
       "slug": "/",
       "sections": [
-        { "type": "hero", "order": 1, "content": { "headline": "...", "subheadline": "...", "ctaText": "..." } },
-        { "type": "features", "order": 2, "content": { "items": [...] } }
+        { "type": "hero", "order": 1, "content": { "headline": "headline here", "subheadline": "subheadline here", "ctaText": "Primary CTA", "ctaSecondary": "Secondary CTA" } },
+        { "type": "problem", "order": 2, "content": { "headline": "problem headline", "description": "problem description", "painPoints": ["pain 1", "pain 2", "pain 3"] } },
+        { "type": "solution", "order": 3, "content": { "headline": "solution headline", "description": "solution description", "benefits": ["benefit 1", "benefit 2", "benefit 3"] } },
+        { "type": "features", "order": 4, "content": { "title": "Features heading", "subtitle": "supporting text", "items": [{ "title": "Feature", "description": "Description" }] } },
+        { "type": "pricing", "order": 5, "content": { "headline": "Pricing heading", "subtitle": "monetization description", "plans": [{ "name": "Starter", "price": "$0", "period": "month", "description": "desc", "features": ["f1", "f2"], "highlighted": false }] } },
+        { "type": "faq", "order": 6, "content": { "subtitle": "", "items": [{ "question": "Q?", "answer": "A!" }] } },
+        { "type": "cta", "order": 7, "content": { "headline": "CTA headline", "subheadline": "CTA subheadline", "ctaText": "Get Started" } }
       ]
     }
   ],
   "theme": {
-    "primaryColor": "#000000",
-    "secondaryColor": "#ffffff",
+    "primaryColor": "#2563EB",
+    "secondaryColor": "#7C3AED",
     "fontFamily": "Inter",
-    "borderRadius": "8px"
+    "borderRadius": "12px"
   },
   "components": [
-    { "name": "Navbar", "type": "navigation", "props": {} }
+    { "name": "Navbar", "type": "navigation", "props": {} },
+    { "name": "Footer", "type": "footer", "props": {} }
   ]
-}`;
+}
+
+REMEMBER: Use the ACTUAL blueprint data. Never fabricate testimonials, team members, statistics, or company claims. Write specific, customer-focused copy.`;
 
     const raw = await this.callAPI(
       this.endpoint,
@@ -336,31 +438,45 @@ Return ONLY valid JSON with this exact structure:
   }
 
   async generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult> {
-    const systemPrompt = `You are a website specification generator. Given a startup blueprint, generate a website spec.
-Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
-Generate pages with diverse section types: hero, features, pricing, testimonials, faq, cta, stats, team, contact — mix them based on the startup's industry.
-Return ONLY valid JSON with this exact structure:
-{
-  "pages": [
-    {
-      "name": "Home",
-      "slug": "/",
-      "sections": [
-        { "type": "hero", "order": 1, "content": { "headline": "...", "subheadline": "...", "ctaText": "..." } },
-        { "type": "features", "order": 2, "content": { "items": [...] } }
-      ]
-    }
-  ],
-  "theme": {
-    "primaryColor": "#hex",
-    "secondaryColor": "#hex",
-    "fontFamily": "Font Name",
-    "borderRadius": "Npx"
-  },
-  "components": [
-    { "name": "Navbar", "type": "navigation", "props": {} }
-  ]
-}`;
+    const industry = blueprint.industry || "technology";
+    const systemPrompt = `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification.
+
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation. No code fences.
+
+CONSTRAINTS — NEVER fabricate:
+- NO fake testimonials, team members, statistics, customer logos, reviews, or company claims
+- NO fake addresses, phone numbers, email addresses, or social media handles
+- Skip testimonials, team, stats, logo-cloud sections entirely
+- Only include sections truthfully derivable from the blueprint data
+
+REQUIRED HOME PAGE sections in order:
+
+1. hero — content: headline (benefit-driven, specific, e.g. "Ship API integrations 10x faster"), subheadline, ctaText, ctaSecondary
+
+2. problem — content: headline, description (from problemStatement), painPoints: string[] (3-4 items)
+
+3. solution — content: headline, description (from solution), benefits: string[] (3-4 items)
+
+4. features — content: title, subtitle, items: Array of {title: string, description: string} (NOT plain strings). Derive from keyFeatures with concrete descriptions.
+
+5. pricing — content: headline, subtitle (from monetization), plans: Array of {name, price, period, description, features: string[], highlighted: boolean}
+
+6. faq — content: subtitle, items: Array of {question, answer} (3-5 items, real customer questions about this product category)
+
+7. cta — content: headline (includes company name), subheadline, ctaText
+
+OPTIONAL: social-proof — content: headline, items: string[] (generic placeholder company names)
+
+COPYWRITING RULES:
+- BAD: "Revolutionary Platform for Modern Teams"  GOOD: "Automate your customer data pipelines in minutes"
+- Use concrete language from blueprint.keyFeatures and blueprint.solution
+- Focus on customer outcomes. Avoid: "revolutionary", "game-changing", "best-in-class", "cutting-edge"
+- Every word should pass the "so what?" test
+
+COLORS: Use industry-appropriate colors. Font: "Inter", borderRadius: "12px"
+- ${industry}: Primary #2563EB, Secondary #7C3AED (or industry-specific alternatives)
+
+Return ONLY valid JSON with the exact structure shown. Use the ACTUAL blueprint data.`;
 
     const raw = await this.callAPI(
       this.endpoint,
@@ -419,12 +535,17 @@ export class OpenRouterProvider extends BaseAIProvider {
   }
 
   async generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult> {
+    const industry = blueprint.industry || "technology";
     const raw = await this.callAPI(
       this.endpoint,
       env.OPENROUTER_API_KEY!,
       "openai/gpt-4o",
       [
-        { role: "system", content: "You are a website specification generator. Do NOT include any text before or after the JSON. Return ONLY the raw JSON object with fields: pages (array with name/slug/sections), theme (primaryColor/secondaryColor/fontFamily/borderRadius), components." },
+        { role: "system", content: `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification. CRITICAL: Return ONLY valid JSON. NEVER fabricate testimonials, team members, stats, logos, addresses, phone numbers, or company claims. Only include sections truthfully derivable from the blueprint data.
+
+REQUIRED Home page sections: hero (headline=benefit-driven specific headline, subheadline, ctaText, ctaSecondary), problem (headline, description, painPoints string[]), solution (headline, description, benefits string[]), features (title, subtitle, items=[{title, description}]), pricing (headline, subtitle, plans=[{name,price,period,description,features,highlighted}]), faq (subtitle, items=[{question,answer}]), cta (headline, subheadline, ctaText). Optional: social-proof (headline, items string[]).
+
+COPYWRITING: Specific customer-focused copy. BAD: "Revolutionary platform" GOOD: "Automate X in minutes". Use blueprint data. Avoid revolutionary/game-changing/best-in-class. Font: Inter, borderRadius: 12px. Industry: ${industry}. Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), and components array.` },
         { role: "user", content: JSON.stringify(blueprint) },
       ],
     );
