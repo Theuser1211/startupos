@@ -5,8 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 
-/* ─── Types ─── */
-
 type ToastVariant = "success" | "error" | "info" | "warning";
 
 interface Toast {
@@ -23,29 +21,11 @@ interface ToastContextValue {
   dismiss: (id: string) => void;
 }
 
-/* ─── Config ─── */
-
 const variantConfig: Record<ToastVariant, { icon: typeof CheckCircle; border: string; bg: string }> = {
-  success: {
-    icon: CheckCircle,
-    border: "border-emerald-500/30",
-    bg: "bg-emerald-500/10",
-  },
-  error: {
-    icon: AlertCircle,
-    border: "border-red-500/30",
-    bg: "bg-red-500/10",
-  },
-  info: {
-    icon: Info,
-    border: "border-blue-500/30",
-    bg: "bg-blue-500/10",
-  },
-  warning: {
-    icon: AlertTriangle,
-    border: "border-amber-500/30",
-    bg: "bg-amber-500/10",
-  },
+  success: { icon: CheckCircle, border: "border-emerald-500/30", bg: "bg-emerald-500/10" },
+  error: { icon: AlertCircle, border: "border-red-500/30", bg: "bg-red-500/10" },
+  info: { icon: Info, border: "border-blue-500/30", bg: "bg-blue-500/10" },
+  warning: { icon: AlertTriangle, border: "border-amber-500/30", bg: "bg-amber-500/10" },
 };
 
 const iconColors: Record<ToastVariant, string> = {
@@ -55,15 +35,11 @@ const iconColors: Record<ToastVariant, string> = {
   warning: "text-amber-400",
 };
 
-/* ─── Context ─── */
-
 const ToastContext = createContext<ToastContextValue>({
   toasts: [],
   toast: () => {},
   dismiss: () => {},
 });
-
-/* ─── Provider ─── */
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -77,7 +53,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
       const toast: Toast = { ...t, id };
       setToasts((prev) => [...prev, toast]);
-
       const duration = t.duration ?? 4000;
       if (duration > 0) {
         setTimeout(() => dismiss(id), duration);
@@ -89,8 +64,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={{ toasts, toast: addToast, dismiss }}>
       {children}
-
-      {/* Toast Container */}
       <div
         className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"
         aria-live="polite"
@@ -140,8 +113,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
-
-/* ─── Hook ─── */
 
 export function useToast(): ToastContextValue {
   return useContext(ToastContext);

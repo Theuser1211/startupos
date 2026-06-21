@@ -5,29 +5,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { useBlueprint } from "@/lib/startup/blueprint-context";
 import {
-  Award,
-  ShieldCheck,
-  ShieldAlert,
-  TrendingUp,
-  TrendingDown,
-  Lightbulb,
-  Crosshair,
-  AlertTriangle,
-  MoveRight,
-  Sparkles,
-  Scale,
-  Swords,
-  XCircle,
-  BarChart3,
-  Clock,
-  Users,
-  Globe,
-  DollarSign,
-  Zap,
+  Award, ShieldCheck, ShieldAlert, TrendingUp, TrendingDown,
+  Lightbulb, Crosshair, AlertTriangle, MoveRight, Sparkles, Scale,
+  Swords, XCircle, BarChart3, Clock, Users, Globe, DollarSign, Zap,
   HelpCircle,
 } from "lucide-react";
+import type { StartupBlueprint } from "@/lib/types";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -42,68 +26,46 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-/* ─── Badge Config ─── */
-
 const badgeConfig = {
   pass: {
-    icon: Award,
-    label: "PASS",
-    gradient: "from-emerald-500 to-teal-600",
-    glow: "shadow-emerald-500/30",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/30",
-    text: "text-emerald-400",
+    icon: Award, label: "PASS", gradient: "from-emerald-500 to-teal-600",
+    glow: "shadow-emerald-500/30", bg: "bg-emerald-500/10",
+    border: "border-emerald-500/30", text: "text-emerald-400",
     ring: "ring-emerald-500/30",
     description: "Your startup has demonstrated strong fundamentals and a viable path to success.",
   },
   conditional: {
-    icon: ShieldCheck,
-    label: "CONDITIONAL PASS",
-    gradient: "from-blue-500 to-indigo-600",
-    glow: "shadow-blue-500/30",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/30",
-    text: "text-blue-400",
+    icon: ShieldCheck, label: "CONDITIONAL PASS", gradient: "from-blue-500 to-indigo-600",
+    glow: "shadow-blue-500/30", bg: "bg-blue-500/10",
+    border: "border-blue-500/30", text: "text-blue-400",
     ring: "ring-blue-500/30",
     description: "Your startup has potential, but key areas need attention before scaling.",
   },
   "needs-work": {
-    icon: ShieldAlert,
-    label: "NEEDS WORK",
-    gradient: "from-amber-500 to-orange-600",
-    glow: "shadow-amber-500/30",
-    bg: "bg-amber-500/10",
-    border: "border-amber-500/30",
-    text: "text-amber-400",
+    icon: ShieldAlert, label: "NEEDS WORK", gradient: "from-amber-500 to-orange-600",
+    glow: "shadow-amber-500/30", bg: "bg-amber-500/10",
+    border: "border-amber-500/30", text: "text-amber-400",
     ring: "ring-amber-500/30",
     description: "Significant gaps exist in your current strategy. Address these before seeking investment.",
   },
   fail: {
-    icon: XCircle,
-    label: "FAIL",
-    gradient: "from-red-500 to-rose-600",
-    glow: "shadow-red-500/30",
-    bg: "bg-red-500/10",
-    border: "border-red-500/30",
-    text: "text-red-400",
+    icon: XCircle, label: "FAIL", gradient: "from-red-500 to-rose-600",
+    glow: "shadow-red-500/30", bg: "bg-red-500/10",
+    border: "border-red-500/30", text: "text-red-400",
     ring: "ring-red-500/30",
     description: "Critical issues threaten your startup's viability. A fundamental pivot may be necessary.",
   },
 };
 
-/* ─── Dimension icon/label mapping ─── */
-
 const dimensionMeta: Record<string, { icon: typeof Award; label: string }> = {
-  market:        { icon: Globe,       label: "Market" },
-  timing:        { icon: Clock,       label: "Timing" },
-  competition:   { icon: Swords,      label: "Competition" },
+  market: { icon: Globe, label: "Market" },
+  timing: { icon: Clock, label: "Timing" },
+  competition: { icon: Swords, label: "Competition" },
   defensibility: { icon: ShieldCheck, label: "Defensibility" },
-  founderFit:    { icon: Users,       label: "Founder Fit" },
-  distribution:  { icon: Zap,         label: "Distribution" },
-  revenue:       { icon: DollarSign,  label: "Revenue" },
+  founderFit: { icon: Users, label: "Founder Fit" },
+  distribution: { icon: Zap, label: "Distribution" },
+  revenue: { icon: DollarSign, label: "Revenue" },
 };
-
-/* ─── Score Gauge ─── */
 
 function ScoreGauge({ value, label, icon: Icon }: { value: number; label: string; icon: typeof Award }) {
   const circumference = 2 * Math.PI * 48;
@@ -117,8 +79,7 @@ function ScoreGauge({ value, label, icon: Icon }: { value: number; label: string
           <motion.circle
             cx="55" cy="55" r="48" fill="none"
             stroke={`url(#gauge-${label.replace(/\s+/g, "-")})`}
-            strokeWidth="6"
-            strokeLinecap="round"
+            strokeWidth="6" strokeLinecap="round"
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset: offset }}
             transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
@@ -143,17 +104,7 @@ function ScoreGauge({ value, label, icon: Icon }: { value: number; label: string
   );
 }
 
-/* ─── Dimension Detail Card ─── */
-
-function DimensionCard({
-  dimKey,
-  score,
-  description,
-}: {
-  dimKey: string;
-  score: number;
-  description: string;
-}) {
+function DimensionCard({ dimKey, score, description }: { dimKey: string; score: number; description: string }) {
   const meta = dimensionMeta[dimKey] || { icon: HelpCircle, label: dimKey };
   const Icon = meta.icon;
   const color = score >= 70 ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/5"
@@ -167,22 +118,16 @@ function DimensionCard({
           <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
             score >= 70 ? "bg-emerald-500/10" : score >= 50 ? "bg-amber-500/10" : "bg-red-500/10"
           }`}>
-            <Icon className={`h-4 w-4 ${
-              score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"
-            }`} />
+            <Icon className={`h-4 w-4 ${score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"}`} />
           </div>
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">{meta.label}</span>
-              <span className={`text-sm font-bold tabular-nums ${
-                score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"
-              }`}>{score}</span>
+              <span className={`text-sm font-bold tabular-nums ${score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"}`}>{score}</span>
             </div>
             <div className="h-1 rounded-full bg-white/5 mt-2 overflow-hidden">
               <motion.div
-                className={`h-full rounded-full ${
-                  score >= 70 ? "bg-emerald-500" : score >= 50 ? "bg-amber-500" : "bg-red-500"
-                }`}
+                className={`h-full rounded-full ${score >= 70 ? "bg-emerald-500" : score >= 50 ? "bg-amber-500" : "bg-red-500"}`}
                 initial={{ width: 0 }}
                 animate={{ width: `${score}%` }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
@@ -196,8 +141,6 @@ function DimensionCard({
   );
 }
 
-/* ─── Confindence Factor Bar ─── */
-
 function ConfidenceFactor({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center gap-3">
@@ -210,27 +153,13 @@ function ConfidenceFactor({ label, value }: { label: string; value: number }) {
           transition={{ duration: 0.6, ease: "easeOut" }}
         />
       </div>
-      <span className={`text-xs font-bold tabular-nums w-8 text-right ${
-        value >= 80 ? "text-emerald-400" : value >= 55 ? "text-amber-400" : "text-red-400"
-      }`}>{value}</span>
+      <span className={`text-xs font-bold tabular-nums w-8 text-right ${value >= 80 ? "text-emerald-400" : value >= 55 ? "text-amber-400" : "text-red-400"}`}>{value}</span>
     </div>
   );
 }
 
-/* ─── Improvement Path Card ─── */
-
-function ImprovementCard({
-  dimension,
-  action,
-  gain,
-  risk,
-  loss,
-}: {
-  dimension: string;
-  action: string;
-  gain: number;
-  risk: string | null;
-  loss: number | null;
+function ImprovementCard({ dimension, action, gain, risk, loss }: {
+  dimension: string; action: string; gain: number; risk: string | null; loss: number | null;
 }) {
   const meta = dimensionMeta[dimension] || { icon: HelpCircle, label: dimension };
   const Icon = meta.icon;
@@ -242,12 +171,8 @@ function ImprovementCard({
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
             <Icon className="h-3.5 w-3.5 text-primary" />
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {meta.label}
-          </span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{meta.label}</span>
         </div>
-
-        {/* Improvement action */}
         <div className="flex items-start gap-2 mb-2">
           <TrendingUp className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
           <div className="flex-1">
@@ -255,8 +180,6 @@ function ImprovementCard({
             <span className="text-[11px] text-emerald-400/80 font-medium">+{gain} pts</span>
           </div>
         </div>
-
-        {/* Risk */}
         {risk && loss && (
           <div className="flex items-start gap-2 pt-2 border-t border-glass-border">
             <TrendingDown className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
@@ -271,18 +194,8 @@ function ImprovementCard({
   );
 }
 
-/* ─── Trait Card ─── */
-
-function TraitCard({
-  dimension,
-  score,
-  explanation,
-  positive,
-}: {
-  dimension: string;
-  score: number;
-  explanation: string;
-  positive: boolean;
+function TraitCard({ dimension, score, explanation, positive }: {
+  dimension: string; score: number; explanation: string; positive: boolean;
 }) {
   const meta = dimensionMeta[dimension] || { icon: HelpCircle, label: dimension };
   const Icon = meta.icon;
@@ -294,31 +207,21 @@ function TraitCard({
       transition={{ duration: 0.4 }}
       className="flex items-start gap-3 rounded-xl border p-4 transition-all duration-300 hover:shadow-lg"
     >
-      <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
-          positive
-            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-            : "bg-red-500/10 text-red-400 border border-red-500/20"
-        }`}
-      >
+      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
+        positive ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-red-500/10 text-red-400 border border-red-500/20"
+      }`}>
         <Icon className="h-4 w-4" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <span className={`text-sm font-semibold ${positive ? "text-emerald-400" : "text-red-400"}`}>
-            {meta.label}
-          </span>
-          <Badge variant={positive ? "success" : "destructive"} className="text-[10px] px-1.5 py-0">
-            {score}/100
-          </Badge>
+          <span className={`text-sm font-semibold ${positive ? "text-emerald-400" : "text-red-400"}`}>{meta.label}</span>
+          <Badge variant={positive ? "success" : "destructive"} className="text-[10px] px-1.5 py-0">{score}/100</Badge>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">{explanation}</p>
       </div>
     </motion.div>
   );
 }
-
-/* ─── Fatal Risk Item ─── */
 
 function FatalRiskItem({ text, index }: { text: string; index: number }) {
   return (
@@ -335,8 +238,6 @@ function FatalRiskItem({ text, index }: { text: string; index: number }) {
     </motion.div>
   );
 }
-
-/* ─── Pivot Card ─── */
 
 function PivotCard({ pivot }: { pivot: string }) {
   return (
@@ -363,17 +264,13 @@ function PivotCard({ pivot }: { pivot: string }) {
   );
 }
 
-/* ─── Main Component ─── */
-
-export function VerdictTab() {
-  const { blueprint } = useBlueprint();
-
+export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
   if (!blueprint) {
     return (
       <EmptyState
         icon={Scale}
         title="No verdict yet"
-        description="Complete the founder interview to receive StartupOS's final judgment on your startup — including your verdict, confidence score, dimensional analysis, and actionable improvement paths."
+        description="Complete the founder interview to receive StartupOS's final judgment on your startup."
         actionLabel="Start Interview"
         actionHref="/interview"
       />
@@ -387,22 +284,13 @@ export function VerdictTab() {
   const dimEntries = Object.entries(verdict.dimensions) as [string, { score: number; label: string; description: string }][];
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-10"
-    >
-      {/* ─── Hero Section ─── */}
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-10">
       <motion.div variants={itemVariants} className="relative">
         <div className={`absolute inset-0 rounded-3xl ${config.bg} opacity-30 blur-3xl`} />
-
         <Card className={`relative overflow-hidden border-2 ${config.border} transition-all duration-500 hover:shadow-2xl ${config.glow}`}>
           <div className={`h-2 w-full bg-gradient-to-r ${config.gradient}`} />
-
           <CardContent className="p-8 sm:p-12">
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
-              {/* Verdict Badge */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -422,34 +310,15 @@ export function VerdictTab() {
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
               </motion.div>
-
-              {/* Verdict Info */}
               <div className="flex-1 text-center lg:text-left">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                >
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
                   <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <Badge className={`text-xs px-4 py-1.5 rounded-full border-0 bg-gradient-to-r ${config.gradient}`}>
-                      {config.label}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground font-mono">
-                      Composite Score: {verdict.compositeScore}/100
-                    </span>
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                      Confidence: {verdict.confidenceLabel} ({verdict.confidence}%)
-                    </Badge>
+                    <Badge className={`text-xs px-4 py-1.5 rounded-full border-0 bg-gradient-to-r ${config.gradient}`}>{config.label}</Badge>
+                    <span className="text-xs text-muted-foreground font-mono">Composite Score: {verdict.compositeScore}/100</span>
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">Confidence: {verdict.confidenceLabel} ({verdict.confidence}%)</Badge>
                   </div>
-
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4">
-                    StartupOS Verdict
-                  </h1>
-
-                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                    {config.description}
-                  </p>
-
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4">StartupOS Verdict</h1>
+                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">{config.description}</p>
                   <p className="text-sm text-foreground/80 mt-4 max-w-2xl leading-relaxed italic border-l-2 border-primary/30 pl-4">
                     &ldquo;{verdict.summary}&rdquo;
                   </p>
@@ -460,12 +329,9 @@ export function VerdictTab() {
         </Card>
       </motion.div>
 
-      {/* ─── 7 Dimensions Grid ─── */}
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-            <BarChart3 className="h-4 w-4 text-primary" />
-          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><BarChart3 className="h-4 w-4 text-primary" /></div>
           <h2 className="text-lg font-display font-bold">7-Dimension Assessment</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -475,7 +341,6 @@ export function VerdictTab() {
         </div>
       </motion.div>
 
-      {/* ─── Mini Gauges Row ─── */}
       <motion.div variants={itemVariants}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="hover:border-primary/20 transition-all duration-300">
@@ -488,7 +353,6 @@ export function VerdictTab() {
               <ScoreGauge value={verdict.confidence} label={`Confidence • ${verdict.confidenceLabel}`} icon={Award} />
             </CardContent>
           </Card>
-          {/* Show top 2 dimensions as gauges */}
           {verdict.strengths.slice(0, 2).map((s) => {
             const meta = dimensionMeta[s.dimension] || { icon: HelpCircle, label: s.dimension };
             return (
@@ -502,7 +366,6 @@ export function VerdictTab() {
         </div>
       </motion.div>
 
-      {/* ─── Strengths & Weaknesses ─── */}
       <motion.div variants={itemVariants} className="grid gap-6 lg:grid-cols-2">
         <div>
           <div className="flex items-center gap-2 mb-4">
@@ -510,77 +373,51 @@ export function VerdictTab() {
             <h2 className="text-lg font-display font-bold text-emerald-400">Top Strengths</h2>
           </div>
           <div className="space-y-3">
-            {verdict.strengths.length > 0 ? (
-              verdict.strengths.map((s, i) => (
-                <TraitCard key={i} dimension={s.dimension} score={s.score} explanation={s.explanation} positive />
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground italic">No standout strengths identified yet.</p>
-            )}
+            {verdict.strengths.length > 0 ? verdict.strengths.map((s, i) => (
+              <TraitCard key={i} dimension={s.dimension} score={s.score} explanation={s.explanation} positive />
+            )) : <p className="text-sm text-muted-foreground italic">No standout strengths identified yet.</p>}
           </div>
         </div>
-
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="h-5 w-5 text-red-400" />
             <h2 className="text-lg font-display font-bold text-red-400">Top Weaknesses</h2>
           </div>
           <div className="space-y-3">
-            {verdict.weaknesses.length > 0 ? (
-              verdict.weaknesses.map((w, i) => (
-                <TraitCard key={i} dimension={w.dimension} score={w.score} explanation={w.explanation} positive={false} />
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground italic">No significant weaknesses identified.</p>
-            )}
+            {verdict.weaknesses.length > 0 ? verdict.weaknesses.map((w, i) => (
+              <TraitCard key={i} dimension={w.dimension} score={w.score} explanation={w.explanation} positive={false} />
+            )) : <p className="text-sm text-muted-foreground italic">No significant weaknesses identified.</p>}
           </div>
         </div>
       </motion.div>
 
-      {/* ─── Fatal Risks ─── */}
       {verdict.fatalRisks.length > 0 && (
         <motion.div variants={itemVariants}>
           <Card className="border-red-500/20 bg-red-500/[0.02] overflow-hidden">
             <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-500" />
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-500/20">
-                  <Crosshair className="h-4 w-4 text-red-400" />
-                </div>
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-500/20"><Crosshair className="h-4 w-4 text-red-400" /></div>
                 <h2 className="text-lg font-display font-bold text-red-400">Fatal Risks</h2>
-                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
-                  {verdict.fatalRisks.length} identified
-                </Badge>
+                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">{verdict.fatalRisks.length} identified</Badge>
               </div>
-              <div className="space-y-3">
-                {verdict.fatalRisks.map((risk, i) => (
-                  <FatalRiskItem key={i} text={risk} index={i} />
-                ))}
-              </div>
+              <div className="space-y-3">{verdict.fatalRisks.map((risk, i) => (<FatalRiskItem key={i} text={risk} index={i} />))}</div>
             </CardContent>
           </Card>
         </motion.div>
       )}
 
-      {/* ─── Suggested Pivot ─── */}
       {isPivot && (
-        <motion.div variants={itemVariants}>
-          <PivotCard pivot={verdict.suggestedPivot!} />
-        </motion.div>
+        <motion.div variants={itemVariants}><PivotCard pivot={verdict.suggestedPivot!} /></motion.div>
       )}
 
-      {/* ─── Confidence Breakdown ─── */}
       <motion.div variants={itemVariants}>
         <Card className="hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-                <Award className="h-4 w-4 text-primary" />
-              </div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Award className="h-4 w-4 text-primary" /></div>
               <h2 className="text-lg font-display font-bold">Confidence Breakdown</h2>
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                {verdict.confidenceLabel}
-              </Badge>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{verdict.confidenceLabel}</Badge>
             </div>
             <div className="space-y-3">
               <ConfidenceFactor label="Data Completeness" value={verdict.confidenceBreakdown.dataCompleteness} />
@@ -588,45 +425,25 @@ export function VerdictTab() {
               <ConfidenceFactor label="Dimension Agreement" value={verdict.confidenceBreakdown.dimensionAgreement} />
               <ConfidenceFactor label="Industry Signal" value={verdict.confidenceBreakdown.industrySignal} />
             </div>
-            {verdict.confidence < 55 && (
-              <p className="text-xs text-muted-foreground mt-4 italic">
-                Low confidence means more data would improve the assessment. Complete more interview fields and progress through startup stages for a stronger signal.
-              </p>
-            )}
           </CardContent>
         </Card>
       </motion.div>
 
-      {/* ─── Improvement Paths ─── */}
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10">
-            <Lightbulb className="h-4 w-4 text-purple-400" />
-          </div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10"><Lightbulb className="h-4 w-4 text-purple-400" /></div>
           <h2 className="text-lg font-display font-bold">Improvement Paths</h2>
           <span className="text-xs text-muted-foreground font-mono">What would change your verdict</span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {verdict.improvementPaths.map((p, i) => (
-            <motion.div
-              key={p.dimension}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.08, duration: 0.4 }}
-            >
-              <ImprovementCard
-                dimension={p.dimension}
-                action={p.action}
-                gain={p.scoreGain}
-                risk={p.risk}
-                loss={p.scoreLoss}
-              />
+            <motion.div key={p.dimension} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.08, duration: 0.4 }}>
+              <ImprovementCard dimension={p.dimension} action={p.action} gain={p.scoreGain} risk={p.risk} loss={p.scoreLoss} />
             </motion.div>
           ))}
         </div>
       </motion.div>
 
-      {/* ─── 7-Dimension Quick Reference ─── */}
       <motion.div variants={itemVariants}>
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5">
@@ -637,7 +454,7 @@ export function VerdictTab() {
               <div className="flex-1">
                 <h3 className="text-sm font-semibold mb-1">How this verdict works</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong> (size & growth), <strong>Timing</strong> (market readiness), <strong>Competition</strong> (landscape & moats), <strong>Defensibility</strong> (barriers to entry), <strong>Founder-Fit</strong> (domain expertise), <strong>Distribution</strong> (go-to-market), and <strong>Revenue</strong> (unit economics). Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each). Your verdict is independent of the Startup Roast &mdash; it&apos;s a forward-looking assessment, not a critique.
+                  StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong>, <strong>Timing</strong>, <strong>Competition</strong>, <strong>Defensibility</strong>, <strong>Founder-Fit</strong>, <strong>Distribution</strong>, and <strong>Revenue</strong>. Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each).
                 </p>
               </div>
             </div>
@@ -645,7 +462,6 @@ export function VerdictTab() {
         </Card>
       </motion.div>
 
-      {/* ─── Footer ─── */}
       <motion.div variants={itemVariants}>
         <Card className="border-primary/20 bg-primary/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
           <CardContent className="p-6 sm:p-8">
@@ -656,7 +472,7 @@ export function VerdictTab() {
               <div className="flex-1">
                 <h3 className="text-sm font-semibold mb-1">What happens next?</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  This verdict is an independent assessment based on your interview data and industry benchmarks. Use the improvement paths above to identify the highest-impact actions. Weaknesses are opportunities — every dimension can be improved with focused execution.
+                  This verdict is an independent assessment based on your interview data and industry benchmarks. Use the improvement paths above to identify the highest-impact actions.
                 </p>
               </div>
               <Button variant="outline" size="sm" className="shrink-0 gap-2">

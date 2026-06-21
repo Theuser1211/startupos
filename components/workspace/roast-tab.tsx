@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useBlueprint } from "@/lib/startup/blueprint-context";
 import { Flame, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
+import type { StartupBlueprint } from "@/lib/types";
 
 const severityConfig = {
   high: { color: "text-red-400", bg: "bg-red-500/5", border: "border-red-500/20", label: "Critical" },
@@ -17,10 +17,7 @@ const severityConfig = {
 
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
 const itemVariants = {
@@ -28,19 +25,12 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export function RoastTab() {
-  const [expanded, setExpanded] = useState<string | null>("all");
+export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
   const [showAll, setShowAll] = useState(false);
-  const { blueprint } = useBlueprint();
+
   if (!blueprint) {
     return (
-      <EmptyState
-        icon={Flame}
-        title="No roast yet"
-        description="Complete the founder interview to get brutally honest AI feedback on your startup — blind spots, risks, and growth opportunities."
-        actionLabel="Start Interview"
-        actionHref="/interview"
-      />
+      <EmptyState icon={Flame} title="No roast yet" description="Complete the founder interview to get brutally honest AI feedback." actionLabel="Start Interview" actionHref="/interview" />
     );
   }
 
@@ -48,158 +38,120 @@ export function RoastTab() {
   const displayed = showAll ? roast.items : roast.items.filter((r) => r.severity === "high" || r.severity === "medium");
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-8"
-    >
-      {/* Header */}
+    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-3 mb-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-orange-600 shadow-lg">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-rose-600 shadow-lg">
             <Flame className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold">Startup Roast 🔥</h1>
-            <p className="text-muted-foreground text-sm">Brutally honest AI feedback. No sugar-coating.</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold">Startup Roast</h1>
+            <p className="text-sm text-muted-foreground">Brutally honest AI feedback</p>
           </div>
         </div>
       </motion.div>
 
-      {/* Stats */}
-      <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-3">
-        <Card className="hover:border-red-500/20 transition-all duration-300">
-          <CardContent className="p-5 text-center">
-            <p className="text-2xl font-bold text-red-400">
-              {roast.items.filter((r) => r.severity === "high").length}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">Critical Issues</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:border-amber-500/20 transition-all duration-300">
-          <CardContent className="p-5 text-center">
-            <p className="text-2xl font-bold text-amber-400">
-              {roast.items.filter((r) => r.severity === "medium").length}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">Warnings</p>
-          </CardContent>
-        </Card>
-        <Card className="hover:border-primary/20 transition-all duration-300">
-          <CardContent className="p-5 text-center">
-            <p className="text-2xl font-bold">
-              {Math.round(roast.items.reduce((a, r) => a + r.rating, 0) / roast.items.length)}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">Average Score / 10</p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Roast Items */}
-      <motion.div variants={itemVariants} className="space-y-4">
-        {displayed.map((roastItem) => {
-          const config = severityConfig[roastItem.severity];
-          const isExpanded = expanded === roastItem.category;
-
-          return (
-            <Card
-              key={roastItem.category}
-              className={`hover:shadow-lg transition-all duration-300 overflow-hidden ${config.bg} ${config.border}`}
-            >
-              <CardContent className="p-0">
-                <button
-                  onClick={() => setExpanded(isExpanded ? null : roastItem.category)}
-                  className="w-full flex items-center justify-between p-5 text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-semibold">{roastItem.category}</h3>
-                        <Badge
-                          variant={roastItem.severity === "high" ? "destructive" : "warning"}
-                          className="text-[10px] px-1.5 py-0"
-                        >
-                          {config.label}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
-                            <div
-                              key={star}
-                              className={`h-1.5 w-1.5 rounded-full ${
-                                star <= roastItem.rating
-                                  ? "bg-amber-400"
-                                  : "bg-white/10"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {roastItem.rating}/10
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {isExpanded ? (
-                    <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0 ml-3" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 ml-3" />
-                  )}
-                </button>
-
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="px-5 pb-5 pt-0">
-                        <div className="rounded-xl bg-white/[0.02] border border-glass-border p-4">
-                          <p className="text-sm text-muted-foreground leading-relaxed italic">
-                            &ldquo;{roastItem.feedback}&rdquo;
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </motion.div>
-
-      {/* Show more / less */}
-      <motion.div variants={itemVariants} className="text-center">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowAll(!showAll)}
-          className="text-muted-foreground"
-        >
-          {showAll ? "Show Critical Only" : `Show All (${roast.items.length} items)`}
-        </Button>
-      </motion.div>
-
-      {/* Disclaimer */}
       <motion.div variants={itemVariants}>
-        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
-          <div className="flex items-start gap-3">
-            <Sparkles className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-            <div>
-              <h3 className="text-sm font-medium text-foreground mb-1">AI Roast Session</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                This feedback is generated by AI analyzing your startup data. We&apos;re intentionally
-                harsh because tough love builds better companies. Take what resonates, ignore what doesn&apos;t.
-              </p>
+        <Card className="relative overflow-hidden border-red-500/20 bg-red-500/[0.02]">
+          <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-500" />
+          <CardContent className="p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="relative">
+                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 shadow-2xl shadow-red-500/30">
+                  <span className="text-3xl font-bold text-white">{roast.score}</span>
+                </div>
+                <div className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-amber-500 flex items-center justify-center">
+                  <Flame className="h-3 w-3 text-white" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h2 className="text-xl font-display font-bold">Roast Score: {roast.score}/100</h2>
+                  <Badge variant="destructive" className="text-xs">{roast.verdict}</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">{roast.verdict}</p>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </motion.div>
+
+      <motion.div variants={itemVariants}>
+        <div className="flex items-center gap-2 mb-4">
+          <Flame className="h-5 w-5 text-red-400" />
+          <h2 className="text-lg font-display font-bold">Findings</h2>
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+            Showing {displayed.length} of {roast.items.length}
+          </Badge>
+        </div>
+        <div className="space-y-3">
+          {displayed.map((item, i) => {
+            const config = severityConfig[item.severity];
+            return (
+              <motion.div
+                key={item.category}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.3 }}
+                className={`rounded-xl border ${config.border} ${config.bg} p-4 transition-all duration-300 hover:shadow-lg`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${config.border} ${config.bg}`}>
+                    <Flame className={`h-3.5 w-3.5 ${config.color}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-sm font-semibold">{item.category}</span>
+                      <Badge variant={item.severity === "high" ? "destructive" : item.severity === "medium" ? "warning" : "outline"} className="text-[9px] px-1 py-0">{config.label}</Badge>
+                      <span className="text-xs text-muted-foreground ml-auto">{item.rating}/10</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{item.feedback}</p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+        {roast.items.length > 2 && (
+          <Button variant="ghost" size="sm" onClick={() => setShowAll(!showAll)} className="mt-3 gap-2">
+            {showAll ? <><ChevronUp className="h-3.5 w-3.5" /> Show less</> : <><ChevronDown className="h-3.5 w-3.5" /> Show all {roast.items.length} findings</>}
+          </Button>
+        )}
+      </motion.div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <motion.div variants={itemVariants}>
+          <Card className="h-full border-red-500/20 bg-red-500/[0.02] hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-5">
+              <h3 className="text-sm font-semibold text-red-400 mb-3">Risks</h3>
+              <ul className="space-y-2">
+                {roast.risks.map((risk, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-400 mt-1.5 shrink-0" />
+                    <span className="leading-relaxed">{risk}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div variants={itemVariants}>
+          <Card className="h-full border-emerald-500/20 bg-emerald-500/[0.02] hover:shadow-lg transition-all duration-300">
+            <CardContent className="p-5">
+              <h3 className="text-sm font-semibold text-emerald-400 mb-3">Recommendations</h3>
+              <ul className="space-y-2">
+                {roast.recommendations.map((rec, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <Sparkles className="h-3.5 w-3.5 text-emerald-400 mt-0.5 shrink-0" />
+                    <span className="leading-relaxed">{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
     </motion.div>
   );
 }

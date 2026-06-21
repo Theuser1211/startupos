@@ -34,7 +34,6 @@ export function EmptyState({
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="flex flex-col items-center justify-center py-20 px-6 text-center"
     >
-      {/* Icon */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
@@ -44,7 +43,6 @@ export function EmptyState({
         <Icon className="h-7 w-7 text-white" />
       </motion.div>
 
-      {/* Title */}
       <motion.h3
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -54,7 +52,6 @@ export function EmptyState({
         {title}
       </motion.h3>
 
-      {/* Description */}
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -64,7 +61,6 @@ export function EmptyState({
         {description}
       </motion.p>
 
-      {/* Actions */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

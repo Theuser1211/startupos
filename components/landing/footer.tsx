@@ -22,7 +22,6 @@ export function Footer() {
       className="relative border-t border-glass-border py-12 px-6"
     >
       <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -45,7 +44,6 @@ export function Footer() {
           </Link>
         </motion.div>
 
-        {/* Links */}
         <nav className="flex items-center gap-6">
           {footerLinks.map((link, i) => (
             <motion.div
@@ -71,7 +69,6 @@ export function Footer() {
           ))}
         </nav>
 
-        {/* Copyright */}
         <motion.p
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}

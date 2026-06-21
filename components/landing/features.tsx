@@ -3,13 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import {
-  Brain,
-  Target,
-  Rocket,
-  BarChart3,
-  Lightbulb,
-  Shield,
-  LucideIcon,
+  Brain, Target, Rocket, BarChart3, Lightbulb, Shield, LucideIcon,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -72,7 +66,6 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
-/* ─── Counter Badge ─── */
 function AnimatedBadge({ text }: { text: string }) {
   return (
     <motion.div
@@ -104,14 +97,11 @@ export function FeaturesSection() {
 
   return (
     <section id="features" ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
-      {/* Parallax background glow */}
       <motion.div
         aria-hidden="true"
         className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent"
         style={{ opacity: bgOpacity, scale: bgScale }}
       />
-
-      {/* Decorative background elements */}
       <motion.div
         aria-hidden="true"
         className="absolute top-1/4 left-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[100px]"
@@ -126,7 +116,6 @@ export function FeaturesSection() {
       />
 
       <div className="relative mx-auto max-w-7xl">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -153,7 +142,6 @@ export function FeaturesSection() {
           </motion.p>
         </motion.div>
 
-        {/* Features Grid */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -171,14 +159,12 @@ export function FeaturesSection() {
                   className="h-full"
                 >
                   <Card className="group h-full border-glass-border transition-all duration-500 hover:border-primary/30 hover:shadow-xl hover:shadow-purple-500/10 relative overflow-hidden">
-                    {/* Shine effect overlay */}
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent pointer-events-none"
                       initial={{ x: "-100%" }}
                       whileHover={{ x: "200%" }}
                       transition={{ duration: 0.8, ease: "easeInOut" }}
                     />
-
                     <CardHeader>
                       <motion.div
                         className={`mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${feature.gradient} shadow-lg relative overflow-hidden`}
@@ -191,11 +177,6 @@ export function FeaturesSection() {
                           className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/10 to-white/0 rounded-xl"
                         />
                         <Icon className="h-5 w-5 text-white relative z-10" />
-                        <motion.div
-                          className="absolute inset-0 rounded-xl"
-                          animate={{ opacity: [0, 0.3, 0] }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        />
                       </motion.div>
                       <CardTitle className="text-lg text-foreground group-hover:text-primary transition-colors duration-300">
                         {feature.title}

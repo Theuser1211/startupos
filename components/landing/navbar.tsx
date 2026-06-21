@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/supabase/auth-context";
+import { useAuth } from "@/lib/contexts/auth-context";
 import { Menu, X, Sparkles, LayoutDashboard, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,13 +49,10 @@ export function Navbar() {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        scrolled
-          ? "glass-strong shadow-lg shadow-primary/5"
-          : "bg-transparent"
+        scrolled ? "glass-strong shadow-lg shadow-primary/5" : "bg-transparent"
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -79,7 +76,6 @@ export function Navbar() {
           </Link>
         </motion.div>
 
-        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link, i) => (
             <motion.div
@@ -94,7 +90,6 @@ export function Navbar() {
                 className="group relative text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
-                {/* Underline slide-in */}
                 <motion.span
                   className="absolute -bottom-0.5 left-0 h-px bg-primary"
                   initial={{ width: 0 }}
@@ -106,7 +101,6 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Desktop CTA */}
         <motion.div
           className="hidden md:flex items-center gap-3"
           initial={{ opacity: 0, x: 20 }}
@@ -117,9 +111,9 @@ export function Navbar() {
             <>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link href="/blueprints">
+                  <Link href="/workspace">
                     <LayoutDashboard className="h-3.5 w-3.5" />
-                    My Blueprints
+                    Workspace
                   </Link>
                 </Button>
               </motion.div>
@@ -142,10 +136,7 @@ export function Navbar() {
                   <Link href="/auth/sign-in">Sign In</Link>
                 </Button>
               </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button size="sm" className="glow-purple group relative overflow-hidden" asChild>
                   <Link href="/interview">
                     <span className="relative z-10 flex items-center gap-2">
@@ -169,7 +160,6 @@ export function Navbar() {
           )}
         </motion.div>
 
-        {/* Mobile Menu Button */}
         <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -179,23 +169,11 @@ export function Navbar() {
         >
           <AnimatePresence mode="wait">
             {mobileOpen ? (
-              <motion.span
-                key="x"
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
+              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
                 <X className="h-4 w-4" />
               </motion.span>
             ) : (
-              <motion.span
-                key="menu"
-                initial={{ rotate: 90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: -90, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-              >
+              <motion.span key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
                 <Menu className="h-4 w-4" />
               </motion.span>
             )}
@@ -203,7 +181,6 @@ export function Navbar() {
         </motion.button>
       </div>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -215,35 +192,17 @@ export function Navbar() {
           >
             <div className="flex flex-col gap-2 px-6 py-4">
               {navLinks.map((link, i) => (
-                <motion.div
-                  key={link.href}
-                  custom={i}
-                  variants={mobileItemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                >
-                  <a
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                <motion.div key={link.href} custom={i} variants={mobileItemVariants} initial="hidden" animate="visible" exit="hidden">
+                  <a href={link.href} onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</a>
                 </motion.div>
               ))}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25 }}
-                className="flex gap-3 pt-2 border-t border-glass-border mt-2"
-              >
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="flex gap-3 pt-2 border-t border-glass-border mt-2">
                 {user ? (
                   <>
                     <Button variant="ghost" size="sm" className="flex-1" asChild>
-                      <Link href="/blueprints" onClick={() => setMobileOpen(false)}>
+                      <Link href="/workspace" onClick={() => setMobileOpen(false)}>
                         <LayoutDashboard className="h-3.5 w-3.5" />
-                        My Blueprints
+                        Workspace
                       </Link>
                     </Button>
                     <Button size="sm" className="flex-1" onClick={async () => { await signOut(); setMobileOpen(false); }}>

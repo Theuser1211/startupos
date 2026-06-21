@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-/* ─── Floating Particle ─── */
 function Particle({ size, x, y, duration, delay }: {
   size: number; x: number; y: number; duration: number; delay: number;
 }) {
@@ -29,7 +28,6 @@ const PARTICLE_DATA = Array.from({ length: 20 }, () => ({
   delay: Math.random() * 4,
 }));
 
-/* ─── Floating Orb ─── */
 function FloatingOrb({ className, size, delay = 0 }: { className?: string; size: number; delay?: number }) {
   return (
     <motion.div
@@ -42,7 +40,6 @@ function FloatingOrb({ className, size, delay = 0 }: { className?: string; size:
   );
 }
 
-/* ─── Variants ─── */
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -59,13 +56,11 @@ const itemVariants = {
 export function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Mouse parallax — spring-smoothed
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
   const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
   const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
 
-  // Scroll-based background parallax
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
@@ -89,7 +84,6 @@ export function HeroSection() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
-  // Gradient follows mouse
   const glowX = useTransform(springX, [0, 1], ["40%", "60%"]);
   const glowY = useTransform(springY, [0, 1], ["35%", "45%"]);
 
@@ -98,11 +92,8 @@ export function HeroSection() {
       ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Parallax background layer */}
       <motion.div aria-hidden="true" className="absolute inset-0" style={{ y: bgY }}>
         <div className="absolute inset-0 grid-bg" />
-
-        {/* Mouse-following spotlight */}
         <motion.div
           className="absolute w-[700px] h-[700px] rounded-full bg-primary/10 blur-[150px]"
           style={{ left: glowX, top: glowY, x: "-50%", y: "-50%" }}
@@ -115,27 +106,22 @@ export function HeroSection() {
             x: "-50%", y: "-50%",
           }}
         />
-
         <FloatingOrb size={80} className="bg-primary/5 blur-3xl top-[15%] left-[10%]" delay={0} />
         <FloatingOrb size={120} className="bg-secondary/5 blur-3xl bottom-[25%] right-[15%]" delay={2} />
         <FloatingOrb size={60} className="bg-primary/5 blur-3xl top-[40%] right-[30%]" delay={4} />
       </motion.div>
 
-      {/* Particles */}
       {PARTICLE_DATA.map((p, i) => (
         <Particle key={i} {...p} />
       ))}
 
-      {/* Scroll-indication gradient fade at bottom */}
       <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent z-10" />
 
-      {/* Content */}
       <motion.div
         style={{ y: contentY, opacity }}
         className="relative z-20 mx-auto max-w-5xl px-6 text-center"
       >
         <motion.div variants={containerVariants} initial="hidden" animate="visible">
-          {/* Badge */}
           <motion.div variants={itemVariants} className="mb-6 flex justify-center">
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -151,7 +137,6 @@ export function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Heading */}
           <motion.h1
             variants={itemVariants}
             className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-none tracking-tight"
@@ -163,7 +148,6 @@ export function HeroSection() {
             </span>
           </motion.h1>
 
-          {/* Description */}
           <motion.p
             variants={itemVariants}
             className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed"
@@ -172,22 +156,13 @@ export function HeroSection() {
             and execute with precision — all powered by AI that understands your startup.
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
-              <Button
-                size="xl"
-                className="glow-purple w-full sm:w-auto text-base group relative overflow-hidden"
-                asChild
-              >
+              <Button size="xl" className="glow-purple w-full sm:w-auto text-base group relative overflow-hidden" asChild>
                 <Link href="/interview">
                   <span className="relative z-10 flex items-center gap-2">
                     Start Building Free
-                    <motion.span
-                      className="inline-flex"
-                      animate={{ x: [0, 4, 0] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                    >
+                    <motion.span className="inline-flex" animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
                       <ArrowRight className="h-4 w-4" />
                     </motion.span>
                   </span>
@@ -199,10 +174,8 @@ export function HeroSection() {
                 </Link>
               </Button>
             </motion.div>
-
           </motion.div>
 
-          {/* Tagline */}
           <motion.p
             variants={itemVariants}
             className="mt-16 text-xs text-muted-foreground/60"
@@ -212,7 +185,6 @@ export function HeroSection() {
         </motion.div>
       </motion.div>
 
-      {/* Scroll indicator — decorative */}
       <div aria-hidden="true" className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
         <motion.div
           initial={{ opacity: 0 }}

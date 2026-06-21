@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 
-/* ─── Floating Orb ─── */
 function FloatingOrb({ className, delay = 0 }: { className: string; delay?: number }) {
   return (
     <motion.div
@@ -18,10 +17,7 @@ function FloatingOrb({ className, delay = 0 }: { className: string; delay?: numb
         opacity: [0.4, 0.7, 0.4],
       }}
       transition={{
-        duration: 6,
-        repeat: Infinity,
-        delay,
-        ease: "easeInOut",
+        duration: 6, repeat: Infinity, delay, ease: "easeInOut",
       }}
     />
   );
@@ -38,7 +34,6 @@ export function CTASection() {
 
   return (
     <section ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
-      {/* Background glow */}
       <div aria-hidden="true">
         <FloatingOrb className="top-1/3 left-1/4 w-[400px] h-[400px] bg-primary/10" delay={0} />
         <FloatingOrb className="top-2/3 right-1/4 w-[350px] h-[350px] bg-secondary/10" delay={2} />
@@ -53,7 +48,6 @@ export function CTASection() {
           whileHover={{ borderColor: "rgba(168, 85, 247, 0.3)" }}
           className="relative overflow-hidden rounded-3xl border border-glass-border bg-gradient-to-b from-glass-bg to-primary/5 p-12 sm:p-16 transition-colors duration-500"
         >
-          {/* Decorative corner glows */}
           <motion.div
             aria-hidden="true"
             className="absolute top-0 right-0 w-64 h-64 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 bg-primary/10"
@@ -66,8 +60,6 @@ export function CTASection() {
             animate={{ scale: [1.2, 1, 1.2] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
-
-          {/* Shimmer border highlight */}
           <motion.div
             aria-hidden="true"
             className="absolute inset-0 rounded-3xl pointer-events-none"
@@ -110,10 +102,7 @@ export function CTASection() {
             </p>
 
             <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <motion.div
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-              >
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <Button
                   size="xl"
                   className="glow-purple w-full sm:w-auto text-base group relative overflow-hidden"
@@ -122,11 +111,7 @@ export function CTASection() {
                   <Link href="/interview">
                     <span className="relative z-10 flex items-center gap-2">
                       Start Building Free
-                      <motion.span
-                        className="inline-flex"
-                        animate={{ x: [0, 4, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                      >
+                      <motion.span className="inline-flex" animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
                         <ArrowRight className="h-4 w-4" />
                       </motion.span>
                     </span>
@@ -138,7 +123,6 @@ export function CTASection() {
                   </Link>
                 </Button>
               </motion.div>
-
             </div>
 
             <motion.p

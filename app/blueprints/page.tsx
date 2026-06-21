@@ -1,72 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/lib/supabase/auth-context";
-import { Sparkles, Plus, ExternalLink, Trash2, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown, CreditCard } from "lucide-react";
+import { useAuth } from "@/lib/contexts/auth-context";
+import { useStartups } from "@/lib/hooks/use-startup";
+import { Sparkles, Plus, ExternalLink, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown } from "lucide-react";
 import Link from "next/link";
-
-interface BlueprintSummary {
-  id: string;
-  name: string;
-  idea: string;
-  industry: string;
-  stage: string;
-  created_at: string;
-}
 
 export default function BlueprintsPage() {
   const router = useRouter();
   const { user, signOut, isLoading: authLoading } = useAuth();
-  const [blueprints, setBlueprints] = useState<BlueprintSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const fetchBlueprints = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch("/api/blueprints");
-      if (!res.ok) {
-        throw new Error("Failed to load blueprints");
-      }
-      const data = await res.json();
-      setBlueprints(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/auth/sign-in");
-      return;
-    }
-
-    if (user) {
-      fetchBlueprints(); // eslint-disable-line react-hooks/set-state-in-effect
-    }
-  }, [user, authLoading, fetchBlueprints]);
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this blueprint? This action cannot be undone.")) return;
-
-    setDeletingId(id);
-    try {
-      const res = await fetch(`/api/blueprints?id=${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
-      setBlueprints((prev) => prev.filter((bp) => bp.id !== id));
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete");
-    } finally {
-      setDeletingId(null);
-    }
-  };
+  const { data: startups, isLoading, error, refetch } = useStartups();
 
   const handleSignOut = async () => {
     await signOut();
@@ -83,51 +30,37 @@ export default function BlueprintsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="glass-strong border-b border-glass-border">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/">
-            <Image
-              src="/logo-full.png"
-              alt="StartupOS"
-              width={1536}
-              height={1024}
-              className="h-5 w-auto"
-            />
+            <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
           </Link>
           <div className="flex items-center gap-2">
-            {/* Profile dropdown */}
-            <ProfileDropdown
-              email={user?.email || ""}
-              onSignOut={handleSignOut}
-            />
+            {user && (
+              <ProfileDropdown email={user.email} onSignOut={handleSignOut} />
+            )}
           </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-10">
-        {/* Title */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-display font-bold">My Blueprints</h1>
+            <h1 className="text-2xl font-display font-bold">My Startups</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {blueprints.length} blueprint{blueprints.length !== 1 ? "s" : ""} saved
+              {startups?.length || 0} startup{(startups?.length || 0) !== 1 ? "s" : ""} saved
             </p>
           </div>
           <Button size="sm" className="glow-purple" asChild>
-            <Link href="/interview">
-              <Plus className="h-4 w-4" />
-              New Blueprint
-            </Link>
+            <Link href="/interview"><Plus className="h-4 w-4" /> New Startup</Link>
           </Button>
         </div>
 
-        {/* States */}
         {isLoading && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center space-y-4">
               <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
-              <p className="text-sm text-muted-foreground">Loading your blueprints...</p>
+              <p className="text-sm text-muted-foreground">Loading your startups...</p>
             </div>
           </div>
         )}
@@ -138,40 +71,32 @@ export default function BlueprintsPage() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
                 <AlertTriangle className="h-6 w-6 text-red-400" />
               </div>
-              <p className="text-sm text-muted-foreground mb-4">{error}</p>
-              <Button variant="outline" size="sm" onClick={fetchBlueprints}>
-                Try again
-              </Button>
+              <p className="text-sm text-muted-foreground mb-4">{error instanceof Error ? error.message : "Something went wrong"}</p>
+              <Button variant="outline" size="sm" onClick={() => refetch()}>Try again</Button>
             </div>
           </div>
         )}
 
-        {!isLoading && !error && blueprints.length === 0 && (
+        {!isLoading && !error && (!startups || startups.length === 0) && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
               <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/20 to-indigo-600/20 border border-purple-500/10">
                 <Sparkles className="h-7 w-7 text-purple-400" />
               </div>
-              <h2 className="text-lg font-semibold mb-2">No blueprints yet</h2>
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Complete the founder interview to generate your first startup blueprint.
-              </p>
+              <h2 className="text-lg font-semibold mb-2">No startups yet</h2>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">Complete the founder interview to generate your first startup blueprint.</p>
               <Button className="glow-purple" asChild>
-                <Link href="/interview">
-                  <Plus className="h-4 w-4" />
-                  Start Interview
-                </Link>
+                <Link href="/interview"><Plus className="h-4 w-4" /> Start Interview</Link>
               </Button>
             </div>
           </div>
         )}
 
-        {/* Grid */}
-        {!isLoading && !error && blueprints.length > 0 && (
+        {!isLoading && !error && startups && startups.length > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {blueprints.map((bp, i) => (
+            {startups.map((startup, i) => (
               <motion.div
-                key={bp.id}
+                key={startup.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
@@ -181,44 +106,30 @@ export default function BlueprintsPage() {
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-600/20">
                     <Sparkles className="h-4 w-4 text-purple-400" />
                   </div>
-                  <button
-                    onClick={() => handleDelete(bp.id)}
-                    disabled={deletingId === bp.id}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg text-muted-foreground hover:text-red-400 hover:bg-red-500/10"
-                    aria-label="Delete blueprint"
-                  >
-                    {deletingId === bp.id ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-3.5 w-3.5" />
-                    )}
-                  </button>
                 </div>
 
-                <h3 className="font-semibold text-sm mb-1 line-clamp-1">{bp.name}</h3>
-                <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{bp.idea}</p>
+                <h3 className="font-semibold text-sm mb-1 line-clamp-1">{startup.name}</h3>
+                <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{startup.idea || startup.description || ""}</p>
 
                 <div className="flex items-center gap-2 flex-wrap mb-4">
-                  <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-primary/10 text-primary font-medium">
-                    {bp.industry}
-                  </span>
-                  <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/5 text-muted-foreground">
-                    {bp.stage}
-                  </span>
+                  {startup.industry && (
+                    <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-primary/10 text-primary font-medium">{startup.industry}</span>
+                  )}
+                  {startup.stage && (
+                    <span className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/5 text-muted-foreground">{startup.stage}</span>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {new Date(bp.created_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
+                  {startup.createdAt && (
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <Calendar className="h-3 w-3" />
+                      {new Date(startup.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  )}
                   <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
-                    <Link href={`/workspace?id=${bp.id}`}>
-                      Open
-                      <ExternalLink className="h-3 w-3 ml-1" />
+                    <Link href={`/workspace?id=${startup.id}`}>
+                      Open <ExternalLink className="h-3 w-3 ml-1" />
                     </Link>
                   </Button>
                 </div>
@@ -231,44 +142,22 @@ export default function BlueprintsPage() {
   );
 }
 
-/* ─── Profile Dropdown ─── */
-
 function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const initial = email?.charAt(0).toUpperCase() || "U";
 
   return (
-    <div ref={ref} className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        aria-label="User menu"
-        aria-expanded={open}
+    <div className="relative">
+      <button onClick={() => setOpen(!open)} aria-label="User menu" aria-expanded={open}
         className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
       >
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-[10px] font-bold text-white">
-          {initial}
-        </div>
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-[10px] font-bold text-white">{initial}</div>
         <span className="hidden sm:inline max-w-[140px] truncate">{email}</span>
         <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
-        <motion.div
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
+        <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
           className="absolute right-0 top-full mt-1 w-52 rounded-xl border border-glass-border bg-background/95 backdrop-blur-xl shadow-xl z-50 overflow-hidden"
         >
           <div className="px-3 py-2.5 border-b border-glass-border">
@@ -276,28 +165,10 @@ function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () =>
             <p className="text-[10px] text-muted-foreground">Signed in</p>
           </div>
           <div className="p-1">
-            <Link
-              href="/auth/settings"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-            >
-              <Settings className="h-3.5 w-3.5" />
-              Account Settings
-            </Link>
-            <Link
-              href="/billing"
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-            >
-              <CreditCard className="h-3.5 w-3.5" />
-              Billing & Plan
-            </Link>
-            <button
-              onClick={() => { setOpen(false); onSignOut(); }}
+            <button onClick={() => { setOpen(false); onSignOut(); }}
               className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-red-400 hover:bg-red-500/5 transition-colors"
             >
-              <LogOut className="h-3.5 w-3.5" />
-              Sign Out
+              <LogOut className="h-3.5 w-3.5" /> Sign Out
             </button>
           </div>
         </motion.div>

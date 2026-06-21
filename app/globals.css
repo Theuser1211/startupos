@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* ─── Design Tokens ─── */
 @theme inline {
   --color-background: #0b0b0f;
   --color-foreground: #ededef;
@@ -40,7 +39,6 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* ─── Base Styles ─── */
 * {
   border-color: var(--color-border);
 }
@@ -54,7 +52,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Scrollbar ─── */
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;
@@ -70,7 +67,6 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ─── Animations ─── */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }
@@ -92,28 +88,13 @@ body {
   50% { opacity: 0.7; }
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-.animate-fade-in {
-  animation: fade-in 0.4s ease-out;
-}
-.animate-scale-in {
-  animation: scale-in 0.3s ease-out;
-}
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-.animate-pulse-subtle {
-  animation: pulse-subtle 2s ease-in-out infinite;
-}
-.animate-pulse-glow {
-  animation: pulse-subtle 3s ease-in-out infinite;
-}
-.animate-gradient-shift {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
-}
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-fade-in { animation: fade-in 0.4s ease-out; }
+.animate-scale-in { animation: scale-in 0.3s ease-out; }
+.animate-slide-up { animation: slide-up 0.3s ease-out; }
+.animate-pulse-subtle { animation: pulse-subtle 2s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-subtle 3s ease-in-out infinite; }
+.animate-gradient-shift { background-size: 200% 200%; animation: gradient-shift 8s ease infinite; }
 
 @keyframes gradient-shift {
   0% { background-position: 0% 50%; }
@@ -121,7 +102,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* ─── Glassmorphism ─── */
 .glass {
   background: var(--color-glass-bg);
   backdrop-filter: blur(12px);
@@ -135,41 +115,16 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ─── Surface ─── */
-.surface {
-  background: var(--color-surface);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-lg);
-}
-.surface-hover {
-  background: var(--color-surface-hover);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-lg);
-  transition: background 0.2s ease;
-}
-.surface-hover:hover {
-  background: rgba(255, 255, 255, 0.07);
-}
+.surface { background: var(--color-surface); border: 1px solid var(--color-glass-border); border-radius: var(--radius-lg); }
+.surface-hover { background: var(--color-surface-hover); border: 1px solid var(--color-glass-border); border-radius: var(--radius-lg); transition: background 0.2s ease; }
+.surface-hover:hover { background: rgba(255, 255, 255, 0.07); }
 
-/* ─── Glow Effects ─── */
-.glow-purple {
-  box-shadow: 0 0 20px rgba(120, 120, 160, 0.15),
-              0 0 60px rgba(120, 120, 160, 0.08);
-}
-.glow-purple-border {
-  border-color: rgba(120, 120, 160, 0.25);
-  box-shadow: 0 0 15px rgba(120, 120, 160, 0.08);
-}
+.glow-purple { box-shadow: 0 0 20px rgba(120, 120, 160, 0.15), 0 0 60px rgba(120, 120, 160, 0.08); }
+.glow-purple-border { border-color: rgba(120, 120, 160, 0.25); box-shadow: 0 0 15px rgba(120, 120, 160, 0.08); }
 
-/* ─── Focus Ring ─── */
-.focus-ring {
-  outline: none;
-}
-.focus-ring:focus-visible {
-  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
-}
+.focus-ring { outline: none; }
+.focus-ring:focus-visible { box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring); }
 
-/* ─── Grid Background ─── */
 .grid-bg {
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -177,14 +132,5 @@ body {
   background-size: 48px 48px;
 }
 
-/* ─── Selection ─── */
-::selection {
-  background: rgba(120, 120, 160, 0.3);
-  color: white;
-}
-
-/* ─── Focus visible ─── */
-:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-}
+::selection { background: rgba(120, 120, 160, 0.3); color: white; }
+:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
