@@ -18,6 +18,7 @@ import {
   normalizeBlueprint,
 } from "./validation.js";
 import { ZodError } from "zod";
+import { providerRegistry } from "./provider-registry.js";
 
 const TIMEOUT_MS = env.AI_TIMEOUT_MS;
 
@@ -102,13 +103,12 @@ export abstract class BaseAIProvider implements AIProvider {
   }
 
   protected validateBlueprint(raw: string): ValidatedBlueprint {
-    logger.info({ rawLength: raw.length, rawPreview: raw.substring(0, 200) }, "Raw AI response for blueprint");
+    logger.debug({ rawLength: raw.length }, "Raw AI response for blueprint");
     const parsed = this.parseJSONResponse<Record<string, unknown>>(raw);
     logger.info({ parsedKeys: Object.keys(parsed) }, "Parsed blueprint object");
     const normalized = normalizeBlueprint(parsed);
     const validated = BlueprintResultSchema.parse(normalized);
-    console.log("[BP-DATA] validated blueprint", JSON.stringify(validated, null, 2));
-    logger.info({ validatedKeys: Object.keys(validated), validatedName: validated.name }, "Validated blueprint");
+    logger.debug({ validatedKeys: Object.keys(validated), validatedName: validated.name }, "Blueprint validated");
     return validated;
   }
 
@@ -234,10 +234,8 @@ Return ONLY valid JSON with this exact structure:
       ],
     );
 
-    logger.info({ provider: this.name, rawLength: raw.length, rawPreview: raw.substring(0, 200) }, "Raw response from FreeLLM");
+    logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from FreeLLM");
     const validated = this.validateBlueprint(raw) as unknown as BlueprintResult;
-    console.log("[BP-DATA] FreeLLM validated keys", Object.keys(validated));
-    console.log("[BP-DATA] FreeLLM validated", JSON.stringify(validated, null, 2));
     return validated;
   }
 
@@ -397,6 +395,12 @@ REMEMBER: Use the ACTUAL blueprint data. Never fabricate testimonials, team memb
 
 export class GroqProvider extends BaseAIProvider {
   name = "Groq";
+  private _apiKey: string;
+
+  constructor(apiKey?: string) {
+    super();
+    this._apiKey = apiKey || env.GROQ_API_KEY || "";
+  }
 
   private get endpoint(): string {
     return "https://api.groq.com/openai/v1/chat/completions";
@@ -422,7 +426,7 @@ Return ONLY valid JSON with this exact structure:
 
     const raw = await this.callAPI(
       this.endpoint,
-      env.GROQ_API_KEY!,
+      this._apiKey,
       "llama-3.3-70b-versatile",
       [
         { role: "system", content: systemPrompt },
@@ -430,10 +434,8 @@ Return ONLY valid JSON with this exact structure:
       ],
     );
 
-    logger.info({ provider: this.name, rawLength: raw.length, rawPreview: raw.substring(0, 200) }, "Raw response from Groq");
+    logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from Groq");
     const validated = this.validateBlueprint(raw) as unknown as BlueprintResult;
-    console.log("[BP-DATA] Groq validated keys", Object.keys(validated));
-    console.log("[BP-DATA] Groq validated", JSON.stringify(validated, null, 2));
     return validated;
   }
 
@@ -480,7 +482,7 @@ Return ONLY valid JSON with the exact structure shown. Use the ACTUAL blueprint 
 
     const raw = await this.callAPI(
       this.endpoint,
-      env.GROQ_API_KEY!,
+      this._apiKey,
       "llama-3.3-70b-versatile",
       [
         { role: "system", content: systemPrompt },
@@ -499,7 +501,7 @@ Return ONLY valid JSON with the exact structure shown. Use the ACTUAL blueprint 
     const messages = this.buildPageGenerationPrompt(blueprint, spec, page);
     const raw = await this.callAPI(
       this.endpoint,
-      env.GROQ_API_KEY!,
+      this._apiKey,
       "llama-3.3-70b-versatile",
       messages,
       8192,
@@ -511,6 +513,12 @@ Return ONLY valid JSON with the exact structure shown. Use the ACTUAL blueprint 
 
 export class OpenRouterProvider extends BaseAIProvider {
   name = "OpenRouter";
+  private _apiKey: string;
+
+  constructor(apiKey?: string) {
+    super();
+    this._apiKey = apiKey || env.OPENROUTER_API_KEY || "";
+  }
 
   private get endpoint(): string {
     return "https://openrouter.ai/api/v1/chat/completions";
@@ -519,7 +527,7 @@ export class OpenRouterProvider extends BaseAIProvider {
   async generateBlueprint(prompt: string): Promise<BlueprintResult> {
     const raw = await this.callAPI(
       this.endpoint,
-      env.OPENROUTER_API_KEY!,
+      this._apiKey,
       "openai/gpt-4o",
       [
         { role: "system", content: "You are a startup blueprint generator. Do NOT include any text before or after the JSON. Return ONLY the raw JSON object with fields: name, description, industry, targetAudience, problemStatement, solution, keyFeatures, techStack, monetization, competitorAnalysis, roadmap." },
@@ -527,10 +535,8 @@ export class OpenRouterProvider extends BaseAIProvider {
       ],
     );
 
-    logger.info({ provider: this.name, rawLength: raw.length, rawPreview: raw.substring(0, 200) }, "Raw response from OpenRouter");
+    logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from OpenRouter");
     const validated = this.validateBlueprint(raw) as unknown as BlueprintResult;
-    console.log("[BP-DATA] OpenRouter validated keys", Object.keys(validated));
-    console.log("[BP-DATA] OpenRouter validated", JSON.stringify(validated, null, 2));
     return validated;
   }
 
@@ -538,7 +544,7 @@ export class OpenRouterProvider extends BaseAIProvider {
     const industry = blueprint.industry || "technology";
     const raw = await this.callAPI(
       this.endpoint,
-      env.OPENROUTER_API_KEY!,
+      this._apiKey,
       "openai/gpt-4o",
       [
         { role: "system", content: `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification. CRITICAL: Return ONLY valid JSON. NEVER fabricate testimonials, team members, stats, logos, addresses, phone numbers, or company claims. Only include sections truthfully derivable from the blueprint data.
@@ -561,7 +567,7 @@ COPYWRITING: Specific customer-focused copy. BAD: "Revolutionary platform" GOOD:
     const messages = this.buildPageGenerationPrompt(blueprint, spec, page);
     const raw = await this.callAPI(
       this.endpoint,
-      env.OPENROUTER_API_KEY!,
+      this._apiKey,
       "openai/gpt-4o",
       messages,
       8192,
@@ -571,108 +577,362 @@ COPYWRITING: Specific customer-focused copy. BAD: "Revolutionary platform" GOOD:
   }
 }
 
-function getAvailableProviders(): Array<{ name: string; create: () => AIProvider }> {
-  const providers: Array<{ name: string; create: () => AIProvider }> = [];
+export class GoogleAIStudioProvider extends BaseAIProvider {
+  name = "GoogleAIStudio";
+  private _apiKey: string;
 
-  if (env.FREELLM_API_KEY) {
-    providers.push({ name: "FreeLLMAPI", create: () => new FreeLLMProvider() });
+  constructor(apiKey: string) {
+    super();
+    this._apiKey = apiKey;
   }
-  if (env.GROQ_API_KEY) {
-    providers.push({ name: "Groq", create: () => new GroqProvider() });
+
+  private get endpoint(): string {
+    return "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
   }
-  if (env.OPENROUTER_API_KEY) {
-    providers.push({ name: "OpenRouter", create: () => new OpenRouterProvider() });
+
+  async generateBlueprint(prompt: string): Promise<BlueprintResult> {
+    const systemPrompt = `You are a startup blueprint generator. Given a startup idea, generate a comprehensive blueprint.
+Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
+Return ONLY valid JSON with this exact structure:
+{
+  "name": "...",
+  "description": "...",
+  "industry": "...",
+  "targetAudience": "...",
+  "problemStatement": "...",
+  "solution": "...",
+  "keyFeatures": [...],
+  "techStack": [...],
+  "monetization": "...",
+  "competitorAnalysis": [...],
+  "roadmap": [...]
+}`;
+
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "gemini-2.0-flash",
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt },
+      ],
+    );
+
+    logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from GoogleAIStudio");
+    return this.validateBlueprint(raw) as unknown as BlueprintResult;
+  }
+
+  async generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult> {
+    const industry = blueprint.industry || "technology";
+    const systemPrompt = `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification.
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation. No code fences.
+NEVER fabricate testimonials, team members, stats, addresses, or company claims.
+Only include sections truthfully derivable from the blueprint data.
+REQUIRED Home page sections in order:
+1. hero - content: headline (benefit-driven, specific), subheadline, ctaText, ctaSecondary
+2. problem - content: headline, description, painPoints string[]
+3. solution - content: headline, description, benefits string[]
+4. features - content: title, subtitle, items: Array of {title, description}
+5. pricing - content: headline, subtitle, plans: Array of {name, price, period, description, features, highlighted}
+6. faq - content: subtitle, items: Array of {question, answer}
+7. cta - content: headline, subheadline, ctaText
+COPYWRITING: Specific customer-focused copy. Use blueprint data. Font: Inter, borderRadius: 12px. Industry: ${industry}.
+Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), and components array.`;
+
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "gemini-2.0-flash",
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: JSON.stringify(blueprint) },
+      ],
+    );
+
+    return this.validateWebsiteSpec(raw) as unknown as WebsiteSpecResult;
+  }
+
+  async generateWebsitePage(
+    blueprint: BlueprintResult,
+    spec: WebsiteSpecResult,
+    page: PageSpec,
+  ): Promise<PageHTMLResult> {
+    const messages = this.buildPageGenerationPrompt(blueprint, spec, page);
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "gemini-2.0-flash",
+      messages,
+      8192,
+    );
+
+    return this.validatePageHTML(raw) as unknown as PageHTMLResult;
+  }
+}
+
+export class NVIDIAProvider extends BaseAIProvider {
+  name = "NVIDIA";
+  private _apiKey: string;
+
+  constructor(apiKey: string) {
+    super();
+    this._apiKey = apiKey;
+  }
+
+  private get endpoint(): string {
+    return "https://integrate.api.nvidia.com/v1/chat/completions";
+  }
+
+  async generateBlueprint(prompt: string): Promise<BlueprintResult> {
+    const systemPrompt = `You are a startup blueprint generator. Given a startup idea, generate a comprehensive blueprint.
+Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
+Return ONLY valid JSON with this exact structure:
+{
+  "name": "...",
+  "description": "...",
+  "industry": "...",
+  "targetAudience": "...",
+  "problemStatement": "...",
+  "solution": "...",
+  "keyFeatures": [...],
+  "techStack": [...],
+  "monetization": "...",
+  "competitorAnalysis": [...],
+  "roadmap": [...]
+}`;
+
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "nvidia/llama-3.1-nemotron-70b-instruct",
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt },
+      ],
+    );
+
+    logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from NVIDIA");
+    return this.validateBlueprint(raw) as unknown as BlueprintResult;
+  }
+
+  async generateWebsiteSpec(blueprint: BlueprintResult): Promise<WebsiteSpecResult> {
+    const industry = blueprint.industry || "technology";
+    const systemPrompt = `You are a senior startup copywriter and website strategist. Given a startup blueprint, generate a premium SaaS website specification.
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation. No code fences.
+NEVER fabricate testimonials, team members, stats, addresses, or company claims.
+Only include sections truthfully derivable from the blueprint data.
+REQUIRED Home page sections in order:
+1. hero - content: headline (benefit-driven, specific), subheadline, ctaText, ctaSecondary
+2. problem - content: headline, description, painPoints string[]
+3. solution - content: headline, description, benefits string[]
+4. features - content: title, subtitle, items: Array of {title, description}
+5. pricing - content: headline, subtitle, plans: Array of {name, price, period, description, features, highlighted}
+6. faq - content: subtitle, items: Array of {question, answer}
+7. cta - content: headline, subheadline, ctaText
+COPYWRITING: Specific customer-focused copy. Use blueprint data. Font: Inter, borderRadius: 12px. Industry: ${industry}.
+Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), and components array.`;
+
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "nvidia/llama-3.1-nemotron-70b-instruct",
+      [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: JSON.stringify(blueprint) },
+      ],
+    );
+
+    return this.validateWebsiteSpec(raw) as unknown as WebsiteSpecResult;
+  }
+
+  async generateWebsitePage(
+    blueprint: BlueprintResult,
+    spec: WebsiteSpecResult,
+    page: PageSpec,
+  ): Promise<PageHTMLResult> {
+    const messages = this.buildPageGenerationPrompt(blueprint, spec, page);
+    const raw = await this.callAPI(
+      this.endpoint,
+      this._apiKey,
+      "nvidia/llama-3.1-nemotron-70b-instruct",
+      messages,
+      8192,
+    );
+
+    return this.validatePageHTML(raw) as unknown as PageHTMLResult;
+  }
+}
+
+function initializeProviderRegistry(): void {
+  const registrations: Array<{
+    id: string;
+    provider: string;
+    model: string;
+    priority: number;
+    key: string | undefined;
+    createProvider: () => AIProvider;
+  }> = [];
+
+  registrations.push(
+    { id: "google-1", provider: "google", model: "gemini-2.0-flash", priority: 1, key: env.GOOGLE_API_KEY_1, createProvider: () => new GoogleAIStudioProvider(env.GOOGLE_API_KEY_1!) },
+    { id: "google-2", provider: "google", model: "gemini-2.0-flash", priority: 1, key: env.GOOGLE_API_KEY_2, createProvider: () => new GoogleAIStudioProvider(env.GOOGLE_API_KEY_2!) },
+    { id: "google-3", provider: "google", model: "gemini-2.0-flash", priority: 1, key: env.GOOGLE_API_KEY_3, createProvider: () => new GoogleAIStudioProvider(env.GOOGLE_API_KEY_3!) },
+    { id: "groq-1", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_1 || env.GROQ_API_KEY, createProvider: () => new GroqProvider(env.GROQ_API_KEY_1 || env.GROQ_API_KEY) },
+    { id: "groq-2", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_2, createProvider: () => new GroqProvider(env.GROQ_API_KEY_2!) },
+    { id: "groq-3", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_3, createProvider: () => new GroqProvider(env.GROQ_API_KEY_3!) },
+    { id: "nim-1", provider: "nim", model: "nvidia/llama-3.1-nemotron-70b-instruct", priority: 3, key: env.NIM_API_KEY_1, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_1!) },
+    { id: "nim-2", provider: "nim", model: "nvidia/llama-3.1-nemotron-70b-instruct", priority: 3, key: env.NIM_API_KEY_2, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_2!) },
+    { id: "openrouter-1", provider: "openrouter", model: "openai/gpt-4o", priority: 4, key: env.OPENROUTER_API_KEY, createProvider: () => new OpenRouterProvider(env.OPENROUTER_API_KEY!) },
+  );
+
+  for (const reg of registrations) {
+    if (reg.key) {
+      providerRegistry.register({
+        id: reg.id,
+        provider: reg.provider,
+        model: reg.model,
+        priority: reg.priority,
+        apiKey: reg.key,
+        createProvider: reg.createProvider,
+      });
+    }
+  }
+}
+
+initializeProviderRegistry();
+
+function getAvailableProviders(): Array<{
+  id: string;
+  name: string;
+  create: () => AIProvider;
+}> {
+  const providers: Array<{
+    id: string;
+    name: string;
+    create: () => AIProvider;
+  }> = [];
+
+  const fallbackEntries = [
+    { id: "freellm", name: "FreeLLMAPI", factory: () => new FreeLLMProvider(), key: env.FREELLM_API_KEY },
+  ];
+
+  for (const fe of fallbackEntries) {
+    if (fe.key) {
+      providers.push({ id: fe.id, name: fe.name, create: fe.factory });
+    }
+  }
+
+  const entry = providerRegistry.getNextAvailableProvider();
+  if (entry) {
+    providers.push({
+      id: entry.id,
+      name: entry.provider,
+      create: entry.createProvider,
+    });
   }
 
   return providers;
 }
 
 async function tryProvider<T>(
+  providerId: string,
   provider: AIProvider,
   action: (p: AIProvider) => Promise<T>,
 ): Promise<{ result: T; providerName: string }> {
   const start = Date.now();
-  logger.info({ provider: provider.name }, "Attempting AI provider");
+  logger.info({ provider: provider.name, providerId }, "Attempting AI provider");
   try {
     const result = await action(provider);
     const duration = Date.now() - start;
-    logger.info({ provider: provider.name, durationMs: duration }, "AI provider succeeded");
+    logger.info({ provider: provider.name, providerId, durationMs: duration }, "AI provider succeeded");
+    providerRegistry.recordSuccess(providerId, duration);
     return { result, providerName: provider.name };
   } catch (error) {
     const duration = Date.now() - start;
-    logger.warn({ provider: provider.name, durationMs: duration, error }, "AI provider failed");
+    const statusCode = error instanceof AIProviderError ? error.statusCode : 0;
+    logger.warn({ provider: provider.name, providerId, statusCode, durationMs: duration, error }, "AI provider failed");
+    providerRegistry.recordFailure(providerId, statusCode, duration);
     throw error;
   }
 }
 
 export function getAIProvider(): AIProvider {
-  const available = getAvailableProviders();
-  if (available.length === 0) {
-    throw new Error("No AI provider configured. Set FREELLM_API_KEY, GROQ_API_KEY, or OPENROUTER_API_KEY.");
+  const entry = providerRegistry.getNextAvailableProvider();
+  if (entry) {
+    return entry.createProvider();
   }
-  return available[0].create();
+  if (env.FREELLM_API_KEY) {
+    return new FreeLLMProvider();
+  }
+  throw new Error("No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.");
 }
 
-export async function generateBlueprintWithFallback(prompt: string): Promise<BlueprintResult> {
-  const providers = getAvailableProviders();
-  if (providers.length === 0) {
-    throw new Error("No AI provider configured.");
-  }
-
+async function withFailover<T>(
+  action: (p: AIProvider) => Promise<T>,
+  context: string,
+): Promise<T> {
   const errors: Array<{ provider: string; error: string }> = [];
 
-  for (const entry of providers) {
-    const provider = entry.create();
+  if (env.FREELLM_API_KEY) {
+    const provider = new FreeLLMProvider();
     try {
-      const { result } = await tryProvider(provider, (p) => p.generateBlueprint(prompt));
+      const { result } = await tryProvider("freellm", provider, action);
       return result;
     } catch (error) {
-      const message =
-        error instanceof AIProviderError
-          ? `[${error.provider}] status=${error.statusCode} ${error.message}`
-          : error instanceof ZodError
-            ? `Validation failed: ${error.message}`
-            : error instanceof Error
-              ? error.message
-              : "Unknown error";
-      errors.push({ provider: entry.name, error: message });
+      const message = error instanceof AIProviderError
+        ? `[${error.provider}] status=${error.statusCode} ${error.message}`
+        : error instanceof ZodError
+          ? `Validation failed: ${error.message}`
+          : error instanceof Error
+            ? error.message
+            : "Unknown error";
+      errors.push({ provider: "FreeLLMAPI", error: message });
+    }
+  }
+
+  let attemptCount = 0;
+  const maxAttempts = providerRegistry.getEntryCount() + 1;
+
+  while (attemptCount < maxAttempts) {
+    const entry = providerRegistry.getNextAvailableProvider();
+    if (!entry) break;
+
+    attemptCount++;
+    const provider = entry.createProvider();
+    try {
+      const { result } = await tryProvider(entry.id, provider, action);
+      return result;
+    } catch (error) {
+      const message = error instanceof AIProviderError
+        ? `[${error.provider}] status=${error.statusCode} ${error.message}`
+        : error instanceof ZodError
+          ? `Validation failed: ${error.message}`
+          : error instanceof Error
+            ? error.message
+            : "Unknown error";
+      errors.push({ provider: entry.id, error: message });
     }
   }
 
   const detail = errors.map((e) => `${e.provider}: ${e.error}`).join(" | ");
-  throw new Error(`All AI providers failed: ${detail}`);
+  const prefix = context ? `${context}: ` : "";
+  throw new Error(`${prefix}All AI providers failed: ${detail}`);
+}
+
+export async function generateBlueprintWithFallback(prompt: string): Promise<BlueprintResult> {
+  if (providerRegistry.getEntryCount() === 0 && !env.FREELLM_API_KEY) {
+    throw new Error("No AI provider configured.");
+  }
+  return withFailover((p) => p.generateBlueprint(prompt), "");
 }
 
 export async function generateWebsiteSpecWithFallback(
   blueprint: BlueprintResult,
 ): Promise<WebsiteSpecResult> {
-  const providers = getAvailableProviders();
-  if (providers.length === 0) {
+  if (providerRegistry.getEntryCount() === 0 && !env.FREELLM_API_KEY) {
     throw new Error("No AI provider configured.");
   }
-
-  const errors: Array<{ provider: string; error: string }> = [];
-
-  for (const entry of providers) {
-    const provider = entry.create();
-    try {
-      const { result } = await tryProvider(provider, (p) => p.generateWebsiteSpec(blueprint));
-      return result;
-    } catch (error) {
-      const message =
-        error instanceof AIProviderError
-          ? `[${error.provider}] status=${error.statusCode} ${error.message}`
-          : error instanceof ZodError
-            ? `Validation failed: ${error.message}`
-            : error instanceof Error
-              ? error.message
-              : "Unknown error";
-      errors.push({ provider: entry.name, error: message });
-    }
-  }
-
-  const detail = errors.map((e) => `${e.provider}: ${e.error}`).join(" | ");
-  throw new Error(`All AI providers failed: ${detail}`);
+  return withFailover((p) => p.generateWebsiteSpec(blueprint), "");
 }
 
 export async function generateWebsitePageWithFallback(
@@ -680,33 +940,11 @@ export async function generateWebsitePageWithFallback(
   spec: WebsiteSpecResult,
   page: PageSpec,
 ): Promise<PageHTMLResult> {
-  const providers = getAvailableProviders();
-  if (providers.length === 0) {
+  if (providerRegistry.getEntryCount() === 0 && !env.FREELLM_API_KEY) {
     throw new Error("No AI provider configured.");
   }
-
-  const errors: Array<{ provider: string; error: string }> = [];
-
-  for (const entry of providers) {
-    const provider = entry.create();
-    try {
-      const { result } = await tryProvider(provider, (p) =>
-        p.generateWebsitePage(blueprint, spec, page),
-      );
-      return result;
-    } catch (error) {
-      const message =
-        error instanceof AIProviderError
-          ? `[${error.provider}] status=${error.statusCode} ${error.message}`
-          : error instanceof ZodError
-            ? `Validation failed: ${error.message}`
-            : error instanceof Error
-              ? error.message
-              : "Unknown error";
-      errors.push({ provider: entry.name, error: message });
-    }
-  }
-
-  const detail = errors.map((e) => `${e.provider}: ${e.error}`).join(" | ");
-  throw new Error(`All AI providers failed for page "${page.name}": ${detail}`);
+  return withFailover(
+    (p) => p.generateWebsitePage(blueprint, spec, page),
+    `page "${page.name}"`,
+  );
 }

@@ -32,7 +32,7 @@ export async function generateBlueprintHandler(
       throw new Error("Prompt is required (provide in request or set startup description)");
     }
 
-    logger.info({ requestId, startupId, userId, prompt: effectivePrompt?.substring(0, 50) }, "[BP1] request received");
+    logger.info({ requestId, startupId, userId, promptLength: effectivePrompt?.length }, "[BP1] request received");
     logger.info({ requestId, ownerMatch: startup.userId === userId }, "[BP3] ownership check");
     if (startup.userId !== userId) {
       logger.warn({ requestId, startupId, userId }, "[BP3] forbidden");
@@ -120,7 +120,7 @@ export async function generateBlueprintHandler(
   } catch (error: unknown) {
     const e = error as Error;
     logger.error(
-      { requestId, err: error, name: e?.name, message: e?.message, stack: e?.stack, startupId, userId, prompt: prompt?.substring(0, 100) },
+      { requestId, err: error, name: e?.name, message: e?.message, stack: e?.stack, startupId, userId, promptLength: prompt?.length },
       "[BP-ERR] handler failed",
     );
     throw error;
@@ -149,10 +149,7 @@ export async function getBlueprintHandler(
     throw new ForbiddenError("You do not own this blueprint");
   }
 
-  // Evidence logging for retrieval/serialization boundary
-  console.log("[BP-GET] DB blueprint content", JSON.stringify(blueprint.content, null, 2));
   const payload = { blueprint };
-  console.log("[BP-GET] Reply payload", JSON.stringify(payload, null, 2));
 
   reply.send(payload);
 }

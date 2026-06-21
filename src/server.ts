@@ -11,6 +11,7 @@ import { closeQueue } from "./queue/setup.js";
 import { startWorker } from "./queue/worker.js";
 import { startJobMonitor, stopJobMonitor } from "./queue/monitor.js";
 import { handleError } from "./lib/errors.js";
+import { providerRegistry } from "./services/ai/provider-registry.js";
 
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { startupRoutes } from "./modules/startups/startup.routes.js";
@@ -150,6 +151,34 @@ async function bootstrap(): Promise<void> {
       dbStatus = "error";
     }
     return { status: "ok", database: dbStatus, timestamp: new Date().toISOString() };
+  });
+
+  app.get("/admin/providers", {
+    schema: {
+      tags: ["Admin"],
+      description: "Get AI provider health status",
+      response: {
+        200: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              provider: { type: "string" },
+              model: { type: "string" },
+              priority: { type: "number" },
+              status: { type: "string" },
+              requestCount: { type: "number" },
+              failureCount: { type: "number" },
+              cooldownRemaining: { type: "number" },
+              avgLatencyMs: { type: "number" },
+            },
+          },
+        },
+      },
+    },
+  }, async () => {
+    return providerRegistry.getHealth();
   });
 
   await app.register(authRoutes);

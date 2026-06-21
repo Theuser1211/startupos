@@ -22,7 +22,18 @@ const envSchema = z.object({
   SUPABASE_SERVICE_KEY: z.string().optional(),
   SUPABASE_STORAGE_BUCKET: z.string().default("startupos-deployments"),
 
+  GOOGLE_API_KEY_1: z.string().optional(),
+  GOOGLE_API_KEY_2: z.string().optional(),
+  GOOGLE_API_KEY_3: z.string().optional(),
+
   GROQ_API_KEY: z.string().optional(),
+  GROQ_API_KEY_1: z.string().optional(),
+  GROQ_API_KEY_2: z.string().optional(),
+  GROQ_API_KEY_3: z.string().optional(),
+
+  NIM_API_KEY_1: z.string().optional(),
+  NIM_API_KEY_2: z.string().optional(),
+
   FREELLM_API_KEY: z.string().optional(),
   OPENROUTER_API_KEY: z.string().optional(),
 
