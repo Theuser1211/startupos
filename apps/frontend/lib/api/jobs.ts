@@ -2,13 +2,10 @@
 
 import { apiClient } from "./client";
 import type { Job } from "@/lib/types";
-
-interface JobWrapper {
-  job: Job;
-}
+import type { JobResponse } from "@startupos/shared";
 
 export async function getJob(id: string): Promise<Job> {
-  const data = await apiClient.get<Job | JobWrapper>(`/jobs/${id}`);
+  const data = await apiClient.get<Job | JobResponse>(`/jobs/${id}`);
   if (data && typeof data === "object" && "job" in data) {
     return data.job;
   }

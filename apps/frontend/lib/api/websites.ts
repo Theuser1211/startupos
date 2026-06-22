@@ -2,20 +2,7 @@
 
 import { apiClient } from "./client";
 import type { Website } from "@/lib/types";
-
-export interface GenerateWebsitePayload {
-  startupId: string;
-}
-
-export interface GenerateWebsiteResponse {
-  websiteId?: string;
-  jobId?: string;
-  status: string;
-}
-
-interface WebsiteWrapper {
-  website: Website;
-}
+import type { GenerateWebsitePayload, GenerateWebsiteResponse, WebsiteResponse } from "@startupos/shared";
 
 export async function generateWebsite(
   payload: GenerateWebsitePayload,
@@ -24,7 +11,7 @@ export async function generateWebsite(
 }
 
 export async function getWebsite(id: string): Promise<Website> {
-  const data = await apiClient.get<Website | WebsiteWrapper>(`/websites/${id}`);
+  const data = await apiClient.get<Website | WebsiteResponse>(`/websites/${id}`);
   if (data && typeof data === "object" && "website" in data) {
     return data.website;
   }

@@ -19,6 +19,9 @@ import { blueprintRoutes } from "./modules/blueprints/blueprint.routes.js";
 import { websiteRoutes } from "./modules/websites/website.routes.js";
 import { deploymentRoutes } from "./modules/deployments/deployment.routes.js";
 import { jobRoutes } from "./modules/jobs/jobs.routes.js";
+import { dashboardRoutes } from "./modules/dashboard/dashboard.routes.js";
+import { competitorRoutes } from "./modules/competitors/competitor.routes.js";
+import { briefRoutes } from "./modules/brief/brief.routes.js";
 
 async function checkDatabase(): Promise<void> {
   try {
@@ -187,6 +190,9 @@ async function bootstrap(): Promise<void> {
   await app.register(websiteRoutes);
   await app.register(deploymentRoutes);
   await app.register(jobRoutes);
+  await app.register(dashboardRoutes);
+  await app.register(competitorRoutes);
+  await app.register(briefRoutes);
 
   await checkDatabase();
   await checkRedis();

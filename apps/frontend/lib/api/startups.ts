@@ -1,34 +1,20 @@
 "use client";
 
 import { apiClient } from "./client";
-import type { Startup } from "@/lib/types";
-
-export interface CreateStartupPayload {
-  name: string;
-  industry?: string;
-  description?: string;
-  logo?: string;
-}
-
-interface StartupWrapper {
-  startup: Startup;
-}
-
-interface StartupsWrapper {
-  startups: Startup[];
-}
+import type { Startup, CreateStartupPayload } from "@startupos/shared";
+import type { StartupResponse, StartupsResponse } from "@startupos/shared";
 
 export async function createStartup(payload: CreateStartupPayload): Promise<Startup> {
-  const data = await apiClient.post<StartupWrapper>("/startups", payload);
+  const data = await apiClient.post<StartupResponse>("/startups", payload);
   return data.startup;
 }
 
 export async function getStartups(): Promise<Startup[]> {
-  const data = await apiClient.get<Startup[] | StartupsWrapper>("/startups");
+  const data = await apiClient.get<Startup[] | StartupsResponse>("/startups");
   return Array.isArray(data) ? data : data.startups || [];
 }
 
 export async function getStartup(id: string): Promise<Startup> {
-  const data = await apiClient.get<StartupWrapper>(`/startups/${id}`);
+  const data = await apiClient.get<StartupResponse>(`/startups/${id}`);
   return data.startup;
 }

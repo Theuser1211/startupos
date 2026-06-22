@@ -2,16 +2,7 @@
 
 import { apiClient } from "./client";
 import type { StartupBlueprint } from "@/lib/types";
-
-export interface GenerateBlueprintPayload {
-  startupId: string;
-  prompt: string;
-}
-
-export interface GenerateBlueprintResponse {
-  jobId: string;
-  status: string;
-}
+import type { GenerateBlueprintPayload, GenerateBlueprintResponse } from "@startupos/shared";
 
 export async function generateBlueprint(
   payload: GenerateBlueprintPayload,

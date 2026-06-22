@@ -127,11 +127,23 @@ export default function BlueprintsPage() {
                       {new Date(startup.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   )}
-                  <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
-                    <Link href={`/workspace?id=${startup.id}`}>
-                      Open <ExternalLink className="h-3 w-3 ml-1" />
-                    </Link>
-                  </Button>
+                  <div className="flex items-center gap-1">
+                    <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
+                      <Link href={`/dashboard?id=${startup.id}`}>
+                        Dashboard
+                      </Link>
+                    </Button>
+                    <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
+                      <Link href={`/competitors?startupId=${startup.id}`}>
+                        Competitors
+                      </Link>
+                    </Button>
+                    <Button size="sm" variant="ghost" className="h-7 text-xs" asChild>
+                      <Link href={`/workspace?id=${startup.id}`}>
+                        Open <ExternalLink className="h-3 w-3 ml-1" />
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </motion.div>
             ))}

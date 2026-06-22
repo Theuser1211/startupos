@@ -4,6 +4,7 @@ import { GenerateBlueprintInput } from "./blueprint.schema.js";
 import { NotFoundError, ForbiddenError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
 import { getQueue } from "../../queue/setup.js";
+import { captureEvent } from "../dashboard/dashboard.service.js";
 
 export async function generateBlueprintHandler(
   request: FastifyRequest<{ Body: GenerateBlueprintInput }>,
@@ -47,6 +48,7 @@ export async function generateBlueprintHandler(
 
     if (existingBlueprint) {
       logger.info({ requestId }, "[BP4] returning existing blueprint");
+      await captureEvent(startupId, "BLUEPRINT_GENERATED", { existing: true });
       reply.send({
         jobId: null,
         blueprint: existingBlueprint,
@@ -112,6 +114,7 @@ export async function generateBlueprintHandler(
     logger.info({ requestId, jobId: job.id }, "[BP8] queue.add succeeded");
 
     logger.info({ requestId, jobId: job.id }, "[BP9] sending response");
+    await captureEvent(startupId, "BLUEPRINT_GENERATED", { jobId: job.id });
     reply.status(202).send({
       jobId: job.id,
       status: "PENDING",

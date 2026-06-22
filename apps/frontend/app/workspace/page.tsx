@@ -102,6 +102,7 @@ function WorkspaceContent() {
         activeTab={activeTab}
         onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
         founderName={startup?.name || blueprint?.startupName || ""}
+        startupId={startupIdParam || undefined}
       />
 
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">

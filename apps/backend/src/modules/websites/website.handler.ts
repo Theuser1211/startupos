@@ -4,6 +4,7 @@ import { GenerateWebsiteInput } from "./website.schema.js";
 import { NotFoundError, ForbiddenError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
 import { getQueue } from "../../queue/setup.js";
+import { captureEvent } from "../dashboard/dashboard.service.js";
 
 export async function generateWebsiteHandler(
   request: FastifyRequest<{ Body: GenerateWebsiteInput }>,
@@ -67,6 +68,8 @@ export async function generateWebsiteHandler(
     type: "WEBSITE_GENERATION",
     payload: { blueprintId: blueprint.id, startupName: startup.name },
   });
+
+  await captureEvent(startupId, "WEBSITE_GENERATED", { jobId: job.id });
 
   logger.info({ jobId: job.id, startupId }, "Website generation job queued");
 

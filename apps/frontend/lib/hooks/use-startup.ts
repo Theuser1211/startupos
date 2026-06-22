@@ -1,11 +1,12 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getStartups, getStartup, createStartup, type CreateStartupPayload } from "@/lib/api/startups";
-import { generateBlueprint, getBlueprint, type GenerateBlueprintPayload } from "@/lib/api/blueprints";
-import { generateWebsite, getWebsite, type GenerateWebsitePayload } from "@/lib/api/websites";
-import { deploy, type DeployPayload } from "@/lib/api/deployments";
+import { getStartups, getStartup, createStartup } from "@/lib/api/startups";
+import { generateBlueprint, getBlueprint } from "@/lib/api/blueprints";
+import { generateWebsite, getWebsite } from "@/lib/api/websites";
+import { deploy } from "@/lib/api/deployments";
 import { pollJob } from "@/lib/api/jobs";
+import type { CreateStartupPayload, GenerateBlueprintPayload, GenerateWebsitePayload, DeployPayload } from "@startupos/shared";
 import type { Startup, StartupBlueprint } from "@/lib/types";
 
 export function useStartups() {

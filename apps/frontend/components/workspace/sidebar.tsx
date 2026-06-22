@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Globe, Palette, Target, DollarSign, Map, Flame, Scale,
-  LucideIcon, Sparkles, FolderOpen,
+  LucideIcon, Sparkles, FolderOpen, TrendingUp, Crosshair,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,9 +30,10 @@ interface SidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   founderName?: string;
+  startupId?: string;
 }
 
-export function Sidebar({ activeTab, onTabChange, founderName }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, founderName, startupId }: SidebarProps) {
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-glass-border bg-background/50 backdrop-blur-xl">
       <div className="flex items-center gap-2.5 h-14 px-5 border-b border-glass-border">
@@ -95,6 +96,24 @@ export function Sidebar({ activeTab, onTabChange, founderName }: SidebarProps) {
       </nav>
 
       <div className="px-3 py-3 border-t border-glass-border space-y-1">
+        {startupId && (
+          <>
+            <Link
+              href={`/dashboard?id=${startupId}`}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+            >
+              <TrendingUp className="h-3.5 w-3.5" />
+              Dashboard
+            </Link>
+            <Link
+              href={`/competitors?startupId=${startupId}`}
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+            >
+              <Crosshair className="h-3.5 w-3.5" />
+              Competitors
+            </Link>
+          </>
+        )}
         <Link
           href="/blueprints"
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"

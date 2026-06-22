@@ -176,6 +176,11 @@ export default function InterviewPage() {
 
         const result = await generateBlueprint({ startupId: startup.id, prompt });
 
+        if (!result.jobId) {
+          router.push(`/workspace?id=${startup.id}`);
+          return;
+        }
+
         const completedJob = await pollJob(result.jobId, { maxAttempts: 120, intervalMs: 2000 });
 
         if (completedJob.status === "completed") {

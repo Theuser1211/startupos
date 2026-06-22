@@ -1,3 +1,12 @@
+import type {
+  AuthUser,
+  BlueprintMeta,
+  JobStatus,
+  DeploymentStatus,
+} from "@startupos/shared";
+
+export type { AuthUser, BlueprintMeta, JobStatus, DeploymentStatus };
+
 export interface InterviewData {
   idea: string;
   stage: "ideation" | "pre-seed" | "seed" | "growth";
@@ -68,24 +77,16 @@ export const PROBLEM_LABELS: Record<string, string> = {
 export interface Startup {
   id: string;
   name: string;
+  description: string | null;
+  logo: string | null;
+  industry: string | null;
+  createdAt: string;
+  updatedAt: string;
   idea?: string;
-  description?: string;
-  industry?: string;
   stage?: string;
-  logo?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
   blueprint?: unknown;
   websites?: unknown[];
 }
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  name?: string;
-}
-
-export type BlueprintMeta = "pass" | "conditional" | "needs-work" | "fail";
 
 export interface StartupBlueprint {
   startupName: string;
@@ -213,21 +214,26 @@ export interface StartupBlueprint {
   };
 }
 
-export type JobStatus = "queued" | "processing" | "completed" | "failed";
-
 export interface Job {
   id: string;
+  type: string;
   status: JobStatus;
   result?: unknown;
-  error?: string;
-  created_at?: string;
+  error?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
-
-export type DeploymentStatus = "pending" | "building" | "deployed" | "failed";
 
 export interface Website {
   id: string;
-  spec?: Record<string, unknown>;
+  name?: string;
+  content?: unknown;
+  status?: string;
+  spec?: unknown;
+  deployment?: unknown;
+  startupId?: string;
+  createdAt?: string;
+  updatedAt?: string;
   deployment_url?: string;
   deployment_status?: string;
   created_at?: string;

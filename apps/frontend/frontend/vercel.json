@@ -4,7 +4,6 @@
   "outputDirectory": ".next",
   "installCommand": "npm install",
   "devCommand": "next dev",
-  "gitignore": ["node_modules", ".next", "out"],
   "crons": [],
   "redirects": [
     {

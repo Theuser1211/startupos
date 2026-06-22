@@ -1,12 +1,7 @@
 "use client";
 
 import { apiClient } from "./client";
-import type { AuthUser } from "@/lib/types";
-
-interface AuthResponse {
-  token: string;
-  user?: AuthUser;
-}
+import type { AuthUser, AuthResponse } from "@startupos/shared";
 
 function parseUserFromToken(token: string): AuthUser | null {
   const payload = apiClient.decodeJwtPayload(token);
