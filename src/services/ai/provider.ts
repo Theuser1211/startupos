@@ -525,14 +525,32 @@ export class OpenRouterProvider extends BaseAIProvider {
   }
 
   async generateBlueprint(prompt: string): Promise<BlueprintResult> {
+    const systemPrompt = `You are a startup blueprint generator. Given a startup idea, generate a comprehensive blueprint.
+Do NOT include any text, explanation, or markdown before or after the JSON. Return ONLY the raw JSON object — nothing else.
+Return ONLY valid JSON with this exact structure:
+{
+  "name": "...",
+  "description": "...",
+  "industry": "...",
+  "targetAudience": "...",
+  "problemStatement": "...",
+  "solution": "...",
+  "keyFeatures": [...],
+  "techStack": [...],
+  "monetization": "...",
+  "competitorAnalysis": [...],
+  "roadmap": [...]
+}`;
+
     const raw = await this.callAPI(
       this.endpoint,
       this._apiKey,
       "openai/gpt-4o",
       [
-        { role: "system", content: "You are a startup blueprint generator. Do NOT include any text before or after the JSON. Return ONLY the raw JSON object with fields: name, description, industry, targetAudience, problemStatement, solution, keyFeatures, techStack, monetization, competitorAnalysis, roadmap." },
+        { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
       ],
+      1024,
     );
 
     logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from OpenRouter");
@@ -673,10 +691,12 @@ Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), a
 export class NVIDIAProvider extends BaseAIProvider {
   name = "NVIDIA";
   private _apiKey: string;
+  private _model: string;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, model?: string) {
     super();
     this._apiKey = apiKey;
+    this._model = model ?? "nvidia/nvidia-nemotron-nano-9b-v2";
   }
 
   private get endpoint(): string {
@@ -704,7 +724,7 @@ Return ONLY valid JSON with this exact structure:
     const raw = await this.callAPI(
       this.endpoint,
       this._apiKey,
-      "nvidia/llama-3.1-nemotron-70b-instruct",
+      this._model,
       [
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
@@ -735,7 +755,7 @@ Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), a
     const raw = await this.callAPI(
       this.endpoint,
       this._apiKey,
-      "nvidia/llama-3.1-nemotron-70b-instruct",
+      this._model,
       [
         { role: "system", content: systemPrompt },
         { role: "user", content: JSON.stringify(blueprint) },
@@ -754,7 +774,7 @@ Return ONLY valid JSON with pages array, theme (primaryColor, secondaryColor), a
     const raw = await this.callAPI(
       this.endpoint,
       this._apiKey,
-      "nvidia/llama-3.1-nemotron-70b-instruct",
+      this._model,
       messages,
       8192,
     );
@@ -780,8 +800,8 @@ function initializeProviderRegistry(): void {
     { id: "groq-1", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_1 || env.GROQ_API_KEY, createProvider: () => new GroqProvider(env.GROQ_API_KEY_1 || env.GROQ_API_KEY) },
     { id: "groq-2", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_2, createProvider: () => new GroqProvider(env.GROQ_API_KEY_2!) },
     { id: "groq-3", provider: "groq", model: "llama-3.3-70b-versatile", priority: 2, key: env.GROQ_API_KEY_3, createProvider: () => new GroqProvider(env.GROQ_API_KEY_3!) },
-    { id: "nim-1", provider: "nim", model: "nvidia/llama-3.1-nemotron-70b-instruct", priority: 3, key: env.NIM_API_KEY_1, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_1!) },
-    { id: "nim-2", provider: "nim", model: "nvidia/llama-3.1-nemotron-70b-instruct", priority: 3, key: env.NIM_API_KEY_2, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_2!) },
+    { id: "nim-1", provider: "nim", model: "nvidia/nvidia-nemotron-nano-9b-v2", priority: 3, key: env.NIM_API_KEY_1, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_1!) },
+    { id: "nim-2", provider: "nim", model: "nvidia/nvidia-nemotron-nano-9b-v2", priority: 3, key: env.NIM_API_KEY_2, createProvider: () => new NVIDIAProvider(env.NIM_API_KEY_2!) },
     { id: "openrouter-1", provider: "openrouter", model: "openai/gpt-4o", priority: 4, key: env.OPENROUTER_API_KEY, createProvider: () => new OpenRouterProvider(env.OPENROUTER_API_KEY!) },
   );
 

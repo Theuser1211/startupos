@@ -18,6 +18,7 @@ export function startWorker(): void {
   const worker = createWorker(async (job: Job<JobQueuePayload>) => {
     const { type, startupId, payload } = job.data;
 
+    logger.info({ jobId: job.id, type, startupId }, "Worker picked up job");
     try {
       switch (type) {
         case "BLUEPRINT_GENERATION": {
@@ -36,6 +37,7 @@ export function startWorker(): void {
           throw new Error(`Unknown job type: ${type}`);
         }
       }
+      logger.info({ jobId: job.id, type }, "Worker job completed successfully");
     } catch (error) {
       logger.error(
         { err: error, jobId: job.id, type, startupId },
@@ -47,20 +49,20 @@ export function startWorker(): void {
 
   worker.on("failed", (job, err) => {
     logger.error(
-      { jobId: job?.id, error: err?.message, stack: err?.stack },
+      { jobId: job?.id, jobData: job?.data, error: err?.message, stack: err?.stack },
       "Worker job failed permanently",
     );
   });
 
-  logger.info("Queue worker started");
+  logger.info({ concurrency: env.NODE_ENV === "production" ? 5 : 2, lockDuration: 30000 }, "Queue worker started");
 }
 
-async function isJobAlreadyCompleted(jobId: string): Promise<boolean> {
+async function isJobTerminal(jobId: string): Promise<boolean> {
   const current = await prisma.job.findUnique({
     where: { id: jobId },
     select: { status: true },
   });
-  return current?.status === "COMPLETED";
+  return current?.status === "COMPLETED" || current?.status === "FAILED";
 }
 
 async function handleBlueprintGeneration(
@@ -68,8 +70,8 @@ async function handleBlueprintGeneration(
   startupId: string,
   payload: Record<string, unknown>,
 ): Promise<void> {
-  if (await isJobAlreadyCompleted(job.data.jobId)) {
-    logger.info({ jobId: job.data.jobId }, "Blueprint job already completed, skipping retry");
+  if (await isJobTerminal(job.data.jobId)) {
+    logger.info({ jobId: job.data.jobId }, "Blueprint job already in terminal state, skipping retry");
     return;
   }
 
@@ -77,6 +79,7 @@ async function handleBlueprintGeneration(
     where: { id: job.data.jobId },
     data: { status: "PROCESSING" },
   });
+  logger.info({ jobId: job.data.jobId, startupId }, "Blueprint generation: status set to PROCESSING");
 
   try {
     const existing = await prisma.blueprint.findUnique({ where: { startupId } });
@@ -124,13 +127,21 @@ async function handleBlueprintGeneration(
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
-    await prisma.job.update({
-      where: { id: job.data.jobId },
-      data: {
-        status: "FAILED",
-        error: message,
-      },
-    });
+    try {
+      await prisma.job.update({
+        where: { id: job.data.jobId },
+        data: {
+          status: "FAILED",
+          error: message,
+        },
+      });
+      logger.info({ jobId: job.data.jobId, error: message }, "Blueprint job failed");
+    } catch (dbError) {
+      logger.error(
+        { jobId: job.data.jobId, dbError, originalError: message },
+        "Blueprint job: failed to persist FAILED status to database",
+      );
+    }
 
     throw error;
   }
@@ -141,8 +152,8 @@ async function handleWebsiteGeneration(
   startupId: string,
   payload: Record<string, unknown>,
 ): Promise<void> {
-  if (await isJobAlreadyCompleted(job.data.jobId)) {
-    logger.info({ jobId: job.data.jobId }, "Website job already completed, skipping retry");
+  if (await isJobTerminal(job.data.jobId)) {
+    logger.info({ jobId: job.data.jobId }, "Website job already in terminal state, skipping retry");
     return;
   }
 
@@ -150,6 +161,7 @@ async function handleWebsiteGeneration(
     where: { id: job.data.jobId },
     data: { status: "PROCESSING" },
   });
+  logger.info({ jobId: job.data.jobId, startupId }, "Website generation: status set to PROCESSING");
 
   try {
     const blueprintId = payload.blueprintId as string;
@@ -228,13 +240,21 @@ async function handleWebsiteGeneration(
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
-    await prisma.job.update({
-      where: { id: job.data.jobId },
-      data: {
-        status: "FAILED",
-        error: message,
-      },
-    });
+    try {
+      await prisma.job.update({
+        where: { id: job.data.jobId },
+        data: {
+          status: "FAILED",
+          error: message,
+        },
+      });
+      logger.info({ jobId: job.data.jobId, error: message }, "Website generation job failed");
+    } catch (dbError) {
+      logger.error(
+        { jobId: job.data.jobId, dbError, originalError: message },
+        "Website generation job: failed to persist FAILED status to database",
+      );
+    }
 
     throw error;
   }
@@ -245,8 +265,8 @@ async function handleDeployment(
   startupId: string,
   payload: Record<string, unknown>,
 ): Promise<void> {
-  if (await isJobAlreadyCompleted(job.data.jobId)) {
-    logger.info({ jobId: job.data.jobId }, "Deployment job already completed, skipping retry");
+  if (await isJobTerminal(job.data.jobId)) {
+    logger.info({ jobId: job.data.jobId }, "Deployment job already in terminal state, skipping retry");
     return;
   }
 
@@ -254,6 +274,7 @@ async function handleDeployment(
     where: { id: job.data.jobId },
     data: { status: "PROCESSING" },
   });
+  logger.info({ jobId: job.data.jobId, startupId }, "Deployment: status set to PROCESSING");
 
   const websiteId = payload.websiteId as string;
   const deploymentId = payload.deploymentId as string;
@@ -355,18 +376,33 @@ async function handleDeployment(
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
-    await prisma.deployment.update({
-      where: { id: deploymentId },
-      data: { status: "FAILED", error: message },
-    });
+    try {
+      await prisma.deployment.update({
+        where: { id: deploymentId },
+        data: { status: "FAILED", error: message },
+      });
+    } catch (dbError) {
+      logger.error(
+        { deploymentId, dbError, originalError: message },
+        "Deployment job: failed to persist deployment FAILED status",
+      );
+    }
 
-    await prisma.job.update({
-      where: { id: job.data.jobId },
-      data: {
-        status: "FAILED",
-        error: message,
-      },
-    });
+    try {
+      await prisma.job.update({
+        where: { id: job.data.jobId },
+        data: {
+          status: "FAILED",
+          error: message,
+        },
+      });
+      logger.info({ jobId: job.data.jobId, deploymentId, error: message }, "Deployment job failed");
+    } catch (dbError) {
+      logger.error(
+        { jobId: job.data.jobId, dbError, originalError: message },
+        "Deployment job: failed to persist job FAILED status",
+      );
+    }
 
     throw error;
   }
