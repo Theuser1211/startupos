@@ -1,0 +1,501 @@
+{
+  "startupName": "AI Pair Programmer",
+  "tagline": "Ship AI models in days, not months",
+  "problem": "Legacy AI infrastructure is bloated, expensive, and requires PhD-level expertise to manage.",
+  "solution": "A streamlined AI platform that delivers production-ready models in days, not months, without the enterprise overhead.",
+  "companySnapshot": {
+    "stage": "Ideation",
+    "industry": "AI / ML / Infrastructure",
+    "funding": "$0 (Bootstrapped)",
+    "teamSize": 1,
+    "foundedDate": "Jan 2025"
+  },
+  "stats": {
+    "brandScore": 70,
+    "marketFit": "C+",
+    "readiness": 55,
+    "growthScore": 65
+  },
+  "insights": [
+    {
+      "title": "Market Timing",
+      "description": "Enterprise AI infrastructure is projected to grow 40% YoY. Your positioning is well-aligned with market demand.",
+      "type": "positive"
+    },
+    {
+      "title": "Growth Opportunity",
+      "description": "Consider targeting FinTech vertical first — they have the highest willingness to pay for AI infrastructure.",
+      "type": "opportunity"
+    },
+    {
+      "title": "Revenue Alert",
+      "description": "Your burn rate suggests you have 18 months of runway. Recommend focusing on paid pilots in Q2.",
+      "type": "warning"
+    },
+    {
+      "title": "Team Gap",
+      "description": "Startups at your stage typically succeed with at least one technical co-founder. Consider expanding your team.",
+      "type": "action"
+    }
+  ],
+  "website": {
+    "url": "yourstartup.example.com",
+    "summary": "Clean landing page with good value proposition, but lacks social proof and detailed feature breakdown.",
+    "strengths": [
+      "Clear headline explaining the product",
+      "Modern, professional design",
+      "Good mobile responsiveness"
+    ],
+    "improvements": [
+      "Add customer testimonials and case studies",
+      "Include pricing page",
+      "Add more technical documentation",
+      "Improve SEO meta tags"
+    ],
+    "recommendations": [
+      "Add a clear CTA above the fold — 'Get Started' or 'Book a Demo'",
+      "Include at least 3 customer logos or testimonials for social proof",
+      "Add a product demo video or interactive walkthrough",
+      "Implement live chat or a demo booking widget"
+    ]
+  },
+  "brand": {
+    "mission": "To make enterprise AI infrastructure as accessible as Stripe made payments.",
+    "values": [
+      "Simplicity over complexity",
+      "Transparency in pricing",
+      "Developer-first experience",
+      "Enterprise-grade reliability"
+    ],
+    "tone": [
+      "Confident but not arrogant",
+      "Technical but accessible",
+      "Ambitious and visionary",
+      "Human-centered"
+    ],
+    "colors": [
+      {
+        "name": "Primary Purple",
+        "hex": "#7C3AED"
+      },
+      {
+        "name": "Electric Indigo",
+        "hex": "#6366F1"
+      },
+      {
+        "name": "Deep Space",
+        "hex": "#0A0A0F"
+      },
+      {
+        "name": "Silver Mist",
+        "hex": "#A1A1B5"
+      }
+    ],
+    "typography": {
+      "heading": "Instrument Serif",
+      "body": "Plus Jakarta Sans"
+    }
+  },
+  "logos": [
+    {
+      "id": "1",
+      "description": "Geometric letter mark with circuit-board lines representing neural networks",
+      "style": "Minimalist / Tech",
+      "preview": "AI Pair Programmer",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    },
+    {
+      "id": "2",
+      "description": "Abstract brain node with connecting dots in a constellation pattern",
+      "style": "Abstract / Creative",
+      "preview": "AI Pair Programmer",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    },
+    {
+      "id": "3",
+      "description": "Interlocking hexagons forming the first letter — unity and complexity",
+      "style": "Modern / Geometric",
+      "preview": "AI Pair Programmer",
+      "colors": [
+        "#7C3AED",
+        "#6366F1"
+      ]
+    }
+  ],
+  "icp": {
+    "title": "VP of AI / ML Engineering",
+    "role": "Technical decision-maker at a mid-market company",
+    "companySize": "50-500 employees",
+    "description": "Individual developer or data scientist experimenting with AI tools who needs fast prototyping without infrastructure headaches.",
+    "painPoints": [
+      "Current AI infrastructure costs are unpredictable and ballooning",
+      "MLOps toolchain requires too many disparate tools to manage",
+      "Sourcing and retaining specialist ML talent is nearly impossible",
+      "Compliance and governance for AI models is immature"
+    ],
+    "goals": [
+      "Reduce AI infrastructure costs by 50%",
+      "Deploy new AI features in days, not months",
+      "Maintain SOC 2 and GDPR compliance",
+      "Scale from pilot to production seamlessly"
+    ],
+    "objections": [
+      "\"We already have a data science team\"",
+      "\"Migrating would be too disruptive\"",
+      "\"How secure is your platform?\"",
+      "\"We need custom integrations\""
+    ],
+    "recommendations": [
+      "Create case studies specifically targeting VPs of Engineering at companies with 50-500 employees",
+      "Develop a comparison page vs. AWS SageMaker highlighting cost savings and ease of use",
+      "Offer a free SOC 2 readiness assessment to address security objections early"
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Hugging Face",
+      "strength": "Massive open-source model library, strong community",
+      "weakness": "Not enterprise-ready, no managed infrastructure",
+      "opportunity": "Enterprise layer on top of open models"
+    },
+    {
+      "name": "Replicate",
+      "strength": "Easy model deployment, good developer experience",
+      "weakness": "Limited to inference, no training/customization",
+      "opportunity": "Full lifecycle ML platform"
+    },
+    {
+      "name": "Modal",
+      "strength": "Serverless GPU compute, fast scaling",
+      "weakness": "Infrastructure-only, no model management",
+      "opportunity": "End-to-end ML platform with model registry"
+    },
+    {
+      "name": "Anyscale",
+      "strength": "Ray-based distributed computing, enterprise-grade",
+      "weakness": "Complex setup, requires ML expertise",
+      "opportunity": "Simplified ML infrastructure for non-experts"
+    }
+  ],
+  "revenue": {
+    "model": "Pre-revenue B2B SaaS model — targeting $100/mo/mo",
+    "pricing": "Target: $100/mo/mo per seat (to be validated)",
+    "justification": "At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing.",
+    "projections": [
+      {
+        "month": "Jan",
+        "projected": 0,
+        "actual": 0
+      },
+      {
+        "month": "Feb",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Mar",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Apr",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "May",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jun",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jul",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Aug",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Sep",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Oct",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Nov",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Dec",
+        "projected": 0,
+        "actual": null
+      }
+    ],
+    "funding": "$0 (Bootstrapped)",
+    "analysis": "AI Pair Programmer — At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing."
+  },
+  "roadmap": [
+    {
+      "quarter": "Phase 1: Foundation",
+      "items": [
+        {
+          "title": "Core AI inference engine prototype",
+          "description": "Basic model serving API with REST endpoints",
+          "status": "in-progress"
+        },
+        {
+          "title": "Training data pipeline infrastructure",
+          "description": "Automated data ingestion and labeling workflow",
+          "status": "planned"
+        },
+        {
+          "title": "Preview deployment for 10 beta users",
+          "description": "Limited access tester onboarding program",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 2: Product-Market Fit",
+      "items": [
+        {
+          "title": "Launch to 50 early adopters",
+          "description": "Onboard 50 users, achieve 40%+ weekly retention",
+          "status": "planned"
+        },
+        {
+          "title": "Iterate based on usage data",
+          "description": "Ship 3 feature iterations based on user feedback, measure NPS > 40",
+          "status": "planned"
+        },
+        {
+          "title": "Achieve first revenue",
+          "description": "Convert 10% of free users to paid, reach $2K MRR",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 3: Growth",
+      "items": [
+        {
+          "title": "Scale acquisition channels",
+          "description": "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably",
+          "status": "planned"
+        },
+        {
+          "title": "Hire first employee",
+          "description": "Bring on a full-stack engineer or sales lead to accelerate growth",
+          "status": "planned"
+        },
+        {
+          "title": "Hit $10K MRR",
+          "description": "Reach $10K MRR with 100+ paying customers",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "badge": "needs-work",
+    "badgeLabel": "NEEDS WORK",
+    "compositeScore": 49,
+    "summary": "AI Pair Programmer: Your startup scored 49/100. timing is your strongest dimension (80/100). competition needs the most attention (25/100).",
+    "dimensions": {
+      "market": {
+        "score": 70,
+        "label": "Large & Growing",
+        "description": "Enterprise AI spending projected to grow 40% YoY. Massive TAM with high willingness to pay."
+      },
+      "timing": {
+        "score": 80,
+        "label": "Peak Timing",
+        "description": "AI adoption is at an all-time high. Enterprise budgets are actively allocated to AI infrastructure."
+      },
+      "competition": {
+        "score": 25,
+        "label": "Hyperscaler Threat",
+        "description": "Competing against AWS, GCP, and Azure. Open-source models (Llama, Mistral) erode differentiation."
+      },
+      "defensibility": {
+        "score": 30,
+        "label": "Data Moat Potential",
+        "description": "Model quality improves with proprietary data. But models themselves are increasingly commoditized."
+      },
+      "founderFit": {
+        "score": 70,
+        "label": "Early Stage",
+        "description": "At ideation, founder-market fit is assumed based on your problem choice. Validate through customer discovery."
+      },
+      "distribution": {
+        "score": 40,
+        "label": "Enterprise Sales",
+        "description": "AI infrastructure requires technical sales. PLG works for bottom-up adoption."
+      },
+      "revenue": {
+        "score": 50,
+        "label": "High Unit Economics",
+        "description": "AI infrastructure commands premium pricing. Usage-based models scale with customer growth."
+      }
+    },
+    "strengths": [
+      {
+        "dimension": "timing",
+        "score": 80,
+        "explanation": "You're building at the right moment. Market conditions favor your entry."
+      },
+      {
+        "dimension": "market",
+        "score": 70,
+        "explanation": "Your market is large, growing, and has strong tailwinds."
+      }
+    ],
+    "weaknesses": [
+      {
+        "dimension": "competition",
+        "score": 25,
+        "explanation": "You face entrenched competitors with significant advantages."
+      },
+      {
+        "dimension": "defensibility",
+        "score": 30,
+        "explanation": "Low defensibility. Focus on building moats before competitors replicate your product."
+      }
+    ],
+    "fatalRisks": [
+      "Critical weakness in competition: scored 25/100. You face entrenched competitors with significant advantages."
+    ],
+    "suggestedPivot": null,
+    "confidence": 67,
+    "confidenceLabel": "Moderate",
+    "confidenceBreakdown": {
+      "dataCompleteness": 100,
+      "stageMaturity": 40,
+      "dimensionAgreement": 40,
+      "industrySignal": 85
+    },
+    "improvementPaths": [
+      {
+        "dimension": "timing",
+        "action": "Ship MVP and get first 10 design partners",
+        "scoreGain": 12,
+        "risk": "Delay launch by 6+ months for perfection",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "market",
+        "action": "Narrow from broad market to a specific vertical",
+        "scoreGain": 10,
+        "risk": "Expand too early into adjacent verticals",
+        "scoreLoss": 8
+      },
+      {
+        "dimension": "founderFit",
+        "action": "Work in the industry you're disrupting for 3 months",
+        "scoreGain": 8,
+        "risk": "Hire a CEO who doesn't understand the problem",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "revenue",
+        "action": "Pre-sell to 3 customers before building",
+        "scoreGain": 15,
+        "risk": "Increase burn without proving willingness-to-pay",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "distribution",
+        "action": "Launch a self-serve onboarding flow",
+        "scoreGain": 10,
+        "risk": "Rely entirely on outbound enterprise sales",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "defensibility",
+        "action": "File provisional patents or build proprietary data assets",
+        "scoreGain": 12,
+        "risk": "Open-source your core differentiator",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "competition",
+        "action": "Identify and amplify your unfair advantage",
+        "scoreGain": 10,
+        "risk": "A well-funded competitor enters your space",
+        "scoreLoss": 12
+      }
+    ]
+  },
+  "roast": {
+    "score": 5,
+    "verdict": "AI Pair Programmer — Strong technical moat, but you're competing against every cloud provider's AI division. Your differentiation lives in the developer experience, not the models themselves.",
+    "risks": [
+      "Hyperscalers (AWS, GCP, Azure) will bundle AI services for free",
+      "Open-source model quality is improving faster than proprietary SaaS",
+      "Enterprise sales cycles are 6-12 months — your burn rate may not sustain that",
+      "No revenue means every assumption about pricing is unvalidated",
+      "Ideation-stage startups have a 90% failure rate before reaching PMF"
+    ],
+    "recommendations": [
+      "Open-source a core component to build community trust",
+      "Publish benchmark comparisons against cloud AI services",
+      "Target a single vertical (e.g., FinTech AI) before going horizontal"
+    ],
+    "items": [
+      {
+        "category": "Value Proposition",
+        "rating": 6,
+        "feedback": "\"Enterprise AI infrastructure\" is overused. Your headline doesn't differentiate you from 50 other startups. Be specific about WHO you help and HOW much you save them.",
+        "severity": "high"
+      },
+      {
+        "category": "Website UX",
+        "rating": 5,
+        "feedback": "Your hero section has a slow load time. You're losing visitors before they see your product. Also, no demo video?",
+        "severity": "high"
+      },
+      {
+        "category": "Target Market",
+        "rating": 7,
+        "feedback": "\"Mid-market\" is too broad. Are you targeting FinTech? HealthTech? E-commerce? Pick one vertical to dominate first.",
+        "severity": "medium"
+      },
+      {
+        "category": "Go-to-Market",
+        "rating": 4,
+        "feedback": "Talk to 50 potential customers BEFORE spending a dollar on marketing. Your ICP is a guess, not data.",
+        "severity": "high"
+      },
+      {
+        "category": "Pricing",
+        "rating": 5,
+        "feedback": "No pricing page = no trust. Even \"Starting at $X\" is better than nothing.",
+        "severity": "medium"
+      },
+      {
+        "category": "Product Demo",
+        "rating": 3,
+        "feedback": "Your product tour takes too many clicks to get to the core value. Users should understand what you do in under 5 seconds.",
+        "severity": "high"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "devCommand": "next dev",
+  "gitignore": ["node_modules", ".next", "out"],
+  "crons": [],
+  "redirects": [
+    {
+      "source": "/app",
+      "destination": "/blueprints",
+      "permanent": true
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/blueprints",
+      "permanent": true
+    }
+  ],
+  "trailingSlash": false
+}

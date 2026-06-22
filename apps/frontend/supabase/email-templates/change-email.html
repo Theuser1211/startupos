@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm email change — StartupOS</title>
+</head>
+<body style="margin:0;padding:0;background-color:#0b0b0f;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#0b0b0f;">
+    <tr>
+      <td align="center" style="padding:48px 24px;">
+        <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="max-width:480px;width:100%;">
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding-bottom:32px;">
+              <a href="https://startupos.app" style="text-decoration:none;">
+                <img
+                  src="https://startupos.app/logo-full.png"
+                  alt="StartupOS"
+                  width="130"
+                  height="30"
+                  style="display:block;border:0;outline:none;height:auto;"
+                />
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#121218;border:1px solid #1e1e2a;border-radius:16px;padding:40px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <span style="display:inline-block;width:56px;height:56px;line-height:56px;text-align:center;background:linear-gradient(135deg,#7878a0,#6366f1);border-radius:14px;font-size:28px;">📧</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:8px;">
+                    <h1 style="margin:0;font-size:22px;font-weight:600;color:#e8e8ed;letter-spacing:-0.3px;">
+                      Confirm email change
+                    </h1>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <p style="margin:0;font-size:14px;line-height:1.6;color:#787890;">
+                      We received a request to change the email address on your StartupOS account to <strong style="color:#e8e8ed;">{{ .Email }}</strong>. Click the button below to confirm this change.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:24px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td style="background:linear-gradient(135deg,#7878a0,#6366f1);border-radius:10px;padding:0;">
+                          <a href="{{ .ConfirmationURL }}"
+                             style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:500;color:#ffffff;text-decoration:none;letter-spacing:-0.2px;">
+                            Confirm Email Change
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-bottom:0px;">
+                    <p style="margin:0;font-size:12px;line-height:1.5;color:#5c5c6e;">
+                      Or copy this link into your browser:<br/>
+                      <a href="{{ .ConfirmationURL }}" style="color:#7878a0;text-decoration:underline;font-size:12px;word-break:break-all;">{{ .ConfirmationURL }}</a>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding-top:24px;border-top:1px solid #1e1e2a;">
+                    <p style="margin:0;font-size:12px;line-height:1.5;color:#5c5c6e;">
+                      If you didn't request this change, please contact support immediately — your account may be compromised.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding-top:24px;">
+              <p style="margin:0;font-size:11px;color:#5c5c6e;">
+                &copy; 2025 StartupOS. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

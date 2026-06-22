@@ -1,0 +1,33 @@
+[  106056ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:3000/_next/image?url=%2Flogo-full.png&w=1920&q=75:0
+[  106078ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:3000/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2:0
+[  106084ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:3000/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2:0
+[  106084ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__1jlp3er._.css:0
+[  106084ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://localhost:3000/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_1xx01vv._.js:0
+[  108435ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2:0
+[  108435ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_090k2jm.js:0
+[  108435ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:0
+[  108451ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:0
+[  108451ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:0
+[  108451ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:0
+[  110794ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:0
+[  110794ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_%40swc_helpers_cjs_1r9vbqw._.js:0
+[  110794ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/_1anvha4._.js:0
+[  110809ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/turbopack-_01_ro95._.js:0
+[  110809ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1nyev3z._.js:0
+[  110809ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_motion-dom_dist_es_14228j4._.js:0
+[  113155ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_framer-motion_dist_es_1_a7n4k._.js:0
+[  113155ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_tailwind-merge_dist_bundle-mjs_mjs_0q79z23._.js:0
+[  113155ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_05h7ljb._.js:0
+[  113169ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/_10lbs6w._.js:0
+[  113170ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/app_layout_tsx_007e4b2._.js:0
+[  113170ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/_0p60j31._.js:0
+[  115506ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_0tdjkhq._.js:0
+[  115507ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/app_page_tsx_1levop8._.js:0
+[  115507ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1levop8.js:0
+[  115536ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/favicon.ico:0
+[  117851ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/logo-square.png:0
+[  117883ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/favicon.ico?favicon.2vob68tjqpejf.ico:0
+[  120218ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/image?url=%2Flogo-full.png&w=1920&q=75:0
+[  123233ms] [WARNING] The resource http://localhost:3000/_next/static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/:0
+[  123233ms] [WARNING] The resource http://localhost:3000/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/:0
+[  123233ms] [WARNING] The resource http://localhost:3000/_next/static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://localhost:3000/:0

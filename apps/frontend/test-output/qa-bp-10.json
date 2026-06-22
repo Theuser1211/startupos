@@ -1,0 +1,493 @@
+{
+  "startupName": "Sustainable Supply Chain",
+  "tagline": "Climate tech that pays for itself",
+  "problem": "Climate tech solutions exist but are fragmented, expensive to deploy, and don't integrate with existing industrial infrastructure.",
+  "solution": "An integrated climate platform that makes sustainability measurable, manageable, and monetizable.",
+  "companySnapshot": {
+    "stage": "Ideation",
+    "industry": "Climate / CleanTech",
+    "funding": "$0 (Bootstrapped)",
+    "teamSize": 1,
+    "foundedDate": "Jan 2025"
+  },
+  "stats": {
+    "brandScore": 70,
+    "marketFit": "C+",
+    "readiness": 55,
+    "growthScore": 65
+  },
+  "insights": [
+    {
+      "title": "Regulatory Tailwind",
+      "description": "EU CSRD and SEC climate disclosure rules are creating mandatory reporting for 50,000+ companies. Your market just got bigger by law.",
+      "type": "positive"
+    },
+    {
+      "title": "Data Network Effects",
+      "description": "Every customer improves your emissions data model. Build a data consortium to create switching costs.",
+      "type": "opportunity"
+    },
+    {
+      "title": "Budget Constraints",
+      "description": "Sustainability budgets are often the first cut during downturns. Prove hard dollar savings, not just ESG impact.",
+      "type": "warning"
+    },
+    {
+      "title": "Partnership Strategy",
+      "description": "Partner with carbon credit marketplaces and renewable energy providers to offer an sustainability stack.",
+      "type": "action"
+    }
+  ],
+  "website": {
+    "url": "yourstartup.example.com",
+    "summary": "Mission-driven website with strong visual storytelling, but needs more technical depth on data methodology.",
+    "strengths": [
+      "Compelling mission-driven narrative",
+      "Beautiful environmental imagery",
+      "Clear reporting framework explanations"
+    ],
+    "improvements": [
+      "Add methodology whitepapers",
+      "Include customer case studies",
+      "Showcase data accuracy benchmarks",
+      "Add integration directory for ERP systems"
+    ],
+    "recommendations": [
+      "Lead with ROI — show how sustainability saves money",
+      "Add a compliance calendar showing reporting deadlines by region",
+      "Publish a carbon accounting methodology guide",
+      "Include a self-service emissions estimator tool"
+    ]
+  },
+  "brand": {
+    "mission": "To make sustainability the default operating system for every business.",
+    "values": [
+      "Radical transparency",
+      "Scientific rigor",
+      "Systems thinking",
+      "Climate justice"
+    ],
+    "tone": [
+      "Urgent but hopeful",
+      "Data-driven and credible",
+      "Clear and actionable",
+      "Globally minded"
+    ],
+    "colors": [
+      {
+        "name": "Earth Green",
+        "hex": "#22C55E"
+      },
+      {
+        "name": "Ocean Blue",
+        "hex": "#06B6D4"
+      },
+      {
+        "name": "Forest",
+        "hex": "#064E3B"
+      },
+      {
+        "name": "Warm Beige",
+        "hex": "#D6D3D1"
+      }
+    ],
+    "typography": {
+      "heading": "Instrument Serif",
+      "body": "Plus Jakarta Sans"
+    }
+  },
+  "logos": [
+    {
+      "id": "1",
+      "description": "Leaf encased in a circular refresh arrow — sustainability cycle",
+      "style": "Organic / Green",
+      "preview": "Sustainable Supply Chain",
+      "colors": [
+        "#22C55E",
+        "#06B6D4"
+      ]
+    },
+    {
+      "id": "2",
+      "description": "Abstract globe with growing sprout — planet-first design",
+      "style": "Global / Natural",
+      "preview": "Sustainable Supply Chain",
+      "colors": [
+        "#22C55E",
+        "#06B6D4"
+      ]
+    },
+    {
+      "id": "3",
+      "description": "Three overlapping leaves forming a gear — nature meets industry",
+      "style": "Modern / Eco",
+      "preview": "Sustainable Supply Chain",
+      "colors": [
+        "#22C55E",
+        "#06B6D4"
+      ]
+    }
+  ],
+  "icp": {
+    "title": "Chief Sustainability Officer",
+    "role": "Sustainability executive at a mid-to-large enterprise",
+    "companySize": "500-5000 employees",
+    "description": "Environmentally conscious consumer looking to reduce their carbon footprint through better technology.",
+    "painPoints": [
+      "Carbon accounting is still done in spreadsheets",
+      "ESG reporting frameworks are inconsistent across jurisdictions",
+      "Supply chain emissions data is nearly impossible to collect",
+      "Green technology ROI is unclear to CFOs"
+    ],
+    "goals": [
+      "Automate 90% of carbon data collection",
+      "Achieve ESG reporting compliance in EU and US",
+      "Identify $1M+ in energy cost savings",
+      "Get supply chain suppliers to report emissions"
+    ],
+    "objections": [
+      "\"Sustainability is a cost center, not a revenue driver\"",
+      "\"We already have consultants doing our ESG reporting\"",
+      "\"How accurate is your carbon data?\"",
+      "\"We don't have budget for another SaaS tool\""
+    ],
+    "recommendations": [
+      "Create an ESG compliance checklist tailored to the user's industry",
+      "Publish case studies showing quantifiable ROI from sustainability",
+      "Build pre-built integrations with SAP, Oracle, and Workday"
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Salesforce",
+      "strength": "Market leader, massive ecosystem",
+      "weakness": "Complex, expensive, slow to innovate",
+      "opportunity": "Simplified vertical SaaS"
+    },
+    {
+      "name": "HubSpot",
+      "strength": "Great UX, strong marketing",
+      "weakness": "Limited customization, pricing creep",
+      "opportunity": "Affordable alternative for SMBs"
+    },
+    {
+      "name": "Zoho",
+      "strength": "Affordable, wide product suite",
+      "weakness": "Fragmented products, weak integrations",
+      "opportunity": "Unified platform with better UX"
+    }
+  ],
+  "revenue": {
+    "model": "Pre-revenue B2B SaaS model — targeting $300/mo/mo",
+    "pricing": "Target: $300/mo/mo per seat (to be validated)",
+    "justification": "At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing.",
+    "projections": [
+      {
+        "month": "Jan",
+        "projected": 0,
+        "actual": 0
+      },
+      {
+        "month": "Feb",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Mar",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Apr",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "May",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jun",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Jul",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Aug",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Sep",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Oct",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Nov",
+        "projected": 0,
+        "actual": null
+      },
+      {
+        "month": "Dec",
+        "projected": 0,
+        "actual": null
+      }
+    ],
+    "funding": "$0 (Bootstrapped)",
+    "analysis": "Sustainable Supply Chain — At ideation stage, revenue projections are speculative. Focus on customer discovery interviews to validate willingness to pay before building pricing."
+  },
+  "roadmap": [
+    {
+      "quarter": "Phase 1: Foundation",
+      "items": [
+        {
+          "title": "Carbon tracking engine MVP",
+          "description": "Scope 1, 2, and 3 emissions calculator",
+          "status": "in-progress"
+        },
+        {
+          "title": "Data integration API",
+          "description": "Connect to utility providers and ERP systems",
+          "status": "planned"
+        },
+        {
+          "title": "Reporting dashboard",
+          "description": "Generate ESG reports in major frameworks",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 2: Product-Market Fit",
+      "items": [
+        {
+          "title": "Launch to 50 early adopters",
+          "description": "Onboard 50 users, achieve 40%+ weekly retention",
+          "status": "planned"
+        },
+        {
+          "title": "Iterate based on usage data",
+          "description": "Ship 3 feature iterations based on user feedback, measure NPS > 40",
+          "status": "planned"
+        },
+        {
+          "title": "Achieve first revenue",
+          "description": "Convert 10% of free users to paid, reach $2K MRR",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 3: Growth",
+      "items": [
+        {
+          "title": "Scale acquisition channels",
+          "description": "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably",
+          "status": "planned"
+        },
+        {
+          "title": "Hire first employee",
+          "description": "Bring on a full-stack engineer or sales lead to accelerate growth",
+          "status": "planned"
+        },
+        {
+          "title": "Hit $10K MRR",
+          "description": "Reach $10K MRR with 100+ paying customers",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "badge": "needs-work",
+    "badgeLabel": "NEEDS WORK",
+    "compositeScore": 54,
+    "summary": "Sustainable Supply Chain: Your startup scored 54/100. timing is your strongest dimension (85/100). distribution needs the most attention (30/100).",
+    "dimensions": {
+      "market": {
+        "score": 75,
+        "label": "Rapidly Expanding",
+        "description": "Climate tech funding reached $15B+ in 2024. Regulatory tailwinds from CSRD and SEC rules create mandatory spending."
+      },
+      "timing": {
+        "score": 85,
+        "label": "Urgent Timing",
+        "description": "Regulatory deadlines (SEC, CSRD) create mandatory spending. Net-zero commitments drive urgency."
+      },
+      "competition": {
+        "score": 40,
+        "label": "Fragmented Competition",
+        "description": "Climate tech is still emerging. Watershed, Persefoni exist but no clear winner. Regulatory changes shift landscape."
+      },
+      "defensibility": {
+        "score": 45,
+        "label": "Data Network Effects",
+        "description": "More customers = better emissions data models. Regulatory compliance creates retention."
+      },
+      "founderFit": {
+        "score": 70,
+        "label": "Early Stage",
+        "description": "At ideation, founder-market fit is assumed based on your problem choice. Validate through customer discovery."
+      },
+      "distribution": {
+        "score": 30,
+        "label": "Regulatory-Led Sales",
+        "description": "ESG compliance creates buyer urgency. CFOs control budgets, not CSOs."
+      },
+      "revenue": {
+        "score": 45,
+        "label": "Compliance-Driven",
+        "description": "ESG reporting is mandatory for public companies. Regulatory mandates create inelastic demand."
+      }
+    },
+    "strengths": [
+      {
+        "dimension": "timing",
+        "score": 85,
+        "explanation": "You're building at the right moment. Market conditions favor your entry."
+      },
+      {
+        "dimension": "market",
+        "score": 75,
+        "explanation": "Your market is large, growing, and has strong tailwinds."
+      }
+    ],
+    "weaknesses": [
+      {
+        "dimension": "distribution",
+        "score": 30,
+        "explanation": "Customer acquisition is a critical risk. Rethink your distribution strategy."
+      },
+      {
+        "dimension": "competition",
+        "score": 40,
+        "explanation": "You face entrenched competitors with significant advantages."
+      }
+    ],
+    "fatalRisks": [],
+    "suggestedPivot": null,
+    "confidence": 66,
+    "confidenceLabel": "Moderate",
+    "confidenceBreakdown": {
+      "dataCompleteness": 100,
+      "stageMaturity": 40,
+      "dimensionAgreement": 43,
+      "industrySignal": 75
+    },
+    "improvementPaths": [
+      {
+        "dimension": "timing",
+        "action": "Ship MVP and get first 10 design partners",
+        "scoreGain": 12,
+        "risk": "Delay launch by 6+ months for perfection",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "market",
+        "action": "Narrow from broad market to a specific vertical",
+        "scoreGain": 10,
+        "risk": "Expand too early into adjacent verticals",
+        "scoreLoss": 8
+      },
+      {
+        "dimension": "founderFit",
+        "action": "Work in the industry you're disrupting for 3 months",
+        "scoreGain": 8,
+        "risk": "Hire a CEO who doesn't understand the problem",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "defensibility",
+        "action": "File provisional patents or build proprietary data assets",
+        "scoreGain": 12,
+        "risk": "Open-source your core differentiator",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "revenue",
+        "action": "Pre-sell to 3 customers before building",
+        "scoreGain": 15,
+        "risk": "Increase burn without proving willingness-to-pay",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "competition",
+        "action": "Identify and amplify your unfair advantage",
+        "scoreGain": 10,
+        "risk": "A well-funded competitor enters your space",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "distribution",
+        "action": "Launch a self-serve onboarding flow",
+        "scoreGain": 10,
+        "risk": "Rely entirely on outbound enterprise sales",
+        "scoreLoss": 12
+      }
+    ]
+  },
+  "roast": {
+    "score": 5,
+    "verdict": "Sustainable Supply Chain — Climate tech has the tailwinds but faces the longest sales cycles of any vertical. Your buyers have budgets but no authority, and authority figures have no budgets.",
+    "risks": [
+      "ESG reporting is mandatory for public companies but discretionary for private",
+      "Carbon credit markets are immature and reputationally risky",
+      "Your own operations may have significant carbon footprint",
+      "No revenue means every assumption about pricing is unvalidated",
+      "Ideation-stage startups have a 90% failure rate before reaching PMF"
+    ],
+    "recommendations": [
+      "Target regulated industries first (EU, California) where reporting is mandatory",
+      "Publish your own carbon footprint transparently",
+      "Integrate with existing ERP systems rather than replacing them"
+    ],
+    "items": [
+      {
+        "category": "Buyer Persona",
+        "rating": 5,
+        "feedback": "CSOs have influence but rarely budget authority. You need to also sell to CFOs who control P&L.",
+        "severity": "high"
+      },
+      {
+        "category": "Data Accuracy",
+        "rating": 6,
+        "feedback": "Carbon data is inherently estimated. Be transparent about your methodology and margin of error.",
+        "severity": "medium"
+      },
+      {
+        "category": "Competitive Landscape",
+        "rating": 5,
+        "feedback": "Watershed, Persefoni, and Salesforce Net Zero Cloud all exist. What's your unfair advantage?",
+        "severity": "high"
+      },
+      {
+        "category": "Regulatory Coverage",
+        "rating": 6,
+        "feedback": "You cover EU CSRD but what about SEC climate rules and California SB 253? Coverage breadth is a competitive moat.",
+        "severity": "medium"
+      },
+      {
+        "category": "Integration Depth",
+        "rating": 5,
+        "feedback": "Manual data entry kills adoption. You need automated ingestion from utility APIs and ERP systems.",
+        "severity": "high"
+      },
+      {
+        "category": "Monetization",
+        "rating": 5,
+        "feedback": "ESG budgets are small. Consider per-report pricing rather than annual subscriptions to lower entry barriers.",
+        "severity": "medium"
+      }
+    ]
+  }
+}

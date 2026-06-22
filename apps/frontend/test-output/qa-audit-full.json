@@ -1,0 +1,679 @@
+{
+  "evaluations": [
+    {
+      "id": 1,
+      "label": "AI Contract Review — Indian SMBs",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 8,
+          "notes": "detailed model; specific pricing; 12 months; analysis present"
+        },
+        "roadmap": {
+          "score": 9.5,
+          "notes": "3 phases; 9 items; status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 49; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 5/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [
+          "End-to-end",
+          "streamline"
+        ],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 2,
+      "label": "Vet Marketplace",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 8,
+          "notes": "detailed model; specific pricing; 12 months; analysis present"
+        },
+        "roadmap": {
+          "score": 9.5,
+          "notes": "3 phases; 9 items; status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 47; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 5/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 6,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 3,
+      "label": "FinTech Compliance Platform",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 9,
+          "notes": "4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 49; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 6/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 4,
+      "label": "Creator Monetization SaaS",
+      "source": "ai",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 59; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 6/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 5,
+      "label": "AI Sales Assistant",
+      "source": "ai",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 8,
+          "notes": "detailed model; specific pricing; 12 months; analysis present"
+        },
+        "roadmap": {
+          "score": 9.5,
+          "notes": "3 phases; 9 items; status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 47; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 5/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 6,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [
+          "transform"
+        ],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 6,
+      "label": "B2B Cybersecurity Platform",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 9,
+          "notes": "4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 9.5,
+          "notes": "3 phases; 9 items; status variety; detailed descriptions; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 55; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 7/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 6
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 7,
+      "label": "AI Bookkeeping Assistant",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 9.5,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs"
+        },
+        "revenue": {
+          "score": 8,
+          "notes": "detailed model; specific pricing; 12 months; analysis present"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 43; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 2 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 5/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8.5
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 8,
+      "label": "Healthcare Scheduling SaaS",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 9,
+          "notes": "4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 10,
+          "notes": "composite: 49; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 1 fatal risks; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 6/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5.5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 9,
+      "label": "Real Estate Lead Gen",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 9,
+          "notes": "4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 9,
+          "notes": "detailed model; specific pricing; 12 months; analysis present; realistic scale; growth trend"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 64; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 7/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 9,
+        "originality": 5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 6
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [
+          "Best-in-class"
+        ],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    },
+    {
+      "id": 10,
+      "label": "Recruiting Automation",
+      "source": "deterministic",
+      "sections": {
+        "brand": {
+          "score": 9,
+          "notes": "detailed mission; 4 colors; valid hex; distinct fonts; 4 values; multi-tone; 3 logo concepts"
+        },
+        "icp": {
+          "score": 10,
+          "notes": "detailed desc; 4 pain points; 4 goals; 4 objections; 3 recs; contains numbers"
+        },
+        "revenue": {
+          "score": 8,
+          "notes": "detailed model; specific pricing; 12 months; analysis present"
+        },
+        "roadmap": {
+          "score": 8.5,
+          "notes": "3 phases; 9 items; status variety; named phases; action verbs"
+        },
+        "verdict": {
+          "score": 9.5,
+          "notes": "composite: 54; detailed summary; detailed dimensions; 2 strengths; 2 weaknesses; 7 paths; confidence breakdown"
+        },
+        "roast": {
+          "score": 9,
+          "notes": "score: 5/10; detailed verdict; 6 items; 5 risks; 3 recs; severity variety"
+        },
+        "website": {
+          "score": 8.5,
+          "notes": "has URL; detailed summary; 3 strengths; 4 improvements; 4 recs; actionable recs"
+        }
+      },
+      "criteria": {
+        "specificity": 8,
+        "originality": 5,
+        "founderUsefulness": 9.5,
+        "actionability": 8,
+        "realism": 8
+      },
+      "issues": {
+        "repeated": [],
+        "generic": [],
+        "hallucinations": [],
+        "weakRecommendations": []
+      }
+    }
+  ],
+  "sectionRankings": [
+    {
+      "name": "verdict",
+      "avg": 9.8
+    },
+    {
+      "name": "icp",
+      "avg": 9.55
+    },
+    {
+      "name": "brand",
+      "avg": 9
+    },
+    {
+      "name": "roast",
+      "avg": 9
+    },
+    {
+      "name": "roadmap",
+      "avg": 8.9
+    },
+    {
+      "name": "revenue",
+      "avg": 8.5
+    },
+    {
+      "name": "website",
+      "avg": 8.5
+    }
+  ],
+  "overallRankings": [
+    {
+      "id": 2,
+      "label": "Vet Marketplace",
+      "source": "deterministic",
+      "overall": 8.571428571428571
+    },
+    {
+      "id": 5,
+      "label": "AI Sales Assistant",
+      "source": "ai",
+      "overall": 8.571428571428571
+    },
+    {
+      "id": 3,
+      "label": "FinTech Compliance Platform",
+      "source": "deterministic",
+      "overall": 8.5
+    },
+    {
+      "id": 8,
+      "label": "Healthcare Scheduling SaaS",
+      "source": "deterministic",
+      "overall": 8.5
+    },
+    {
+      "id": 4,
+      "label": "Creator Monetization SaaS",
+      "source": "ai",
+      "overall": 8.485714285714286
+    },
+    {
+      "id": 1,
+      "label": "AI Contract Review — Indian SMBs",
+      "source": "deterministic",
+      "overall": 8.471428571428572
+    },
+    {
+      "id": 7,
+      "label": "AI Bookkeeping Assistant",
+      "source": "deterministic",
+      "overall": 8.414285714285715
+    },
+    {
+      "id": 6,
+      "label": "B2B Cybersecurity Platform",
+      "source": "deterministic",
+      "overall": 8.335714285714285
+    },
+    {
+      "id": 10,
+      "label": "Recruiting Automation",
+      "source": "deterministic",
+      "overall": 8.314285714285715
+    },
+    {
+      "id": 9,
+      "label": "Real Estate Lead Gen",
+      "source": "deterministic",
+      "overall": 8.214285714285715
+    }
+  ],
+  "overallScore": 8.437857142857144,
+  "aiScore": 8.528571428571428,
+  "deterministicScore": 8.415178571428571,
+  "patterns": {
+    "repeatedNames": [],
+    "repeatedTaglines": [],
+    "repeatedColorPalettes": [
+      "#0A0A0F,#6366F1,#7C3AED,#A1A1B5",
+      "#10B981,#38BDF8,#64748B,#F8FAFC",
+      "#064E3B,#06B6D4,#22C55E,#D6D3D1"
+    ],
+    "repeatedMissions": [
+      "#2 & #5 share 6 keywords",
+      "#3 & #6 share 4 keywords",
+      "#3 & #7 share 4 keywords"
+    ],
+    "similarICPs": [
+      "#3 & #6",
+      "#3 & #8",
+      "#4 & #10"
+    ],
+    "similarRevenueModels": [],
+    "genericRoastPatterns": [
+      "Competitive market warning repeated across blueprints"
+    ]
+  },
+  "websiteCopy": {
+    "avgTaglineLength": 32,
+    "taglineQuality": "Concise",
+    "avgCTACount": 0.1,
+    "ctaEffectiveness": "Needs more CTA specificity",
+    "hallucinatedURLCount": 0,
+    "urlHallucinationRate": "0/10 (0%)"
+  },
+  "improvements": [
+    {
+      "rank": 1,
+      "title": "Eliminate URL hallucinations",
+      "evidence": "0 hallucinated URLs across 10 blueprints. Every deterministic blueprint fabricates a domain.",
+      "impact": "Add to prompt: \"NEVER fabricate URLs. Use 'yourstartup.example.com' for all URL fields. Real URLs require verification.\""
+    },
+    {
+      "rank": 2,
+      "title": "Inject real market data into prompts",
+      "evidence": "Avg specificity: 8.5/10. Blueprints lack real competitor names, real TAM/SAM/SOM, real regulatory bodies.",
+      "impact": "Add: \"Cite 3-5 REAL competitors with actual URLs. Use real market sizing data from Gartner/Statista/McKinsey. If unsure, say 'TBD'.\""
+    },
+    {
+      "rank": 3,
+      "title": "Ban generic startup jargon with explicit blacklist",
+      "evidence": "4 generic phrases found: leverage, disrupt, seamless, end-to-end, world-class, cutting-edge, next-gen, game-changing, revolutionary, empower, transform, streamline, unlock.",
+      "impact": "Add: \"BANNED PHRASES (using any = automatic failure): leverage, disrupt, synergy, ecosystem, scalable, innovative, game-changing, seamless, end-to-end, world-class, cutting-edge, next-gen, revolutionary, best-in-class, empower, transform, streamline, unlock. Replace with concrete specifics.\""
+    },
+    {
+      "rank": 4,
+      "title": "Force brutal honesty in roast and verdict sections",
+      "evidence": "0 weak/vague recommendations. Roast scores cluster around 5-7 (diplomatic). Verdicts avoid saying 'this will fail'.",
+      "impact": "Add: \"The roast must be BRUTALLY honest. If the idea is mediocre, say so. Avoid 'consider X' — say 'You will fail unless you do X'. A 'pass' badge should be rare (top 20% of ideas).\""
+    },
+    {
+      "rank": 5,
+      "title": "Require concrete, measurable roadmap milestones",
+      "evidence": "Avg actionability: 8.0/10. Roadmap items use vague verbs like 'build' and 'develop' without measurable outcomes.",
+      "impact": "Add: \"Each roadmap item MUST include a measurable deliverable. Example: 'Ship landing page with 3 waitlist signups from 10 cold emails' — NOT 'Build website'.\""
+    },
+    {
+      "rank": 6,
+      "title": "Differentiate revenue projections by stage with hard constraints",
+      "evidence": "Revenue projections use similar scales ($10K-50K/mo) regardless of ideation vs seed stage. Growth rates are unrealistically smooth.",
+      "impact": "Add: \"Revenue projections MUST match stage: Ideation: $0-5K/mo for 12 months. Pre-seed: $1-20K/mo. Seed: $10-100K/mo. Use realistic month-over-month growth (5-20% for early stage).\""
+    },
+    {
+      "rank": 7,
+      "title": "Reduce deterministic template similarity",
+      "evidence": "All deterministic blueprints share identical color palettes, similar missions, and same structural patterns. Lacks variety.",
+      "impact": "Add randomized elements to deterministic engine: vary color palettes by industry, use different mission templates, add industry-specific language."
+    },
+    {
+      "rank": 8,
+      "title": "Improve tagline originality",
+      "evidence": "Avg tagline length: 32 chars. Many follow \"X for Y\" pattern. Lacks memorability.",
+      "impact": "Add: \"Taglines must be memorable and specific. Avoid 'X for Y' pattern. Use metaphors, wordplay, or provocative statements. Max 8 words.\""
+    },
+    {
+      "rank": 9,
+      "title": "Add real competitor differentiation analysis",
+      "evidence": "ICP sections lack competitor-specific differentiation. Pain points are generic rather than market-specific.",
+      "impact": "Add: \"For each pain point, explain why existing solutions fail. Name specific competitors and their weaknesses. Show how your approach differs.\""
+    },
+    {
+      "rank": 10,
+      "title": "Stage-appropriate scoring and recommendations",
+      "evidence": "Avg realism: 7.8/10. Ideation-stage startups receive similar scoring and advice as seed-stage companies.",
+      "impact": "Add: \"Adjust all scoring and recommendations based on stage. Ideation = idea validation focus. Pre-seed = MVP and first customers. Seed = growth and scaling.\""
+    }
+  ]
+}

@@ -1,0 +1,499 @@
+{
+  "startupName": "Cross-border Payment Solution",
+  "tagline": "Launch fintech products in weeks",
+  "problem": "Legacy financial systems are built on 40-year-old mainframes that cost millions to maintain and take years to update.",
+  "solution": "A modern, API-first financial platform that lets you launch, scale, and comply in weeks instead of quarters.",
+  "companySnapshot": {
+    "stage": "Seed",
+    "industry": "FinTech",
+    "funding": "$2M (Seed)",
+    "teamSize": 5,
+    "foundedDate": "Jun 2024"
+  },
+  "stats": {
+    "brandScore": 75,
+    "marketFit": "B+",
+    "readiness": 65,
+    "growthScore": 75
+  },
+  "insights": [
+    {
+      "title": "Regulatory Advantage",
+      "description": "FinTech companies that embrace regulation as a moat outperform those that fight it. Your compliance-first approach is a strength.",
+      "type": "positive"
+    },
+    {
+      "title": "Embedded Finance",
+      "description": "The embedded finance market is projected to reach $230B. Consider offering your platform as a white-label solution.",
+      "type": "opportunity"
+    },
+    {
+      "title": "Capital Requirement",
+      "description": "FinTech requires 2-3x more capital than typical SaaS. Ensure your fundraising strategy accounts for regulatory deposits.",
+      "type": "warning"
+    },
+    {
+      "title": "Partnerships",
+      "description": "Partnering with a licensed bank can accelerate your go-to-market by 6-12 months vs. applying for your own license.",
+      "type": "action"
+    }
+  ],
+  "website": {
+    "url": "yourstartup.example.com",
+    "summary": "Professional landing page with strong trust signals, but lacks clear pricing and integration documentation.",
+    "strengths": [
+      "Strong security and compliance messaging",
+      "Professional, trustworthy design",
+      "Clear value proposition"
+    ],
+    "improvements": [
+      "Add detailed API documentation",
+      "Include case studies from beta customers",
+      "Show transparent pricing tiers",
+      "Add a compliance whitepaper download"
+    ],
+    "recommendations": [
+      "Add a 'Security & Compliance' section above the fold",
+      "Include a live API playground for developers",
+      "Showcase integration partners and banking network",
+      "Add an ROI calculator for enterprise prospects"
+    ]
+  },
+  "brand": {
+    "mission": "To make modern financial infrastructure accessible to every business, not just the Fortune 500.",
+    "values": [
+      "Security first",
+      "Transparency by default",
+      "Regulatory innovation",
+      "Financial inclusion"
+    ],
+    "tone": [
+      "Trustworthy but approachable",
+      "Precise and clear",
+      "Confident and reliable",
+      "Customer-obsessed"
+    ],
+    "colors": [
+      {
+        "name": "Ocean Blue",
+        "hex": "#0EA5E9"
+      },
+      {
+        "name": "Teal",
+        "hex": "#14B8A6"
+      },
+      {
+        "name": "Navy",
+        "hex": "#0F172A"
+      },
+      {
+        "name": "Slate",
+        "hex": "#94A3B8"
+      }
+    ],
+    "typography": {
+      "heading": "Instrument Serif",
+      "body": "Plus Jakarta Sans"
+    }
+  },
+  "logos": [
+    {
+      "id": "1",
+      "description": "Shield-like shape with a rising arrow symbolizing security and growth",
+      "style": "Professional / Trust",
+      "preview": "Cross-border Payment Solution",
+      "colors": [
+        "#0EA5E9",
+        "#14B8A6"
+      ]
+    },
+    {
+      "id": "2",
+      "description": "Abstract 'F' merged with a bar chart — financial movement",
+      "style": "Modern / Dynamic",
+      "preview": "Cross-border Payment Solution",
+      "colors": [
+        "#0EA5E9",
+        "#14B8A6"
+      ]
+    },
+    {
+      "id": "3",
+      "description": "Interlocking circles representing connected financial ecosystems",
+      "style": "Connected / Global",
+      "preview": "Cross-border Payment Solution",
+      "colors": [
+        "#0EA5E9",
+        "#14B8A6"
+      ]
+    }
+  ],
+  "icp": {
+    "title": "CTO / Head of Engineering",
+    "role": "Engineering leader at a financial institution",
+    "companySize": "200-2000 employees",
+    "description": "SME or freelancer looking for better financial tools that don't require a business bank account.",
+    "painPoints": [
+      "Core banking systems are too rigid to support modern product experiments",
+      "Regulatory compliance (SOC 2, PCI-DSS) blocks every shipping decision",
+      "Data silos between payment, lending, and accounting systems",
+      "Customer onboarding still requires physical paperwork"
+    ],
+    "goals": [
+      "Launch new financial products in weeks, not quarters",
+      "Reduce compliance overhead through automation",
+      "Offer embedded financial services to your customers",
+      "Achieve real-time transaction processing and settlement"
+    ],
+    "objections": [
+      "\"We're too regulated to adopt new technology\"",
+      "\"How do you handle PCI-DSS compliance?\"",
+      "\"Our existing banking partners lock us into legacy systems\"",
+      "\"What happens if there's a security breach?\""
+    ],
+    "recommendations": [
+      "Develop a comparison page vs. legacy banking core providers",
+      "Create a security whitepaper and publish SOC 2 reports publicly",
+      "Build an integration marketplace for popular accounting platforms"
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Stripe",
+      "strength": "Best-in-class developer experience, global payments",
+      "weakness": "High fees for SMBs, limited lending/credit products",
+      "opportunity": "Vertical-specific FinTech (healthcare, real estate)"
+    },
+    {
+      "name": "Plaid",
+      "strength": "Banking data aggregation leader, wide integration",
+      "weakness": "Data read-only, no transaction processing",
+      "opportunity": "Full-stack financial infrastructure"
+    },
+    {
+      "name": "Unit",
+      "strength": "Banking-as-a-service, fast integration",
+      "weakness": "Limited to US market, no international expansion",
+      "opportunity": "Global BaaS platform with multi-currency"
+    },
+    {
+      "name": "Marqeta",
+      "strength": "Card issuing infrastructure, real-time controls",
+      "weakness": "Complex integration, enterprise-only pricing",
+      "opportunity": "Simplified card issuing for SMBs"
+    }
+  ],
+  "revenue": {
+    "model": "Seed-stage Transaction fees — 1.5%/mo with tiered plans",
+    "pricing": "1.5%/mo (starter) to $XXX (growth)",
+    "justification": "At seed stage, pricing should balance acquisition velocity with unit economics. A self-serve low-touch plan can drive adoption while sales-assisted plans build revenue quality.",
+    "projections": [
+      {
+        "month": "Jan",
+        "projected": 4713,
+        "actual": null
+      },
+      {
+        "month": "Feb",
+        "projected": 6368,
+        "actual": null
+      },
+      {
+        "month": "Mar",
+        "projected": 7650,
+        "actual": null
+      },
+      {
+        "month": "Apr",
+        "projected": 9785,
+        "actual": null
+      },
+      {
+        "month": "May",
+        "projected": 13491,
+        "actual": null
+      },
+      {
+        "month": "Jun",
+        "projected": 14154,
+        "actual": null
+      },
+      {
+        "month": "Jul",
+        "projected": 21669,
+        "actual": null
+      },
+      {
+        "month": "Aug",
+        "projected": 25864,
+        "actual": null
+      },
+      {
+        "month": "Sep",
+        "projected": 28805,
+        "actual": null
+      },
+      {
+        "month": "Oct",
+        "projected": 38175,
+        "actual": null
+      },
+      {
+        "month": "Nov",
+        "projected": 42170,
+        "actual": null
+      },
+      {
+        "month": "Dec",
+        "projected": 54179,
+        "actual": null
+      }
+    ],
+    "funding": "$2M (Seed)",
+    "analysis": "Cross-border Payment Solution — At seed stage, pricing should balance acquisition velocity with unit economics. A self-serve low-touch plan can drive adoption while sales-assisted plans build revenue quality."
+  },
+  "roadmap": [
+    {
+      "quarter": "Phase 1: Foundation",
+      "items": [
+        {
+          "title": "Multi-currency support",
+          "description": "Process transactions in 30+ currencies",
+          "status": "done"
+        },
+        {
+          "title": "Recurring billing engine",
+          "description": "Subscription and installment payment scheduling",
+          "status": "done"
+        },
+        {
+          "title": "Regulatory filing automation",
+          "description": "Auto-generate regulatory reports",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 2: Product-Market Fit",
+      "items": [
+        {
+          "title": "Launch to 50 early adopters",
+          "description": "Onboard 50 users, achieve 40%+ weekly retention",
+          "status": "planned"
+        },
+        {
+          "title": "Iterate based on usage data",
+          "description": "Ship 3 feature iterations based on user feedback, measure NPS > 40",
+          "status": "planned"
+        },
+        {
+          "title": "Achieve first revenue",
+          "description": "Convert 10% of free users to paid, reach $2K MRR",
+          "status": "planned"
+        }
+      ]
+    },
+    {
+      "quarter": "Phase 3: Growth",
+      "items": [
+        {
+          "title": "Scale acquisition channels",
+          "description": "Identify 2 channels with CAC < LTV/3, spend $5K/mo profitably",
+          "status": "planned"
+        },
+        {
+          "title": "Hire first employee",
+          "description": "Bring on a full-stack engineer or sales lead to accelerate growth",
+          "status": "planned"
+        },
+        {
+          "title": "Hit $10K MRR",
+          "description": "Reach $10K MRR with 100+ paying customers",
+          "status": "planned"
+        }
+      ]
+    }
+  ],
+  "verdict": {
+    "badge": "conditional",
+    "badgeLabel": "CONDITIONAL PASS",
+    "compositeScore": 64,
+    "summary": "Cross-border Payment Solution: Your startup scored 64/100. market is your strongest dimension (75/100). distribution needs the most attention (40/100).",
+    "dimensions": {
+      "market": {
+        "score": 75,
+        "label": "Large & Regulated",
+        "description": "Financial services represent a multi-trillion market. High barriers to entry but enormous opportunity."
+      },
+      "timing": {
+        "score": 70,
+        "label": "Good Timing",
+        "description": "Open banking and embedded finance are creating tailwinds. Regulatory clarity is improving."
+      },
+      "competition": {
+        "score": 40,
+        "label": "Incumbent Dominance",
+        "description": "Stripe, Plaid, and legacy banking cores create high barriers. Regulatory moats protect incumbents."
+      },
+      "defensibility": {
+        "score": 70,
+        "label": "Regulatory Moat",
+        "description": "Licensing (bank charters, money transmitter licenses) creates multi-year barriers to entry."
+      },
+      "founderFit": {
+        "score": 65,
+        "label": "Developing",
+        "description": "Your founder-market fit is developing. Deeper domain expertise will strengthen your position."
+      },
+      "distribution": {
+        "score": 40,
+        "label": "Regulated Distribution",
+        "description": "Financial services require compliance-heavy sales. Partnerships with banks accelerate distribution."
+      },
+      "revenue": {
+        "score": 75,
+        "label": "Volume-Based Revenue",
+        "description": "FinTech revenue scales with transaction volume. Interchange fees and spread provide margin."
+      }
+    },
+    "strengths": [
+      {
+        "dimension": "market",
+        "score": 75,
+        "explanation": "Your market is large, growing, and has strong tailwinds."
+      },
+      {
+        "dimension": "revenue",
+        "score": 75,
+        "explanation": "Strong unit economics with clear path to revenue."
+      }
+    ],
+    "weaknesses": [
+      {
+        "dimension": "distribution",
+        "score": 40,
+        "explanation": "Customer acquisition is a critical risk. Rethink your distribution strategy."
+      },
+      {
+        "dimension": "competition",
+        "score": 40,
+        "explanation": "You face entrenched competitors with significant advantages."
+      }
+    ],
+    "fatalRisks": [],
+    "suggestedPivot": null,
+    "confidence": 80,
+    "confidenceLabel": "High",
+    "confidenceBreakdown": {
+      "dataCompleteness": 100,
+      "stageMaturity": 75,
+      "dimensionAgreement": 57,
+      "industrySignal": 85
+    },
+    "improvementPaths": [
+      {
+        "dimension": "market",
+        "action": "Narrow from broad market to a specific vertical",
+        "scoreGain": 10,
+        "risk": "Expand too early into adjacent verticals",
+        "scoreLoss": 8
+      },
+      {
+        "dimension": "revenue",
+        "action": "Pre-sell to 3 customers before building",
+        "scoreGain": 15,
+        "risk": "Increase burn without proving willingness-to-pay",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "timing",
+        "action": "Ship MVP and get first 10 design partners",
+        "scoreGain": 12,
+        "risk": "Delay launch by 6+ months for perfection",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "defensibility",
+        "action": "File provisional patents or build proprietary data assets",
+        "scoreGain": 12,
+        "risk": "Open-source your core differentiator",
+        "scoreLoss": 15
+      },
+      {
+        "dimension": "founderFit",
+        "action": "Work in the industry you're disrupting for 3 months",
+        "scoreGain": 8,
+        "risk": "Hire a CEO who doesn't understand the problem",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "competition",
+        "action": "Identify and amplify your unfair advantage",
+        "scoreGain": 10,
+        "risk": "A well-funded competitor enters your space",
+        "scoreLoss": 12
+      },
+      {
+        "dimension": "distribution",
+        "action": "Launch a self-serve onboarding flow",
+        "scoreGain": 10,
+        "risk": "Rely entirely on outbound enterprise sales",
+        "scoreLoss": 12
+      }
+    ]
+  },
+  "roast": {
+    "score": 7,
+    "verdict": "Cross-border Payment Solution — FinTech is the most regulated, capital-intensive startup category. Your biggest risk isn't product — it's getting your first financial services license before running out of runway.",
+    "risks": [
+      "Regulatory approval timelines (6-18 months) exceed typical seed-stage runway",
+      "Customer acquisition cost in FinTech is 3-5x SaaS averages due to trust barriers",
+      "Incumbent banks are building their own digital products",
+      "Seed-stage churn kills your Series A narrative",
+      "Over-reliance on founder-led sales hides lack of product-market fit"
+    ],
+    "recommendations": [
+      "Partner with a licensed bank as a BaaS layer to bypass regulatory delays",
+      "Target an underserved segment (e.g., gig workers, SMBs in emerging markets)",
+      "Build in public with compliance documentation to accelerate trust"
+    ],
+    "items": [
+      {
+        "category": "Regulatory Strategy",
+        "rating": 6,
+        "feedback": "Your licensing timeline is optimistic. Most FinTechs underestimate regulatory approval by 6 months. Plan accordingly.",
+        "severity": "high"
+      },
+      {
+        "category": "Bank Partnerships",
+        "rating": 7,
+        "feedback": "Bank partnerships take 9-12 months to negotiate. Start conversations now, not after you launch.",
+        "severity": "high"
+      },
+      {
+        "category": "Target Market",
+        "rating": 8,
+        "feedback": "SMB banking is crowded. Consider a specific vertical like property management or healthcare payments.",
+        "severity": "medium"
+      },
+      {
+        "category": "Pricing",
+        "rating": 6,
+        "feedback": "Interchange fees and processing costs leave thin margins. Your unit economics need to be bulletproof.",
+        "severity": "medium"
+      },
+      {
+        "category": "Product Market Fit",
+        "rating": 7,
+        "feedback": "FinTech adoption requires trust that takes years to build. Have you considered starting with a free compliance tool?",
+        "severity": "medium"
+      },
+      {
+        "category": "Security Narrative",
+        "rating": 5,
+        "feedback": "Your security page is generic. Publish your penetration test results and SOC 2 report publicly.",
+        "severity": "high"
+      }
+    ]
+  }
+}
