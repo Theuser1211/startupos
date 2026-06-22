@@ -1,0 +1,98 @@
+import { z } from "zod";
+
+export const BlueprintResultSchema = z.object({
+  name: z.string().min(1),
+  description: z.string().min(1),
+  industry: z.string().min(1),
+  targetAudience: z.string().min(1),
+  problemStatement: z.string().min(1),
+  solution: z.string().min(1),
+  keyFeatures: z.array(z.union([z.string(), z.object({ name: z.string().optional(), description: z.string().optional() })])).min(1),
+  techStack: z.array(z.union([z.string(), z.object({ name: z.string().optional(), description: z.string().optional() })])).min(1),
+  monetization: z.string().min(1),
+  competitorAnalysis: z.array(z.union([z.string(), z.object({ name: z.string().optional(), description: z.string().optional() })])).min(1),
+  roadmap: z.array(z.union([z.string(), z.object({ name: z.string().optional(), description: z.string().optional() })])).min(1),
+});
+
+function normalizeStringArray(arr: unknown[]): string[] {
+  return arr.map((item) => {
+    if (typeof item === "string") return item;
+    if (typeof item === "object" && item !== null) {
+      const obj = item as Record<string, unknown>;
+      if (typeof obj.name === "string") return obj.name;
+      if (typeof obj.description === "string") return obj.description;
+      return JSON.stringify(item);
+    }
+    return String(item);
+  });
+}
+
+export function normalizeBlueprint(raw: Record<string, unknown>): Record<string, unknown> {
+  return {
+    ...raw,
+    keyFeatures: Array.isArray(raw.keyFeatures) ? normalizeStringArray(raw.keyFeatures) : raw.keyFeatures,
+    techStack: Array.isArray(raw.techStack) ? normalizeStringArray(raw.techStack) : raw.techStack,
+    competitorAnalysis: Array.isArray(raw.competitorAnalysis) ? normalizeStringArray(raw.competitorAnalysis) : raw.competitorAnalysis,
+    roadmap: Array.isArray(raw.roadmap) ? normalizeStringArray(raw.roadmap) : raw.roadmap,
+  };
+}
+
+export const SectionSpecSchema = z.object({
+  type: z.string().min(1),
+  order: z.number().int().nonnegative(),
+  content: z.record(z.unknown()),
+});
+
+export const PageSpecSchema = z.object({
+  name: z.string().min(1),
+  slug: z.string().min(1),
+  sections: z.array(SectionSpecSchema).min(1),
+});
+
+export const ThemeSpecSchema = z.object({
+  primaryColor: z.string().min(1),
+  secondaryColor: z.string().min(1),
+  fontFamily: z.string().min(1),
+  borderRadius: z.string().min(1),
+});
+
+export const ComponentSpecSchema = z.object({
+  name: z.string().min(1),
+  type: z.string().min(1),
+  props: z.record(z.unknown()),
+});
+
+export const WebsiteSpecResultSchema = z.object({
+  pages: z.array(PageSpecSchema).min(1),
+  theme: ThemeSpecSchema,
+  components: z.array(ComponentSpecSchema),
+});
+
+export const PageHTMLResultSchema = z.object({
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  html: z
+    .string()
+    .min(500, "HTML too short — likely truncated or malformed")
+    .refine(
+      (html) => html.includes("<!DOCTYPE html") || html.includes("<html"),
+      "HTML must contain <!DOCTYPE html> or <html> tag",
+    )
+    .refine((html) => html.includes("<head"), "HTML must contain <head> section")
+    .refine((html) => html.includes("<body"), "HTML must contain <body> section")
+    .refine(
+      (html) => html.includes("</html>"),
+      "HTML must be a complete document (closing </html> tag)",
+    ),
+});
+
+export const WebsiteResultSchema = z.object({
+  pages: z.array(PageHTMLResultSchema).min(1),
+  css: z.string().default(""),
+  js: z.string().default(""),
+});
+
+export type ValidatedBlueprint = z.infer<typeof BlueprintResultSchema>;
+export type ValidatedWebsiteSpec = z.infer<typeof WebsiteSpecResultSchema>;
+export type ValidatedPageHTML = z.infer<typeof PageHTMLResultSchema>;
+export type ValidatedWebsiteResult = z.infer<typeof WebsiteResultSchema>;
