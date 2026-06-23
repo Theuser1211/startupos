@@ -35,6 +35,9 @@
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3"
   },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "latest"
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
