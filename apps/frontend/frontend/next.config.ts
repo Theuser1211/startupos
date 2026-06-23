@@ -38,11 +38,6 @@ const nextConfig: NextConfig = {
 
   /* ─── Build Output ─── */
   serverExternalPackages: [],
-
-  /* ─── Turbopack root (self-contained frontend) ─── */
-  turbopack: {
-    root: process.cwd(),
-  },
 };
 
 export default nextConfig;
