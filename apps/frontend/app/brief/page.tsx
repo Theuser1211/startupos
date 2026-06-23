@@ -215,7 +215,7 @@ function BriefContent() {
                       </div>
                     ) : (
                       <div className="space-y-0">
-                        {brief.wins.map((win, i) => (
+                        {brief.wins.map((win: string, i: number) => (
                           <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 mt-0.5 shrink-0">
                               <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
@@ -246,7 +246,7 @@ function BriefContent() {
                       </div>
                     ) : (
                       <div className="space-y-0">
-                        {brief.priorities.map((priority, i) => (
+                        {brief.priorities.map((priority: string, i: number) => (
                           <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/10 mt-0.5 shrink-0">
                               <Target className="h-3.5 w-3.5 text-amber-400" />
@@ -283,7 +283,7 @@ function BriefContent() {
                     </div>
                   ) : (
                     <div className="space-y-0">
-                      {brief.competitorUpdates.map((update, i) => (
+                      {brief.competitorUpdates.map((update: string, i: number) => (
                         <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/10 mt-0.5 shrink-0">
                             <Crosshair className="h-3.5 w-3.5 text-blue-400" />
@@ -315,7 +315,7 @@ function BriefContent() {
                   ) : (
                     <div className="space-y-4">
                       <div className="flex items-end gap-1.5 h-32">
-                        {brief.healthHistory.map((point, i) => {
+                        {brief.healthHistory.map((point: { score: number; createdAt: string }, i: number) => {
                           const height = Math.max(point.score, 4);
                           return (
                             <div
