@@ -2,7 +2,7 @@
   "framework": "nextjs",
   "buildCommand": "next build --webpack",
   "outputDirectory": ".next",
-  "installCommand": "npm install",
+  "installCommand": "cd ../.. && npm install",
   "devCommand": "next dev",
   "crons": [],
   "redirects": [
