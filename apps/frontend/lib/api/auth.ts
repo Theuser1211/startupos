@@ -5,7 +5,7 @@ import type { AuthUser, AuthResponse } from "@startupos/shared";
 
 export async function refreshToken(): Promise<string | null> {
   try {
-    const data = await apiClient.post<{ token: string }>("/auth/refresh");
+    const data = await apiClient.post<{ token: string }>("/auth/refresh", {});
     apiClient.setToken(data.token);
     return data.token;
   } catch {

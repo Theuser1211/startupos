@@ -48,6 +48,7 @@ async function refreshAndGetToken(): Promise<string | null> {
       if (!token) return null;
       const res = await fetch(`${BASE_URL}/auth/refresh`, {
         method: "POST",
+        body: "{}",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -76,8 +77,9 @@ async function request<T = unknown>(
   options: RequestInit = {},
 ): Promise<T> {
   const token = getToken();
+  const hasBody = !!options.body;
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(hasBody ? { "Content-Type": "application/json" } : {}),
     ...(options.headers as Record<string, string>),
   };
   if (token) {
