@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../db/client.js";
 import { GenerateBlueprintInput } from "./blueprint.schema.js";
-import { NotFoundError, ForbiddenError } from "../../lib/errors.js";
+import { AppError, NotFoundError, ForbiddenError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
-import { getQueue } from "../../queue/setup.js";
 import { captureEvent } from "../dashboard/dashboard.service.js";
+import { generateBlueprintWithFallback } from "../../services/ai/provider.js";
 
 export async function generateBlueprintHandler(
   request: FastifyRequest<{ Body: GenerateBlueprintInput }>,
@@ -50,80 +50,38 @@ export async function generateBlueprintHandler(
       logger.info({ requestId }, "[BP4] returning existing blueprint");
       await captureEvent(startupId, "BLUEPRINT_GENERATED", { existing: true });
       reply.send({
-        jobId: null,
         blueprint: existingBlueprint,
-        message: "Blueprint already exists for this startup",
       });
       return;
     }
 
-    logger.info({ requestId }, "[BP5] existing job check");
-    const existingJob = await prisma.job.findFirst({
-      where: {
-        startupId,
-        type: "BLUEPRINT_GENERATION",
-        status: { in: ["PENDING", "PROCESSING"] },
-      },
-    });
-    logger.info({ requestId, exists: !!existingJob }, "[BP5] existing job check done");
+    logger.info({ requestId, startupId }, "[SYNC] calling AI provider directly");
+    const blueprintContent = await generateBlueprintWithFallback(effectivePrompt);
+    logger.info({ requestId, name: blueprintContent.name }, "[SYNC] AI provider returned");
 
-    if (existingJob) {
-      logger.info({ requestId, existingJobId: existingJob.id }, "[BP5] returning existing job");
-      reply.status(202).send({
-        jobId: existingJob.id,
-        status: existingJob.status,
-        message: "Blueprint generation already in progress",
-      });
-      return;
-    }
-
-    logger.info({ requestId }, "[BP6] creating job record");
-    const job = await prisma.job.create({
+    const blueprint = await prisma.blueprint.create({
       data: {
-        type: "BLUEPRINT_GENERATION",
-        status: "PENDING",
-        payload: { startupId, prompt: effectivePrompt },
         startupId,
+        content: blueprintContent as unknown as object,
       },
     });
-    logger.info({ requestId, jobId: job.id }, "[BP6] job record created");
 
-    logger.info({ requestId }, "[BP7] getting queue");
-    const queue = getQueue();
-    logger.info({ requestId, jobId: job.id }, "[BP8] queue.add start");
-    try {
-      await queue.add("blueprint-generation", {
-        jobId: job.id,
-        startupId,
-        userId,
-        type: "BLUEPRINT_GENERATION",
-        payload: { prompt: effectivePrompt },
-      });
-    } catch (queueError: unknown) {
-      const qe = queueError as Error;
-      logger.error({ requestId, err: queueError, jobId: job.id, name: qe?.name, message: qe?.message, stack: qe?.stack }, "[BP8] queue.add FAILED");
-      await prisma.job.update({
-        where: { id: job.id },
-        data: {
-          status: "FAILED",
-          error: `Queue add failed: ${qe?.message ?? "Unknown"}`,
-        },
-      });
-      throw queueError;
-    }
-    logger.info({ requestId, jobId: job.id }, "[BP8] queue.add succeeded");
+    await captureEvent(startupId, "BLUEPRINT_GENERATED", { blueprintId: blueprint.id });
 
-    logger.info({ requestId, jobId: job.id }, "[BP9] sending response");
-    await captureEvent(startupId, "BLUEPRINT_GENERATED", { jobId: job.id });
-    reply.status(202).send({
-      jobId: job.id,
-      status: "PENDING",
+    logger.info({ requestId, blueprintId: blueprint.id }, "[SYNC] blueprint persisted");
+
+    reply.send({
+      blueprint,
     });
-    logger.info({ requestId }, "[BP9] response sent");
   } catch (error: unknown) {
     const e = error as Error;
+    const cause = (e as { cause?: unknown }).cause;
     logger.error(
-      { requestId, err: error, name: e?.name, message: e?.message, stack: e?.stack, startupId, userId, promptLength: prompt?.length },
+      {
+        requestId, err: error, name: e?.name, message: e?.message, stack: e?.stack,
+        startupId, userId, promptLength: prompt?.length,
+        cause,
+      },
       "[BP-ERR] handler failed",
     );
     throw error;

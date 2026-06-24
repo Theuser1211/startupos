@@ -95,9 +95,15 @@ async function handleBlueprintGeneration(
     }
 
     const prompt = payload.prompt as string;
-    logger.info({ jobId: job.data.jobId, startupId, promptLength: prompt?.length }, "Calling generateBlueprintWithFallback");
+    logger.info(
+      { jobId: job.data.jobId, startupId, promptLength: prompt?.length },
+      "Blueprint generation: calling generateBlueprintWithFallback — provider chain will be tried: google → groq → nvidia → openrouter",
+    );
     const blueprint = await generateBlueprintWithFallback(prompt);
-    logger.debug({ jobId: job.data.jobId, blueprintKeys: Object.keys(blueprint), blueprintName: blueprint?.name }, "Blueprint generated from provider");
+    logger.info(
+      { jobId: job.data.jobId, blueprintName: blueprint?.name, providerUsed: (blueprint as unknown as { _provider?: string })?._provider },
+      "Blueprint generation: provider returned successfully",
+    );
 
     // Evidence: force deterministic JSON serialization so we know exactly what we persist
     const contentToPersist: unknown = JSON.parse(JSON.stringify(blueprint));
@@ -126,19 +132,36 @@ async function handleBlueprintGeneration(
     logger.info({ jobId: job.data.jobId, blueprintId: created.id }, "Blueprint generation completed");
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
+    const stack = error instanceof Error ? error.stack : undefined;
+
+    const providerInfo = error instanceof Error && error.message?.match(/\[(GoogleAIStudio|Groq|NVIDIA|OpenRouter|FreeLLMAPI)\]/);
+    const provider = providerInfo ? providerInfo[1] : "unknown";
+
+    logger.error(
+      {
+        jobId: job.data.jobId,
+        startupId,
+        error: message,
+        stack,
+        provider,
+        errorName: error instanceof Error ? error.name : typeof error,
+        phase: "ai_generation",
+      },
+      "Blueprint generation: provider execution failed",
+    );
 
     try {
       await prisma.job.update({
         where: { id: job.data.jobId },
         data: {
           status: "FAILED",
-          error: message,
+          error: `[${provider}] ${message}`,
         },
       });
-      logger.info({ jobId: job.data.jobId, error: message }, "Blueprint job failed");
+      logger.info({ jobId: job.data.jobId, startupId, provider, error: message }, "Blueprint job: marked FAILED in database");
     } catch (dbError) {
       logger.error(
-        { jobId: job.data.jobId, dbError, originalError: message },
+        { jobId: job.data.jobId, startupId, dbError, originalError: message },
         "Blueprint job: failed to persist FAILED status to database",
       );
     }

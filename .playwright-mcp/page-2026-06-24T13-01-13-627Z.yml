@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e62]:
+    - generic [ref=e69]:
+      - button "Open navigation menu" [ref=e70]:
+        - img [ref=e71]
+      - img "StartupOS" [ref=e72]
+      - link "Exit workspace" [ref=e73] [cursor=pointer]:
+        - /url: /
+        - text: Exit
+    - generic [ref=e75]:
+      - tab "Overview" [selected] [ref=e76]
+      - tab "Verdict" [ref=e77]
+      - tab "Website" [ref=e78]
+      - tab "Brand" [ref=e79]
+      - tab "ICP" [ref=e80]
+      - tab "Revenue" [ref=e81]
+      - tab "Roadmap" [ref=e82]
+      - tab "Roast" [ref=e83]
+    - main [ref=e84]
+  - generic "Notifications"
+  - alert [ref=e26]

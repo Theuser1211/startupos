@@ -1,0 +1,7 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - status "Loading" [ref=e63]:
+    - paragraph [ref=e67]: Loading your startup...
+  - generic "Notifications"
+  - alert [ref=e26]

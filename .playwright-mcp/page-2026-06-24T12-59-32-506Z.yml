@@ -1,0 +1,59 @@
+- generic:
+  - link:
+    - /url: "#main-content"
+    - text: Skip to content
+  - generic:
+    - generic:
+      - generic:
+        - link:
+          - /url: /
+          - img
+        - generic:
+          - generic: Step 3 of 5
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic: Question 3 of 4
+            - heading [level=2]: Who are you building for?
+            - paragraph: Define your target customer and how you'll charge them.
+            - generic:
+              - generic:
+                - generic: Target Customer
+                - combobox:
+                  - generic: Small Businesses (B2B, <50 employees)
+                  - img
+              - generic:
+                - generic: Business Model
+                - combobox:
+                  - generic: Subscription (monthly/yearly per seat)
+                  - img
+              - generic:
+                - generic: Target Price Range
+                - combobox [expanded]:
+                  - generic: Select an option...
+                  - img
+            - generic:
+              - button:
+                - img
+                - text: Back
+              - button [disabled]:
+                - text: Continue
+                - img
+    - generic:
+      - generic:
+        - paragraph: StartupOS Beta · Your data stays private
+  - generic "Notifications"
+  - alert
+  - listbox [ref=e82]:
+    - option "Under $10/mo" [active] [ref=e83]:
+      - generic [ref=e85]: Under $10/mo
+    - option "$10 – $50/mo" [ref=e86]:
+      - generic [ref=e88]: $10 – $50/mo
+    - option "$50 – $200/mo" [ref=e89]:
+      - generic [ref=e91]: $50 – $200/mo
+    - option "$200 – $1,000/mo" [ref=e92]:
+      - generic [ref=e94]: $200 – $1,000/mo
+    - option "Over $1,000/mo" [ref=e95]:
+      - generic [ref=e97]: Over $1,000/mo

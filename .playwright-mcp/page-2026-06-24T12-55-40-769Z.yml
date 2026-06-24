@@ -1,0 +1,10 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e239]:
+    - img [ref=e264]
+    - heading "Account created!" [level=1] [ref=e266]
+    - paragraph [ref=e261]: Welcome to StartupOS. You're now signed in.
+    - button "Start Building" [ref=e267]
+  - generic "Notifications"
+  - alert [ref=e209]

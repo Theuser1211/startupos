@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { EmptyState } from "@/components/ui/empty-state";
-import { useGenerateWebsite, useWebsite, useDeploy, usePollJob } from "@/lib/hooks/use-startup";
+import { useGenerateWebsite, useDeploy } from "@/lib/hooks/use-startup";
 import {
   Globe, ExternalLink, Check, X, Sparkles, Loader2,
-  Rocket, RotateCw, Clock, Search, Shield, Cpu,
+  Rocket, RotateCw, Search, Shield,
 } from "lucide-react";
 import type { StartupBlueprint } from "@/lib/types";
 
@@ -25,26 +25,24 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-type GenPhase = "idle" | "queued" | "generating" | "completed" | "failed";
+type GenPhase = "idle" | "generating" | "completed" | "failed";
 
 export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
   const [genPhase, setGenPhase] = useState<GenPhase>("idle");
-  const [genJobId, setGenJobId] = useState<string | null>(null);
+  const [websiteData, setWebsiteData] = useState<Record<string, unknown> | null>(null);
   const [websiteId, setWebsiteId] = useState<string | null>(null);
   const [genError, setGenError] = useState<string | null>(null);
 
   const { toast } = useToast();
   const generateWebsiteMut = useGenerateWebsite();
   const deployMut = useDeploy();
-  const { data: pollData, isFetching: isPolling } = usePollJob(genPhase === "generating" || genPhase === "queued" ? genJobId : null);
-  const { data: websiteData } = useWebsite(websiteId);
 
   const handleGenerate = useCallback(async () => {
     if (!blueprint?.startupName) {
       toast({ variant: "error", title: "No blueprint data", message: "Complete the interview first." });
       return;
     }
-    setGenPhase("queued");
+    setGenPhase("generating");
     setGenError(null);
     try {
       const startupId = typeof window !== "undefined"
@@ -54,12 +52,14 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         throw new Error("No startup ID found");
       }
       const res = await generateWebsiteMut.mutateAsync({ startupId });
-      if (res.jobId) setGenJobId(res.jobId);
-      if (res.websiteId) setWebsiteId(res.websiteId);
-      setGenPhase("generating");
+      if (res.website) {
+        setWebsiteId(res.website.id);
+        setWebsiteData(res.website as unknown as Record<string, unknown>);
+      }
+      setGenPhase("completed");
     } catch (err) {
       setGenPhase("failed");
-      setGenError(err instanceof Error ? err.message : "Failed to start website generation.");
+      setGenError(err instanceof Error ? err.message : "Failed to generate website.");
       toast({ variant: "error", title: "Generation failed" });
     }
   }, [blueprint, generateWebsiteMut, toast]);
@@ -70,8 +70,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
     );
   }
 
-  const isLoading = genPhase === "queued" || genPhase === "generating" || isPolling;
-  const website = (websiteData || pollData?.result) as Record<string, unknown> | undefined;
+  const website = websiteData;
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
@@ -100,14 +99,14 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               </p>
               <Button size="lg" className="glow-purple" onClick={handleGenerate} disabled={generateWebsiteMut.isPending}>
                 <Sparkles className="h-4 w-4" />
-                {generateWebsiteMut.isPending ? "Starting..." : "Generate Website"}
+                {generateWebsiteMut.isPending ? "Generating..." : "Generate Website"}
               </Button>
             </CardContent>
           </Card>
         </motion.div>
       )}
 
-      {isLoading && (
+      {genPhase === "generating" && (
         <motion.div variants={itemVariants}>
           <Card className="border-primary/20 bg-primary/5 text-center p-12">
             <CardContent>
@@ -124,18 +123,6 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               </div>
               <h2 className="text-lg font-display font-bold mb-2">Generating Your Website</h2>
               <p className="text-sm text-muted-foreground">This usually takes 30-60 seconds...</p>
-              {genJobId && (
-                <div className="flex items-center justify-center gap-2 mt-3">
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                    <Clock className="h-3 w-3 mr-1" />
-                    Job: {genJobId.slice(0, 8)}...
-                  </Badge>
-                  <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                    <Cpu className="h-3 w-3 mr-1" />
-                    {genPhase === "queued" ? "Queued" : "Generating"}
-                  </Badge>
-                </div>
-              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -150,7 +137,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               </div>
               <h2 className="text-lg font-semibold mb-1">Generation Failed</h2>
               <p className="text-sm text-muted-foreground mb-4">{genError || "An error occurred during generation."}</p>
-              <Button variant="outline" onClick={() => { setGenPhase("idle"); setGenJobId(null); setGenError(null); }}>
+              <Button variant="outline" onClick={() => { setGenPhase("idle"); setWebsiteData(null); setWebsiteId(null); setGenError(null); }}>
                 <RotateCw className="h-4 w-4" />
                 Try Again
               </Button>
@@ -177,7 +164,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
             }
           }}
           deploying={deployMut.isPending}
-          deployedUrl={websiteData?.deployment_url || (website as Record<string, string>)?.url}
+          deployedUrl={(website as Record<string, string>)?.url}
         />
       )}
     </motion.div>

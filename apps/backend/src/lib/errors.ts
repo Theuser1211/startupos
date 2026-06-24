@@ -49,8 +49,9 @@ export function handleError(reply: FastifyReply, error: unknown): void {
     return;
   }
 
+  const message = error instanceof Error ? error.message : "An unexpected error occurred";
   reply.status(500).send({
     error: "InternalServerError",
-    message: "An unexpected error occurred",
+    message,
   });
 }

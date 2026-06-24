@@ -46,9 +46,18 @@ export interface GenerateWebsitePayload {
 }
 
 export interface GenerateWebsiteResponse {
-  websiteId?: string;
-  jobId?: string;
-  status: string;
+  website?: {
+    id: string;
+    name?: string;
+    content?: unknown;
+    spec?: unknown;
+    deployment?: unknown;
+    status?: string;
+    createdAt: string;
+    updatedAt: string;
+    startupId: string;
+  };
+  message?: string;
 }
 
 export interface DeployPayload {

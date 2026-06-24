@@ -15,7 +15,6 @@ import type { InterviewData } from "@/lib/types";
 import { createStartup } from "@/lib/api/startups";
 import { isAuthenticated } from "@/lib/api/auth";
 import { generateBlueprint } from "@/lib/api/blueprints";
-import { pollJob } from "@/lib/api/jobs";
 import { useToast } from "@/components/ui/toast";
 import {
   STAGE_LABELS, INDUSTRY_LABELS, CUSTOMER_LABELS,
@@ -174,20 +173,8 @@ export default function InterviewPage() {
           `Biggest Problem: ${data.problem === "other" ? data.problemOther : PROBLEM_LABELS[data.problem]}`,
         ].filter(Boolean).join("\n");
 
-        const result = await generateBlueprint({ startupId: startup.id, prompt });
-
-        if (!result.jobId) {
-          router.push(`/workspace?id=${startup.id}`);
-          return;
-        }
-
-        const completedJob = await pollJob(result.jobId, { maxAttempts: 120, intervalMs: 2000 });
-
-        if (completedJob.status === "completed") {
-          router.push(`/workspace?id=${startup.id}`);
-        } else {
-          throw new Error(completedJob.error || "Blueprint generation failed");
-        }
+        await generateBlueprint({ startupId: startup.id, prompt });
+        router.push(`/workspace?id=${startup.id}`);
         return;
       }
 

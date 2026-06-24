@@ -5,7 +5,6 @@ import { getStartups, getStartup, createStartup } from "@/lib/api/startups";
 import { generateBlueprint, getBlueprint } from "@/lib/api/blueprints";
 import { generateWebsite, getWebsite } from "@/lib/api/websites";
 import { deploy } from "@/lib/api/deployments";
-import { pollJob } from "@/lib/api/jobs";
 import type { CreateStartupPayload, GenerateBlueprintPayload, GenerateWebsitePayload, DeployPayload } from "@startupos/shared";
 import type { Startup, StartupBlueprint } from "@/lib/types";
 
@@ -21,12 +20,6 @@ export function useStartup(id: string | null) {
     queryKey: ["startup", id],
     queryFn: () => getStartup(id!),
     enabled: !!id,
-    refetchInterval: (query) => {
-      const data = query.state.data;
-      if (!data) return 3000;
-      if (!data.blueprint) return 3000;
-      return false;
-    },
   });
 }
 
@@ -65,32 +58,11 @@ export function useWebsite(id: string | null) {
     queryKey: ["website", id],
     queryFn: () => getWebsite(id!),
     enabled: !!id,
-    refetchInterval: (query) => {
-      const data = query.state.data;
-      if (!data) return 2000;
-      if (data.deployment_status === "deployed" || data.deployment_status === "failed") return false;
-      return 2000;
-    },
   });
 }
 
 export function useDeploy() {
   return useMutation({
     mutationFn: (payload: DeployPayload) => deploy(payload),
-  });
-}
-
-export function usePollJob(jobId: string | null) {
-  return useQuery({
-    queryKey: ["job", jobId],
-    queryFn: () => pollJob(jobId!),
-    enabled: !!jobId,
-    retry: false,
-    refetchInterval: (query) => {
-      const data = query.state.data;
-      if (!data) return 2000;
-      if (data.status === "completed" || data.status === "failed") return false;
-      return 2000;
-    },
   });
 }

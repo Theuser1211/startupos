@@ -20,8 +20,6 @@ export interface GenerateBlueprintPayload {
 }
 
 export interface GenerateBlueprintResponse {
-  jobId: string | null;
-  status: string;
   blueprint?: {
     id: string;
     content: BlueprintContent;
