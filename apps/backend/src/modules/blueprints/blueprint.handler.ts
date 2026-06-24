@@ -95,7 +95,7 @@ export async function getBlueprintHandler(
   const userId = request.user!.userId;
 
   const blueprint = await prisma.blueprint.findUnique({
-    where: { id },
+    where: { startupId: id },
     include: {
       startup: { select: { userId: true, name: true } },
     },
