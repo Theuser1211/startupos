@@ -2,7 +2,6 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../db/client.js";
 import { NotFoundError, ForbiddenError } from "../../lib/errors.js";
 import { logger } from "../../lib/logger.js";
-import { getQueue } from "../../queue/setup.js";
 import { Prisma } from "@prisma/client";
 import { buildDeployFiles } from "../../services/deploy/builder.js";
 import { VercelProvider } from "../../services/deploy/vercel.js";
@@ -82,20 +81,11 @@ export async function createDeploymentHandler(
       return { deployment, job };
     });
 
-    const queue = getQueue();
-    await queue.add("deployment", {
-      jobId: result.job.id,
-      startupId: website.startupId,
-      userId,
-      type: "DEPLOYMENT",
-      payload: { websiteId, deploymentId: result.deployment.id },
-    });
+    logger.warn({ jobId: result.job.id, websiteId }, "Async deployments disabled - job created but not queued");
 
-    logger.info({ jobId: result.job.id, websiteId }, "Deployment job queued");
-
-    reply.status(202).send({
-      jobId: result.job.id,
-      status: "PENDING",
+    reply.status(503).send({
+      success: false,
+      message: "Async deployments temporarily disabled",
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
