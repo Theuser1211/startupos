@@ -49,9 +49,17 @@ export function handleError(reply: FastifyReply, error: unknown): void {
     return;
   }
 
-  const message = error instanceof Error ? error.message : "An unexpected error occurred";
   reply.status(500).send({
     error: "InternalServerError",
-    message,
+    message:
+      error instanceof Error
+        ? error.message
+        : String(error),
+    stack:
+      process.env.NODE_ENV !== "production"
+        ? error instanceof Error
+          ? error.stack
+          : undefined
+        : undefined,
   });
 }

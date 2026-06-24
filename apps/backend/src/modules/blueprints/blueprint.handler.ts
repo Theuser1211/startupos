@@ -15,74 +15,73 @@ export async function generateBlueprintHandler(
   const userId = request.user!.userId;
 
   try {
-    logger.info({ requestId }, "[BP2] startup lookup start");
+    logger.info({ requestId, startupId, userId, promptLength: prompt?.length }, "[BP] request received");
+
+    logger.info({ requestId, userId }, "[BP] user authenticated");
+
+    logger.info({ requestId, startupId }, "[BP] startup lookup start");
     const startup = await prisma.startup.findUnique({
       where: { id: startupId },
       select: { userId: true, description: true },
     });
-    logger.info({ requestId, found: !!startup }, "[BP2] startup lookup done");
+    logger.info({ requestId, startupId, found: !!startup }, "[BP] startup lookup done");
 
     if (!startup) {
-      logger.warn({ requestId, startupId }, "[BP2] startup not found");
+      logger.warn({ requestId, startupId }, "[BP] startup not found");
       throw new NotFoundError("Startup");
     }
 
     const effectivePrompt = prompt ?? startup.description ?? "";
     if (!effectivePrompt || effectivePrompt.length < 10) {
-      logger.warn({ requestId, startupId }, "[BP3] prompt missing or too short");
+      logger.warn({ requestId, startupId }, "[BP] prompt missing or too short");
       throw new Error("Prompt is required (provide in request or set startup description)");
     }
 
-    logger.info({ requestId, startupId, userId, promptLength: effectivePrompt?.length }, "[BP1] request received");
-    logger.info({ requestId, ownerMatch: startup.userId === userId }, "[BP3] ownership check");
+    logger.info({ requestId, startupId, ownerMatch: startup.userId === userId }, "[BP] ownership check passed");
     if (startup.userId !== userId) {
-      logger.warn({ requestId, startupId, userId }, "[BP3] forbidden");
+      logger.warn({ requestId, startupId, userId }, "[BP] ownership check failed");
       throw new ForbiddenError("You do not own this startup");
     }
 
-    logger.info({ requestId }, "[BP4] existing blueprint check");
+    logger.info({ requestId, startupId }, "[BP] existing blueprint lookup start");
     const existingBlueprint = await prisma.blueprint.findUnique({
       where: { startupId },
     });
-    logger.info({ requestId, exists: !!existingBlueprint }, "[BP4] existing blueprint check done");
+    logger.info({ requestId, startupId, exists: !!existingBlueprint }, "[BP] existing blueprint lookup done");
 
     if (existingBlueprint) {
-      logger.info({ requestId }, "[BP4] returning existing blueprint");
+      logger.info({ requestId, startupId }, "[BP] returning existing blueprint");
       await captureEvent(startupId, "BLUEPRINT_GENERATED", { existing: true });
-      reply.send({
-        blueprint: existingBlueprint,
-      });
+      reply.send({ blueprint: existingBlueprint });
       return;
     }
 
-    logger.info({ requestId, startupId }, "[SYNC] calling AI provider directly");
+    logger.info({ requestId, startupId, promptLength: effectivePrompt.length }, "[BP] AI provider call start");
     const blueprintContent = await generateBlueprintWithFallback(effectivePrompt);
-    logger.info({ requestId, name: blueprintContent.name }, "[SYNC] AI provider returned");
+    logger.info({ requestId, startupId, name: blueprintContent.name }, "[BP] AI provider call succeeded");
 
+    logger.info({ requestId, startupId }, "[BP] blueprint persistence start");
     const blueprint = await prisma.blueprint.create({
       data: {
         startupId,
         content: blueprintContent as unknown as object,
       },
     });
+    logger.info({ requestId, startupId, blueprintId: blueprint.id }, "[BP] blueprint persistence succeeded");
 
     await captureEvent(startupId, "BLUEPRINT_GENERATED", { blueprintId: blueprint.id });
 
-    logger.info({ requestId, blueprintId: blueprint.id }, "[SYNC] blueprint persisted");
-
-    reply.send({
-      blueprint,
-    });
+    reply.send({ blueprint });
   } catch (error: unknown) {
-    const e = error as Error;
-    const cause = (e as { cause?: unknown }).cause;
     logger.error(
       {
-        requestId, err: error, name: e?.name, message: e?.message, stack: e?.stack,
-        startupId, userId, promptLength: prompt?.length,
-        cause,
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        startupId,
+        userId,
       },
-      "[BP-ERR] handler failed",
+      "[BP-FATAL]",
     );
     throw error;
   }
