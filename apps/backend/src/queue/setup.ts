@@ -40,7 +40,13 @@ function createRedisConnection() {
   return redis;
 }
 
-const connection = createRedisConnection();
+let connection: ReturnType<typeof createRedisConnection> | null = null;
+function getConnection() {
+  if (!connection) {
+    connection = createRedisConnection();
+  }
+  return connection;
+}
 
 let queue: Queue | null = null;
 let queueEvents: QueueEvents | null = null;
@@ -48,7 +54,7 @@ let queueEvents: QueueEvents | null = null;
 export function getQueue(): Queue {
   if (!queue) {
     queue = new Queue(QUEUE_NAME, {
-      connection,
+      connection: getConnection(),
       defaultJobOptions: {
         attempts: 3,
         backoff: {
@@ -68,7 +74,7 @@ export function getQueue(): Queue {
 
 export function getQueueEvents(): QueueEvents {
   if (!queueEvents) {
-    queueEvents = new QueueEvents(QUEUE_NAME, { connection });
+    queueEvents = new QueueEvents(QUEUE_NAME, { connection: getConnection() });
     queueEvents.on("error", (err) => {
       logger.error({ err }, "QueueEvents error");
     });
@@ -80,7 +86,7 @@ export function createWorker(
   processor: (job: any) => Promise<void>,
 ): Worker {
   const worker = new Worker(QUEUE_NAME, processor, {
-    connection,
+    connection: getConnection(),
     concurrency: env.NODE_ENV === "production" ? 5 : 2,
     lockDuration: 30000,
   });
