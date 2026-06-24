@@ -31,6 +31,7 @@ async function checkDatabase(): Promise<void> {
 
 const app = Fastify({
   logger: true,
+  bodyLimit: 1048576,
 });
 
 async function bootstrap(): Promise<void> {

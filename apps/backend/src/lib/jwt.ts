@@ -8,6 +8,8 @@ export function signToken(payload: JwtPayload): string {
   } as jwt.SignOptions);
 }
 
-export function verifyToken(token: string): JwtPayload {
-  return jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+export function verifyToken(token: string, ignoreExpiration = false): JwtPayload {
+  return jwt.verify(token, env.JWT_SECRET, {
+    ignoreExpiration,
+  } as jwt.VerifyOptions) as JwtPayload;
 }

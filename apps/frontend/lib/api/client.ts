@@ -4,6 +4,9 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
   "https://startupos-backend-production.up.railway.app";
 
+let isRefreshing = false;
+let refreshPromise: Promise<string | null> | null = null;
+
 const TOKEN_KEY = "startupos-token";
 
 function getToken(): string | null {
@@ -34,6 +37,40 @@ interface ApiError {
   status: number;
 }
 
+async function refreshAndGetToken(): Promise<string | null> {
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
+  }
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const token = getToken();
+      if (!token) return null;
+      const res = await fetch(`${BASE_URL}/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) {
+        clearToken();
+        return null;
+      }
+      const data = await res.json() as { token: string };
+      setToken(data.token);
+      return data.token;
+    } catch {
+      clearToken();
+      return null;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+  return refreshPromise;
+}
+
 async function request<T = unknown>(
   path: string,
   options: RequestInit = {},
@@ -53,6 +90,20 @@ async function request<T = unknown>(
   });
 
   if (!res.ok) {
+    if (res.status === 401 && token && path !== "/auth/refresh") {
+      const newToken = await refreshAndGetToken();
+      if (newToken) {
+        headers["Authorization"] = `Bearer ${newToken}`;
+        const retryRes = await fetch(`${BASE_URL}${path}`, {
+          ...options,
+          headers,
+        });
+        if (retryRes.ok) {
+          if (retryRes.status === 204) return undefined as T;
+          return retryRes.json();
+        }
+      }
+    }
     let body: { error?: string; message?: string } = {};
     try {
       body = await res.json();

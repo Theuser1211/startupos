@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useMemo } from "react";
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
@@ -19,14 +19,6 @@ function Particle({ size, x, y, duration, delay }: {
     />
   );
 }
-
-const PARTICLE_DATA = Array.from({ length: 20 }, () => ({
-  size: Math.random() * 4 + 2,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  duration: Math.random() * 6 + 4,
-  delay: Math.random() * 4,
-}));
 
 function FloatingOrb({ className, size, delay = 0 }: { className?: string; size: number; delay?: number }) {
   return (
@@ -87,6 +79,14 @@ export function HeroSection() {
   const glowX = useTransform(springX, [0, 1], ["40%", "60%"]);
   const glowY = useTransform(springY, [0, 1], ["35%", "45%"]);
 
+  const particles = useMemo(() => Array.from({ length: 20 }, () => ({
+    size: Math.random() * 4 + 2,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    duration: Math.random() * 6 + 4,
+    delay: Math.random() * 4,
+  })), []);
+
   return (
     <section
       ref={sectionRef}
@@ -111,7 +111,7 @@ export function HeroSection() {
         <FloatingOrb size={60} className="bg-primary/5 blur-3xl top-[40%] right-[30%]" delay={4} />
       </motion.div>
 
-      {PARTICLE_DATA.map((p, i) => (
+      {particles.map((p, i) => (
         <Particle key={i} {...p} />
       ))}
 

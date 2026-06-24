@@ -174,8 +174,7 @@ export async function deployWebsiteHandler(
       url = result.url;
       provider = result.provider;
     } else {
-      url = `https://${websiteId}.startupos.app`;
-      provider = "mock";
+      throw new Error("Deployment not configured: VERCEL_TOKEN is not set");
     }
 
     await prisma.deployment.update({

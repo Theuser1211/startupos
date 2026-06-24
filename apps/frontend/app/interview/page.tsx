@@ -185,7 +185,6 @@ export default function InterviewPage() {
         title: "Generation failed",
         message: err instanceof Error ? err.message : "Please try again.",
       });
-      router.push("/workspace");
     } finally {
       setIsSaving(false);
     }

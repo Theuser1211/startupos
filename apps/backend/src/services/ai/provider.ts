@@ -903,7 +903,9 @@ export function getAIProvider(): AIProvider {
   if (env.FREELLM_API_KEY) {
     return new FreeLLMProvider();
   }
-  throw new Error("No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.");
+  const errorMsg = "No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.";
+  logger.error(errorMsg);
+  throw new Error("No AI provider configured");
 }
 
 async function withFailover<T>(
@@ -990,7 +992,7 @@ export async function generateBlueprintWithFallback(prompt: string): Promise<Blu
   if (availableCount === 0 && !hasFreeLLM) {
     const error = "No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.";
     logger.error({ availableProviders: 0, hasFreeLLM: false }, error);
-    throw new Error(error);
+    throw new Error("No AI provider configured");
   }
   return withFailover((p) => p.generateBlueprint(prompt), "");
 }

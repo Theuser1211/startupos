@@ -378,23 +378,7 @@ async function handleDeployment(
         throw new Error(`Deployment verification failed: status=${verification.statusCode} hasContent=${verification.hasContent}`);
       }
     } else {
-      logger.warn("VERCEL_TOKEN not set, using mock deployment URL");
-      const mockUrl = `https://${websiteId}.startupos.app`;
-
-      await prisma.deployment.updateMany({
-        where: { id: deploymentId, status: "BUILDING" },
-        data: { status: "LIVE", url: mockUrl, provider: "mock" },
-      });
-
-      await prisma.job.update({
-        where: { id: job.data.jobId },
-        data: {
-          status: "COMPLETED",
-          result: { deploymentId, url: mockUrl, provider: "mock", verified: false } as unknown as Prisma.InputJsonValue,
-        },
-      });
-
-      logger.info({ jobId: job.data.jobId, deploymentId, url: mockUrl }, "Mock deployment completed");
+      throw new Error("Deployment not configured: VERCEL_TOKEN is not set");
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

@@ -3,6 +3,17 @@
 import { apiClient } from "./client";
 import type { AuthUser, AuthResponse } from "@startupos/shared";
 
+export async function refreshToken(): Promise<string | null> {
+  try {
+    const data = await apiClient.post<{ token: string }>("/auth/refresh");
+    apiClient.setToken(data.token);
+    return data.token;
+  } catch {
+    apiClient.clearToken();
+    return null;
+  }
+}
+
 function parseUserFromToken(token: string): AuthUser | null {
   const payload = apiClient.decodeJwtPayload(token);
   if (!payload) return null;
