@@ -1,0 +1,14 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]
+    - main [ref=e21]:
+      - generic [ref=e22]
+      - generic [ref=e79]
+      - generic [ref=e171]
+    - contentinfo [ref=e187]:
+      - generic [ref=e188]
+  - generic "Notifications"
+  - alert [ref=e211]

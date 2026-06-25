@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e246]:
+    - generic [ref=e247]:
+      - link "StartupOS" [ref=e248] [cursor=pointer]:
+        - /url: /
+        - img "StartupOS" [ref=e249]
+      - heading "Create your account" [level=1] [ref=e250]
+      - paragraph [ref=e251]: Save your blueprints and track progress
+    - generic [ref=e252]:
+      - generic [ref=e253]:
+        - generic [ref=e254]: Email
+        - textbox "Email" [ref=e255]:
+          - /placeholder: you@example.com
+      - generic [ref=e256]:
+        - generic [ref=e257]: Password
+        - generic [ref=e258]:
+          - textbox "Password" [ref=e259]:
+            - /placeholder: At least 6 characters
+          - button "Show password" [ref=e260]
+      - generic [ref=e264]:
+        - generic [ref=e265]: Confirm Password
+        - textbox "Confirm Password" [ref=e266]:
+          - /placeholder: Repeat your password
+      - button "Create Account" [ref=e267]
+    - paragraph [ref=e268]:
+      - text: Already have an account?
+      - link "Sign in" [ref=e269] [cursor=pointer]:
+        - /url: /auth/sign-in
+  - generic "Notifications"
+  - alert [ref=e211]

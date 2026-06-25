@@ -1,0 +1,52 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e275]:
+    - generic [ref=e279]:
+      - link "StartupOS" [ref=e280] [cursor=pointer]:
+        - /url: /
+        - img "StartupOS" [ref=e281]
+      - generic [ref=e283]: Step 5 of 5
+    - generic [ref=e430]:
+      - img [ref=e432]
+      - heading "Your Blueprint is Ready ✨" [level=2] [ref=e434]
+      - paragraph [ref=e435]: We've analyzed your input and built a personalized StartupOS workspace with your brand, ICP, revenue model, roadmap, and more.
+      - generic [ref=e436]:
+        - generic [ref=e437]:
+          - generic [ref=e438]:
+            - img [ref=e439]
+            - text: Brand Analysis
+          - generic [ref=e441]:
+            - img [ref=e442]
+            - text: ICP Identified
+          - generic [ref=e444]:
+            - img [ref=e445]
+            - text: Revenue Model
+          - generic [ref=e447]:
+            - img [ref=e448]
+            - text: Startup Roast
+        - button "Saving..." [disabled]
+      - generic [ref=e451]:
+        - paragraph [ref=e452]: "Your Blueprint is based on:"
+        - generic [ref=e453]:
+          - generic [ref=e454]:
+            - generic [ref=e455]: "Idea:"
+            - generic [ref=e456]: A platform that helps small businesses manage their social media presence with AI-generated content and scheduling
+          - generic [ref=e457]:
+            - generic [ref=e458]: "Stage:"
+            - generic [ref=e459]: Ideation — just an idea, no product yet
+          - generic [ref=e460]:
+            - generic [ref=e461]: "Industry:"
+            - generic [ref=e462]: FinTech
+          - generic [ref=e463]:
+            - generic [ref=e464]: "Customer:"
+            - generic [ref=e465]: Small Businesses (B2B, <50 employees)
+          - generic [ref=e466]:
+            - generic [ref=e467]: "Revenue:"
+            - generic [ref=e468]: Subscription (monthly/yearly per seat) · $10-50
+          - generic [ref=e469]:
+            - generic [ref=e470]: "Problem:"
+            - generic [ref=e471]: Too hard to find / access — Access & availability
+    - paragraph [ref=e307]: StartupOS Beta · Your data stays private
+  - generic "Notifications"
+  - alert [ref=e211]

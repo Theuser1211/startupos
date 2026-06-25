@@ -16,6 +16,7 @@ import {
   ValidatedWebsiteSpec,
   ValidatedPageHTML,
   normalizeBlueprint,
+  extractJSON,
 } from "./validation.js";
 import { ZodError } from "zod";
 import { providerRegistry } from "./provider-registry.js";
@@ -117,8 +118,25 @@ export abstract class BaseAIProvider implements AIProvider {
   }
 
   protected validateWebsiteSpec(raw: string): ValidatedWebsiteSpec {
-    const parsed = this.parseJSONResponse<Record<string, unknown>>(raw);
-    return WebsiteSpecResultSchema.parse(parsed);
+    logger.debug({ rawLength: raw.length, rawPreview: raw.substring(0, 300) }, "[WEBSITE] raw model response");
+
+    const extracted = extractJSON(raw);
+    logger.debug({ extractedLength: extracted?.length, extractedPreview: extracted?.substring(0, 300) }, "[WEBSITE] extracted json");
+
+    if (!extracted) {
+      throw new AIProviderError(this.name, 0, "Failed to extract JSON from model response");
+    }
+
+    const parsed = this.parseJSONResponse<Record<string, unknown>>(extracted);
+
+    try {
+      return WebsiteSpecResultSchema.parse(parsed);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        logger.error({ zodErrors: error.errors }, "[WEBSITE] zod validation error");
+      }
+      throw error;
+    }
   }
 
   protected validatePageHTML(raw: string): ValidatedPageHTML {
@@ -1005,13 +1023,85 @@ export async function generateBlueprintWithFallback(prompt: string): Promise<Blu
   return withFailover((p) => p.generateBlueprint(prompt), "");
 }
 
+function buildFallbackWebsiteSpec(blueprint: BlueprintResult): WebsiteSpecResult {
+  const features = (blueprint.keyFeatures || []).slice(0, 6).map((f) =>
+    typeof f === "string" ? { title: f, description: "" } : { title: String(f), description: "" },
+  );
+
+  return {
+    pages: [
+      {
+        name: "Home",
+        slug: "/",
+        sections: [
+          {
+            type: "hero",
+            order: 1,
+            content: {
+              headline: blueprint.name,
+              subheadline: blueprint.description,
+              ctaText: "Get Started",
+              ctaSecondary: "Learn More",
+            },
+          },
+          {
+            type: "features",
+            order: 2,
+            content: {
+              title: "Features",
+              subtitle: `${blueprint.name} offers powerful features to help you succeed`,
+              items: features,
+            },
+          },
+          {
+            type: "pricing",
+            order: 3,
+            content: {
+              headline: "Simple Pricing",
+              subtitle: blueprint.monetization || "Start free, upgrade as you grow",
+              plans: [],
+            },
+          },
+          {
+            type: "cta",
+            order: 4,
+            content: {
+              headline: `Ready to start with ${blueprint.name}?`,
+              subheadline: blueprint.description,
+              ctaText: "Get Started",
+            },
+          },
+        ],
+      },
+    ],
+    theme: {
+      primaryColor: "#2563EB",
+      secondaryColor: "#7C3AED",
+      fontFamily: "Inter",
+      borderRadius: "12px",
+    },
+    components: [
+      { name: "Navbar", type: "navigation", props: {} },
+      { name: "Footer", type: "footer", props: {} },
+    ],
+  };
+}
+
 export async function generateWebsiteSpecWithFallback(
   blueprint: BlueprintResult,
 ): Promise<WebsiteSpecResult> {
   if (providerRegistry.getEntryCount() === 0 && !env.FREELLM_API_KEY) {
     throw new Error("No AI provider configured.");
   }
-  return withFailover((p) => p.generateWebsiteSpec(blueprint), "");
+  try {
+    return await withFailover((p) => p.generateWebsiteSpec(blueprint), "");
+  } catch (error) {
+    logger.warn(
+      { error: error instanceof Error ? error.message : String(error) },
+      "[WEBSITE] all providers failed, building fallback spec from blueprint",
+    );
+    return buildFallbackWebsiteSpec(blueprint);
+  }
 }
 
 export async function generateWebsitePageWithFallback(

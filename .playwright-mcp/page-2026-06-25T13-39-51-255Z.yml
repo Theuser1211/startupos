@@ -1,0 +1,73 @@
+- generic:
+  - link:
+    - /url: "#main-content"
+    - text: Skip to content
+  - generic:
+    - generic:
+      - generic:
+        - link:
+          - /url: /
+          - img
+        - generic:
+          - generic: Step 2 of 5
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic: Question 2 of 4
+            - heading [level=2]: Where are you now?
+            - paragraph: Help us understand your current stage and market.
+            - generic:
+              - generic:
+                - generic: Current Stage
+                - combobox:
+                  - generic: Ideation — just an idea, no product yet
+                  - img
+              - generic:
+                - generic: Industry
+                - combobox [expanded]:
+                  - generic: SaaS / Software
+                  - img
+            - generic:
+              - button:
+                - img
+                - text: Back
+              - button:
+                - text: Continue
+                - img
+    - generic:
+      - generic:
+        - paragraph: StartupOS Beta · Your data stays private
+  - generic "Notifications"
+  - alert
+  - listbox [ref=e328]:
+    - option "SaaS / Software" [active] [selected] [ref=e329]:
+      - img [ref=e332]
+      - generic [ref=e334]: SaaS / Software
+    - option "FinTech" [ref=e335]:
+      - generic [ref=e337]: FinTech
+    - option "HealthTech / Bio" [ref=e338]:
+      - generic [ref=e340]: HealthTech / Bio
+    - option "E-Commerce / Retail" [ref=e341]:
+      - generic [ref=e343]: E-Commerce / Retail
+    - option "AI / ML / Infrastructure" [ref=e344]:
+      - generic [ref=e346]: AI / ML / Infrastructure
+    - option "Developer Tools" [ref=e347]:
+      - generic [ref=e349]: Developer Tools
+    - option "Climate / CleanTech" [ref=e350]:
+      - generic [ref=e352]: Climate / CleanTech
+    - option "EdTech" [ref=e353]:
+      - generic [ref=e355]: EdTech
+    - option "Gaming" [ref=e356]:
+      - generic [ref=e358]: Gaming
+    - option "Creator Economy" [ref=e359]:
+      - generic [ref=e361]: Creator Economy
+    - option "Marketplace" [ref=e362]:
+      - generic [ref=e364]: Marketplace
+    - option "Hardware / IoT" [ref=e365]:
+      - generic [ref=e367]: Hardware / IoT
+    - option "Professional Services" [ref=e368]:
+      - generic [ref=e370]: Professional Services
+    - option "Other" [ref=e371]:
+      - generic [ref=e373]: Other

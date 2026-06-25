@@ -37,6 +37,35 @@ export function normalizeBlueprint(raw: Record<string, unknown>): Record<string,
   };
 }
 
+export function extractJSON(raw: string): string | null {
+  let cleaned = raw.replace(/```json\n?/gi, "").replace(/```\n?/g, "").trim();
+
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
+    return null;
+  }
+  cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+
+  try {
+    JSON.parse(cleaned);
+    return cleaned;
+  } catch {
+    const noTrailingCommas = cleaned.replace(/,(\s*[}\]])/g, "$1");
+    try {
+      JSON.parse(noTrailingCommas);
+      return noTrailingCommas;
+    } catch {
+      try {
+        JSON.parse(cleaned.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":'));
+        return cleaned;
+      } catch {
+        return cleaned;
+      }
+    }
+  }
+}
+
 export const SectionSpecSchema = z.object({
   type: z.string().min(1),
   order: z.number().int().nonnegative(),
