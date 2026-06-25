@@ -47,6 +47,7 @@ export abstract class BaseAIProvider implements AIProvider {
     }, TIMEOUT_MS);
 
     try {
+      logger.info({ provider: this.name, url: endpoint, model }, "[AI] sending request");
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -61,6 +62,8 @@ export abstract class BaseAIProvider implements AIProvider {
         }),
         signal: controller.signal,
       });
+
+      logger.info({ provider: this.name, status: response.status }, "[AI] response");
 
       if (!response.ok) {
         if (response.status === 429) {
@@ -80,6 +83,7 @@ export abstract class BaseAIProvider implements AIProvider {
       }
       return content;
     } catch (error) {
+      logger.error({ provider: this.name, error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
       if (error instanceof AIProviderError) throw error;
       if (error instanceof Error && error.name === "AbortError") {
         throw new AIProviderError(this.name, 0, `Request timed out after ${TIMEOUT_MS}ms`);
@@ -923,12 +927,14 @@ async function withFailover<T>(
 
   if (hasFreeLLM) {
     const provider = new FreeLLMProvider();
+    logger.info({ provider: "freellm", model: "gpt-4o-mini", apiKeyExists: !!env.FREELLM_API_KEY }, "[AI] attempting provider");
     try {
       logger.info({ provider: "FreeLLMAPI", model: "gpt-4o-mini" }, "AI provider: attempting FreeLLMAPI");
       const { result } = await tryProvider("freellm", provider, action);
       logger.info({ provider: "FreeLLMAPI" }, "AI provider: FreeLLMAPI succeeded");
       return result;
     } catch (error) {
+      logger.error({ provider: "freellm", error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
       const message = error instanceof AIProviderError
         ? `[${error.provider}] status=${error.statusCode} ${error.message}`
         : error instanceof ZodError
@@ -951,12 +957,14 @@ async function withFailover<T>(
 
     attemptCount++;
     const provider = entry.createProvider();
+    logger.info({ provider: entry.id, model: entry.model, apiKeyExists: !!entry.apiKey }, "[AI] attempting provider");
     try {
       logger.info({ provider: entry.provider, model: entry.model, id: entry.id, attempt: attemptCount, total: availableCount }, "AI provider: attempting");
       const { result } = await tryProvider(entry.id, provider, action);
       logger.info({ provider: entry.provider, model: entry.model }, "AI provider: succeeded");
       return result;
     } catch (error) {
+      logger.error({ provider: entry.id, error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
       const message = error instanceof AIProviderError
         ? `[${error.provider}] status=${error.statusCode} ${error.message}`
         : error instanceof ZodError
