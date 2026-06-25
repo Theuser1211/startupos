@@ -19,6 +19,7 @@ export async function getBriefHandler(
   if (startup.userId !== userId) throw new ForbiddenError("You do not own this startup");
 
   const brief = await generateBrief(startupId);
+  if (!brief) throw new NotFoundError("Brief");
 
   reply.send(brief);
 }

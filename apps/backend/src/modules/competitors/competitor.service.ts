@@ -81,6 +81,42 @@ export async function addCompetitor(
   return competitor;
 }
 
+function generateMockCompetitors(industry: string) {
+  const mockCompetitors: Record<string, { name: string; website: string; description: string }[]> = {
+    "SaaS / Software": [
+      { name: "ProductPlan", website: "https://productplan.com", description: "Roadmap and product management platform" },
+      { name: "LaunchKit", website: "https://launchkit.io", description: "Product launch toolkit for startups" },
+      { name: "FounderHub", website: "https://founderhub.io", description: "All-in-one platform for early-stage founders" },
+    ],
+    FinTech: [
+      { name: "Plaid", website: "https://plaid.com", description: "Financial services API platform" },
+      { name: "Stripe", website: "https://stripe.com", description: "Online payment processing platform" },
+      { name: "Brex", website: "https://brex.com", description: "Corporate credit cards and financial services" },
+    ],
+    HealthTech: [
+      { name: "Oscar Health", website: "https://hioscar.com", description: "Health insurance platform" },
+      { name: "Zocdoc", website: "https://zocdoc.com", description: "Doctor appointment booking platform" },
+    ],
+    "AI / ML / Infrastructure": [
+      { name: "Hugging Face", website: "https://huggingface.co", description: "AI model hosting and collaboration platform" },
+      { name: "Replicate", website: "https://replicate.com", description: "Cloud API for running AI models" },
+    ],
+    "Developer Tools": [
+      { name: "Vercel", website: "https://vercel.com", description: "Frontend deployment and hosting platform" },
+      { name: "Railway", website: "https://railway.app", description: "Full-stack application hosting platform" },
+    ],
+    "E-Commerce / Retail": [
+      { name: "Shopify", website: "https://shopify.com", description: "E-commerce platform for online stores" },
+      { name: "BigCommerce", website: "https://bigcommerce.com", description: "Enterprise e-commerce platform" },
+    ],
+  };
+
+  return mockCompetitors[industry] ?? [
+    { name: "MarketLeader", website: "https://marketleader.com", description: "Industry leading platform" },
+    { name: "CompetitorCo", website: "https://competitor.co", description: "Direct competitor in the space" },
+  ];
+}
+
 export async function getCompetitorsForStartup(startupId: string) {
   const rows = await prisma.competitor.findMany({
     where: { startupId },
@@ -97,7 +133,7 @@ export async function getCompetitorsForStartup(startupId: string) {
     },
   });
 
-  return rows.map((c) => ({
+  const mapped = rows.map((c) => ({
     id: c.id,
     name: c.name,
     website: c.website,
@@ -122,6 +158,37 @@ export async function getCompetitorsForStartup(startupId: string) {
       newValue: ch.newValue,
       detectedAt: ch.detectedAt.toISOString(),
     })),
+  }));
+
+  if (mapped.length > 0) return mapped;
+
+  const blueprint = await prisma.blueprint.findUnique({
+    where: { startupId },
+    select: { content: true },
+  });
+
+  const industry = (blueprint?.content as { industry?: string } | null)?.industry ?? "SaaS / Software";
+  const mocks = generateMockCompetitors(industry);
+
+  return mocks.map((m) => ({
+    id: `mock-${m.name.toLowerCase().replace(/\s+/g, "-")}`,
+    name: m.name,
+    website: m.website,
+    description: m.description,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    latestSnapshot: {
+      id: `mock-snap-${m.name.toLowerCase().replace(/\s+/g, "-")}`,
+      title: `${m.name} — ${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}`,
+      summary: `${m.name} is a company in the ${industry} space.`,
+      pricing: "Contact for pricing",
+      features: { core: ["Product offering", "Customer support", "Documentation"], integrations: [], platforms: ["Web"] },
+      rawContent: `Mock snapshot for ${m.name} at ${m.website}. No external API configured.`,
+      capturedAt: new Date().toISOString(),
+    },
+    changes: [
+      { id: `mock-chg-${m.name.toLowerCase().replace(/\s+/g, "-")}-1`, type: "pricing", oldValue: null, newValue: "Contact for pricing", detectedAt: new Date().toISOString() },
+    ],
   }));
 }
 

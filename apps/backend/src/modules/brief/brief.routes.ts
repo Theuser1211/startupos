@@ -8,23 +8,54 @@ export async function briefRoutes(app: FastifyInstance): Promise<void> {
   app.get("/brief/:startupId", {
     schema: {
       tags: ["Brief"],
-      description: "Generate a daily brief for a startup with wins, priorities, and competitor updates",
+      description: "Generate a daily brief for a startup with market news, opportunities, and risks",
       security: [{ bearerAuth: [] }],
       params: {
         type: "object",
         required: ["startupId"],
-        properties: { startupId: { type: "string", format: "uuid" } },
+        properties: { startupId: { type: "string" } },
       },
       response: {
         200: {
           type: "object",
           properties: {
-            id: { type: "string" },
             summary: { type: "string" },
-            wins: { type: "array", items: { type: "string" } },
-            priorities: { type: "array", items: { type: "string" } },
-            competitorUpdates: { type: "array", items: { type: "string" } },
-            healthScore: { type: "integer" },
+            marketNews: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  source: { type: "string" },
+                  url: { type: "string" },
+                  relevance: { type: "string" },
+                },
+              },
+            },
+            opportunities: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  area: { type: "string" },
+                  description: { type: "string" },
+                  impact: { type: "string" },
+                  effort: { type: "string" },
+                },
+              },
+            },
+            risks: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  category: { type: "string" },
+                  description: { type: "string" },
+                  severity: { type: "string" },
+                  mitigation: { type: "string" },
+                },
+              },
+            },
             generatedAt: { type: "string", format: "date-time" },
           },
         },

@@ -54,6 +54,53 @@ export async function competitorRoutes(app: FastifyInstance): Promise<void> {
         required: ["startupId"],
         properties: { startupId: { type: "string" } },
       },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            competitors: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  id: { type: "string" },
+                  name: { type: "string" },
+                  website: { type: "string" },
+                  description: { type: ["string", "null"] },
+                  createdAt: { type: "string" },
+                  updatedAt: { type: "string" },
+                  latestSnapshot: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string" },
+                      title: { type: "string" },
+                      summary: { type: ["string", "null"] },
+                      pricing: { type: ["string", "null"] },
+                      features: { type: "object" },
+                      rawContent: { type: ["string", "null"] },
+                      capturedAt: { type: "string" },
+                    },
+                    nullable: true,
+                  },
+                  changes: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: {
+                        id: { type: "string" },
+                        type: { type: "string" },
+                        oldValue: { type: ["string", "null"] },
+                        newValue: { type: ["string", "null"] },
+                        detectedAt: { type: "string" },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
   }, listCompetitorsHandler);
 
