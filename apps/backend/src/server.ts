@@ -169,6 +169,8 @@ async function bootstrap(): Promise<void> {
 
   await checkDatabase();
 
+  logger.info(app.printRoutes());
+
   await app.listen({ port: env.PORT, host: env.HOST });
   logger.info(`Server running on http://${env.HOST}:${env.PORT}`);
   logger.info(`Swagger docs at http://${env.HOST}:${env.PORT}/docs`);
