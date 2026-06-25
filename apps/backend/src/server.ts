@@ -36,7 +36,11 @@ const app = Fastify({
 
 async function bootstrap(): Promise<void> {
   await app.register(cors, {
-    origin: true,
+    origin: [
+      "https://startupos-black.vercel.app",
+      "http://localhost:3000",
+      ...(env.PUBLIC_URL ? [env.PUBLIC_URL] : []),
+    ],
     credentials: true,
   });
 

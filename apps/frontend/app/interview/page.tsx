@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Check, Loader2 } from "lucide-react";
+import { StagedProgress } from "@/components/ui/staged-progress";
+import { ArrowRight, ArrowLeft, Check, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { InterviewData } from "@/lib/types";
@@ -16,10 +17,20 @@ import { createStartup } from "@/lib/api/startups";
 import { isAuthenticated } from "@/lib/api/auth";
 import { generateBlueprint } from "@/lib/api/blueprints";
 import { useToast } from "@/components/ui/toast";
+import { toFriendlyError } from "@/lib/api/client";
+import { fireCelebration } from "@/lib/confetti";
 import {
   STAGE_LABELS, INDUSTRY_LABELS, CUSTOMER_LABELS,
   BUSINESS_MODEL_LABELS, PRICE_RANGE_LABELS, PROBLEM_LABELS,
 } from "@/lib/types";
+
+const blueprintStages = [
+  { label: "Analyzing idea", description: "Understanding your startup concept" },
+  { label: "Researching market", description: "Analyzing industry and competition" },
+  { label: "Designing model", description: "Building business and revenue model" },
+  { label: "Building roadmap", description: "Creating product roadmap and milestones" },
+  { label: "Finalizing", description: "Generating your complete blueprint" },
+];
 
 interface StepField {
   id: string;
@@ -129,6 +140,10 @@ export default function InterviewPage() {
   const [data, setData] = useState<InterviewData>({ ...defaultData });
   const [direction, setDirection] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [genStage, setGenStage] = useState(0);
+  const [genProgress, setGenProgress] = useState(0);
+  const genTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const step = steps[currentStep];
 
@@ -150,6 +165,27 @@ export default function InterviewPage() {
     }
   };
 
+  useEffect(() => {
+    if (isGenerating) {
+      const totalDuration = 15000;
+      const interval = 200;
+      const stepDuration = totalDuration / blueprintStages.length;
+      let elapsed = 0;
+
+      genTimerRef.current = setInterval(() => {
+        elapsed += interval;
+        const rawProgress = (elapsed / totalDuration) * 100;
+        const stageIndex = Math.min(Math.floor(elapsed / stepDuration), blueprintStages.length - 1);
+        setGenStage(stageIndex);
+        setGenProgress(Math.min(rawProgress, 95));
+      }, interval);
+
+      return () => {
+        if (genTimerRef.current) clearInterval(genTimerRef.current);
+      };
+    }
+  }, [isGenerating]);
+
   const handleFinish = async () => {
     const companyName = extractCompany(data.idea) || "My Startup";
 
@@ -158,6 +194,8 @@ export default function InterviewPage() {
       localStorage.setItem("startupos-founder", JSON.stringify(data));
 
       if (isAuthenticated()) {
+        setIsGenerating(true);
+
         const startup = await createStartup({
           name: companyName,
           industry: data.industry || "other",
@@ -174,16 +212,32 @@ export default function InterviewPage() {
         ].filter(Boolean).join("\n");
 
         await generateBlueprint({ startupId: startup.id, prompt });
-        router.push(`/workspace?id=${startup.id}`);
+
+        setGenStage(blueprintStages.length - 1);
+        setGenProgress(100);
+        if (genTimerRef.current) clearInterval(genTimerRef.current);
+
+        fireCelebration();
+
+        toast({
+          variant: "success",
+          title: "Blueprint ready!",
+          message: "Your personalized startup blueprint has been generated.",
+        });
+
+        setTimeout(() => {
+          router.push(`/workspace?id=${startup.id}`);
+        }, 1500);
         return;
       }
 
       router.push("/workspace");
     } catch (err) {
+      setIsGenerating(false);
       toast({
         variant: "error",
         title: "Generation failed",
-        message: err instanceof Error ? err.message : "Please try again.",
+        message: toFriendlyError(err instanceof Error ? err.message : "Please try again."),
       });
     } finally {
       setIsSaving(false);
@@ -234,7 +288,21 @@ export default function InterviewPage() {
               exit={{ opacity: 0, x: direction > 0 ? -100 : 100, scale: 0.98 }}
               transition={{ duration: 0.35, ease: "easeInOut" }}
             >
-              {step.id === "done" ? (
+              {step.id === "done" && isGenerating ? (
+                <div className="text-center py-8">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-purple-400 shadow-xl shadow-purple-500/30">
+                      <Sparkles className="h-8 w-8 text-white" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold mb-8">Generating Your Blueprint</h2>
+                    <StagedProgress stages={blueprintStages} currentStage={genStage} progress={genProgress} />
+                  </motion.div>
+                </div>
+              ) : step.id === "done" ? (
                 <div className="text-center py-8">
                   <motion.div
                     initial={{ scale: 0 }}

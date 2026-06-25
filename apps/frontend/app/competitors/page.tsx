@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useCompetitors, useAddCompetitor, useCompetitorHistory } from "@/lib/hooks/use-competitors";
+import { toFriendlyError } from "@/lib/api/client";
 import {
   Loader2, AlertTriangle, ArrowLeft, Plus, ExternalLink,
   ChevronDown, ChevronRight, Clock, Crosshair, FileText,
@@ -186,7 +187,7 @@ function CompetitorsContent() {
               <AlertTriangle className="h-5 w-5 text-red-400" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-red-400">Failed to load competitors</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{(error as { error?: string })?.error || "An error occurred"}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
               </div>
               <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
             </CardContent>

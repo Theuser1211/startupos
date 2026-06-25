@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useStartups } from "@/lib/hooks/use-startup";
+import { toFriendlyError } from "@/lib/api/client";
 import { Sparkles, Plus, ExternalLink, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
@@ -71,7 +72,7 @@ export default function BlueprintsPage() {
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
                 <AlertTriangle className="h-6 w-6 text-red-400" />
               </div>
-              <p className="text-sm text-muted-foreground mb-4">{error instanceof Error ? error.message : "Something went wrong"}</p>
+              <p className="text-sm text-muted-foreground mb-4">{toFriendlyError(error instanceof Error ? error.message : "Something went wrong")}</p>
               <Button variant="outline" size="sm" onClick={() => refetch()}>Try again</Button>
             </div>
           </div>

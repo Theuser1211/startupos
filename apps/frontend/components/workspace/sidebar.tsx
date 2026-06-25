@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { OnboardingChecklist, useOnboarding } from "@/components/ui/onboarding-checklist";
 
 interface Tab {
   id: string;
@@ -34,6 +35,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ activeTab, onTabChange, founderName, startupId }: SidebarProps) {
+  const { completed, dismissed, show, dismiss } = useOnboarding();
+
   return (
     <aside className="hidden lg:flex flex-col w-64 border-r border-glass-border bg-background/50 backdrop-blur-xl">
       <div className="flex items-center gap-2.5 h-14 px-5 border-b border-glass-border">
@@ -61,6 +64,12 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId }: Side
               <p className="text-xs text-muted-foreground">Founder</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {show && (
+        <div className="px-3 pt-3">
+          <OnboardingChecklist completed={completed} onDismiss={dismiss} />
         </div>
       )}
 

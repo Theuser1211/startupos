@@ -1,19 +1,29 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { StagedProgress } from "@/components/ui/staged-progress";
 import { useToast } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useGenerateWebsite, useDeploy } from "@/lib/hooks/use-startup";
+import { fireCelebration } from "@/lib/confetti";
 import {
   Globe, ExternalLink, Check, X, Sparkles, Loader2,
   Rocket, RotateCw, Search, Shield,
 } from "lucide-react";
 import type { StartupBlueprint } from "@/lib/types";
+
+const websiteStages = [
+  { label: "Creating structure", description: "Designing your site architecture" },
+  { label: "Designing branding", description: "Applying your brand identity" },
+  { label: "Generating content", description: "Writing copy for each section" },
+  { label: "Building sections", description: "Assembling page components" },
+  { label: "Finalizing", description: "Polishing and optimizing your site" },
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -32,10 +42,35 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
   const [websiteData, setWebsiteData] = useState<Record<string, unknown> | null>(null);
   const [websiteId, setWebsiteId] = useState<string | null>(null);
   const [genError, setGenError] = useState<string | null>(null);
+  const [genStage, setGenStage] = useState(0);
+  const [genProgress, setGenProgress] = useState(0);
+  const genTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const celebrationFiredRef = useRef(false);
 
   const { toast } = useToast();
   const generateWebsiteMut = useGenerateWebsite();
   const deployMut = useDeploy();
+
+  useEffect(() => {
+    if (genPhase === "generating") {
+      const totalDuration = 30000;
+      const interval = 250;
+      const stepDuration = totalDuration / websiteStages.length;
+      let elapsed = 0;
+
+      genTimerRef.current = setInterval(() => {
+        elapsed += interval;
+        const rawProgress = (elapsed / totalDuration) * 100;
+        const stageIndex = Math.min(Math.floor(elapsed / stepDuration), websiteStages.length - 1);
+        setGenStage(stageIndex);
+        setGenProgress(Math.min(rawProgress, 95));
+      }, interval);
+
+      return () => {
+        if (genTimerRef.current) clearInterval(genTimerRef.current);
+      };
+    }
+  }, [genPhase]);
 
   const handleGenerate = useCallback(async () => {
     if (!blueprint?.startupName) {
@@ -55,6 +90,14 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       if (res.website) {
         setWebsiteId(res.website.id);
         setWebsiteData(res.website as unknown as Record<string, unknown>);
+      }
+      setGenStage(websiteStages.length - 1);
+      setGenProgress(100);
+      if (genTimerRef.current) clearInterval(genTimerRef.current);
+      if (!celebrationFiredRef.current) {
+        celebrationFiredRef.current = true;
+        fireCelebration();
+        toast({ variant: "success", title: "Website ready!", message: "Your website has been generated successfully." });
       }
       setGenPhase("completed");
     } catch (err) {
@@ -110,19 +153,12 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <motion.div variants={itemVariants}>
           <Card className="border-primary/20 bg-primary/5 text-center p-12">
             <CardContent>
-              <div className="relative mx-auto mb-6 h-16 w-16">
-                <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
-                <motion.div
-                  className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader2 className="h-6 w-6 text-primary animate-spin" />
-                </div>
+              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-purple-400 shadow-xl shadow-purple-500/30">
+                <Sparkles className="h-8 w-8 text-white" />
               </div>
               <h2 className="text-lg font-display font-bold mb-2">Generating Your Website</h2>
-              <p className="text-sm text-muted-foreground">This usually takes 30-60 seconds...</p>
+              <p className="text-sm text-muted-foreground mb-8">Building your site from your blueprint...</p>
+              <StagedProgress stages={websiteStages} currentStage={genStage} progress={genProgress} />
             </CardContent>
           </Card>
         </motion.div>

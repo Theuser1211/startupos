@@ -22,6 +22,25 @@ function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
 }
 
+const friendlyMessages: [string, string][] = [
+  ["all providers failed", "We're having trouble generating your startup right now. Please try again shortly."],
+  ["prompt is required", "Your startup idea needs a description. Please complete the interview first."],
+  ["rate limit", "You've made too many requests. Please wait a moment and try again."],
+  ["invalid credentials", "Invalid email or password. Please try again."],
+  ["unauthorized", "Your session has expired. Please sign in again."],
+  ["not found", "The requested resource was not found. It may have been removed."],
+  ["internal server error", "Something went wrong on our end. Please try again."],
+  ["failed to fetch", "Unable to connect to the server. Please check your internet connection."],
+];
+
+export function toFriendlyError(raw: string): string {
+  const lower = raw.toLowerCase();
+  for (const [pattern, friendly] of friendlyMessages) {
+    if (lower.includes(pattern)) return friendly;
+  }
+  return raw;
+}
+
 function decodeJwtPayload(token: string): Record<string, unknown> | null {
   try {
     const base64 = token.split(".")[1];

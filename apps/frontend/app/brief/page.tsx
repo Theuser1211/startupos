@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useBrief } from "@/lib/hooks/use-brief";
+import { toFriendlyError } from "@/lib/api/client";
 import {
   Loader2, AlertTriangle, ArrowLeft, Sparkles,
   CheckCircle2, Target, Crosshair, TrendingUp, Clock,
@@ -148,7 +149,7 @@ function BriefContent() {
               <AlertTriangle className="h-5 w-5 text-red-400" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-red-400">Failed to load brief</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{(error as { error?: string })?.error || "An error occurred"}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
               </div>
               <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
             </CardContent>
