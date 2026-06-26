@@ -104,3 +104,26 @@ export async function getWebsiteHandler(
 
   reply.send({ website });
 }
+
+export async function getWebsiteByStartupHandler(
+  request: FastifyRequest<{ Params: { startupId: string } }>,
+  reply: FastifyReply,
+): Promise<void> {
+  const { startupId } = request.params;
+  const userId = request.user!.userId;
+
+  const startup = await prisma.startup.findUnique({
+    where: { id: startupId },
+    select: { userId: true },
+  });
+
+  if (!startup) throw new NotFoundError("Startup");
+  if (startup.userId !== userId) throw new ForbiddenError("You do not own this startup");
+
+  const website = await prisma.website.findFirst({
+    where: { startupId },
+    include: { spec: true, deployment: true },
+  });
+
+  reply.send({ website });
+}

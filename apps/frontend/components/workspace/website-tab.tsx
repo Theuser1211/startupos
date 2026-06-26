@@ -9,7 +9,8 @@ import { StagedProgress } from "@/components/ui/staged-progress";
 import { useToast } from "@/components/ui/toast";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { EmptyState } from "@/components/ui/empty-state";
-import { useGenerateWebsite, useDeploy } from "@/lib/hooks/use-startup";
+import { useGenerateWebsite, useDeploy, useWebsite } from "@/lib/hooks/use-startup";
+import { getWebsiteByStartup } from "@/lib/api/websites";
 import { fireCelebration } from "@/lib/confetti";
 import {
   Globe, ExternalLink, Check, X, Sparkles, Loader2,
@@ -50,6 +51,23 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
   const { toast } = useToast();
   const generateWebsiteMut = useGenerateWebsite();
   const deployMut = useDeploy();
+
+  useEffect(() => {
+    const startupId = typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search).get("id")
+      : null;
+    if (startupId) {
+      getWebsiteByStartup(startupId).then((existing) => {
+        if (existing) {
+          setWebsiteId(existing.id);
+          setWebsiteData(existing as unknown as Record<string, unknown>);
+          setGenPhase("completed");
+          setGenStage(websiteStages.length - 1);
+          setGenProgress(100);
+        }
+      }).catch(() => {});
+    }
+  }, []);
 
   useEffect(() => {
     if (genPhase === "generating") {

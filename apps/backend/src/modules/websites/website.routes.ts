@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { generateWebsiteHandler, getWebsiteHandler } from "./website.handler.js";
+import { generateWebsiteHandler, getWebsiteHandler, getWebsiteByStartupHandler } from "./website.handler.js";
 import { authenticate } from "../../middleware/auth.js";
 
 const websiteResponse = {
@@ -59,10 +59,33 @@ export async function websiteRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            website: websiteResponse,
+            website: { type: ["object", "null"] },
           },
         },
       },
     },
   }, getWebsiteHandler);
+
+  app.get("/websites/by-startup/:startupId", {
+    schema: {
+      tags: ["Websites"],
+      description: "Get website by startup ID",
+      security: [{ bearerAuth: [] }],
+      params: {
+        type: "object",
+        required: ["startupId"],
+        properties: {
+          startupId: { type: "string", format: "uuid" },
+        },
+      },
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            website: { type: ["object", "null"] },
+          },
+        },
+      },
+    },
+  }, getWebsiteByStartupHandler);
 }

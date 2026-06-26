@@ -1,6 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { prisma } from "../../db/client.js";
 import { NotFoundError, ForbiddenError } from "../../lib/errors.js";
+import { logger } from "../../lib/logger.js";
 import {
   addCompetitor,
   getCompetitorsForStartup,
@@ -34,17 +35,23 @@ export async function listCompetitorsHandler(
   const { startupId } = request.params;
   const userId = request.user!.userId;
 
-  const startup = await prisma.startup.findUnique({
-    where: { id: startupId },
-    select: { userId: true },
-  });
+  try {
+    const startup = await prisma.startup.findUnique({
+      where: { id: startupId },
+      select: { userId: true },
+    });
 
-  if (!startup) throw new NotFoundError("Startup");
-  if (startup.userId !== userId) throw new ForbiddenError("You do not own this startup");
+    if (!startup) throw new NotFoundError("Startup");
+    if (startup.userId !== userId) throw new ForbiddenError("You do not own this startup");
 
-  const competitors = await getCompetitorsForStartup(startupId);
+    const competitors = await getCompetitorsForStartup(startupId);
 
-  reply.send({ competitors });
+    reply.send({ competitors });
+  } catch (err) {
+    if (err instanceof NotFoundError || err instanceof ForbiddenError) throw err;
+    logger.error({ err, startupId }, "Failed to list competitors");
+    reply.send({ competitors: [] });
+  }
 }
 
 export async function getCompetitorHistoryHandler(

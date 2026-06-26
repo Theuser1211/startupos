@@ -8,7 +8,7 @@ export async function briefRoutes(app: FastifyInstance): Promise<void> {
   app.get("/brief/:startupId", {
     schema: {
       tags: ["Brief"],
-      description: "Generate a daily brief for a startup with market news, opportunities, and risks",
+      description: "Generate a daily brief for a startup with wins, priorities, competitor updates, and health score",
       security: [{ bearerAuth: [] }],
       params: {
         type: "object",
@@ -19,40 +19,28 @@ export async function briefRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
+            id: { type: "string" },
             summary: { type: "string" },
-            marketNews: {
+            wins: {
               type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  source: { type: "string" },
-                  url: { type: "string" },
-                  relevance: { type: "string" },
-                },
-              },
+              items: { type: "string" },
             },
-            opportunities: {
+            priorities: {
               type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  area: { type: "string" },
-                  description: { type: "string" },
-                  impact: { type: "string" },
-                  effort: { type: "string" },
-                },
-              },
+              items: { type: "string" },
             },
-            risks: {
+            competitorUpdates: {
+              type: "array",
+              items: { type: "string" },
+            },
+            healthScore: { type: "number" },
+            healthHistory: {
               type: "array",
               items: {
                 type: "object",
                 properties: {
-                  category: { type: "string" },
-                  description: { type: "string" },
-                  severity: { type: "string" },
-                  mitigation: { type: "string" },
+                  score: { type: "number" },
+                  createdAt: { type: "string", format: "date-time" },
                 },
               },
             },

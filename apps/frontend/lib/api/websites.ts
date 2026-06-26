@@ -17,3 +17,8 @@ export async function getWebsite(id: string): Promise<Website> {
   }
   return data as Website;
 }
+
+export async function getWebsiteByStartup(startupId: string): Promise<Website | null> {
+  const data = await apiClient.get<{ website: Website | null }>(`/websites/by-startup/${startupId}`);
+  return data?.website ?? null;
+}
