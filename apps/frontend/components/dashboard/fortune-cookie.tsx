@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const FORTUNE_KEY = "startupos-fortune";
 
@@ -133,9 +132,7 @@ export function FortuneCookie() {
       const stored = localStorage.getItem(FORTUNE_KEY);
       if (stored) {
         const data = JSON.parse(stored) as StoredFortune;
-        if (data.date === today) {
-          return data.fortune;
-        }
+        if (data.date === today) return data.fortune;
       }
     } catch {}
     return null;
@@ -148,9 +145,10 @@ export function FortuneCookie() {
     } catch {}
   }, []);
 
-  const pickRandom = useCallback(() => {
-    return fortunes[Math.floor(Math.random() * fortunes.length)];
-  }, []);
+  const pickRandom = useCallback(
+    () => fortunes[Math.floor(Math.random() * fortunes.length)],
+    []
+  );
 
   const newFortune = useCallback(() => {
     const f = pickRandom();
@@ -169,44 +167,41 @@ export function FortuneCookie() {
   }, [loadFortune, newFortune]);
 
   return (
-    <Card className="border-glass-border bg-glass-bg h-full">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-semibold flex items-center gap-2">
-          <span className="text-lg">🥠</span>
-          Startup Fortune Cookie
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col items-center text-center py-2">
-          <motion.div
-            className="text-3xl mb-4"
-            animate={{ rotate: [0, -5, 5, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}
+    <div className="terminal-card p-5 h-full font-mono text-sm space-y-4">
+      <div className="flex items-center gap-2 text-xs text-primary/60">
+        <span className="w-2 h-2 rounded-full bg-primary/60" />
+        <span className="tracking-wide">startup fortune</span>
+      </div>
+
+      <div className="flex flex-col items-center text-center py-2">
+        <motion.div
+          className="text-2xl mb-3"
+          animate={{ rotate: [0, -5, 5, -5, 0] }}
+          transition={{ duration: 2, repeat: Infinity, repeatDelay: 6, ease: "easeInOut" }}
+        >
+          🥠
+        </motion.div>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={key}
+            className="text-sm leading-relaxed text-foreground/90 italic"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.25 }}
           >
-            🥠
-          </motion.div>
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={key}
-              className="text-sm leading-relaxed text-foreground/90 italic"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-            >
-              &ldquo;{fortune}&rdquo;
-            </motion.p>
-          </AnimatePresence>
-          <motion.button
-            onClick={newFortune}
-            className="mt-5 text-xs text-muted-foreground hover:text-primary border border-glass-border rounded-lg px-4 py-2 hover:border-primary/30 transition-all"
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            ✨ New Fortune
-          </motion.button>
-        </div>
-      </CardContent>
-    </Card>
+            &ldquo;{fortune}&rdquo;
+          </motion.p>
+        </AnimatePresence>
+        <motion.button
+          onClick={newFortune}
+          className="mt-4 text-[11px] text-muted-foreground hover:text-primary border border-border rounded-md px-3 py-1.5 hover:border-primary/30 transition-all bg-surface hover:bg-surface-hover"
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          ~ $ roll_fortune
+        </motion.button>
+      </div>
+    </div>
   );
 }

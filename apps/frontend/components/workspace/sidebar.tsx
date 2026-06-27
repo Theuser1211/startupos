@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Globe, Palette, Target, DollarSign, Map, Flame, Scale,
-  LucideIcon, Sparkles, FolderOpen, TrendingUp, Crosshair,
+  LucideIcon, FolderOpen, TrendingUp, Crosshair, Command,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,10 +39,11 @@ interface SidebarProps {
 
 export function Sidebar({ activeTab, onTabChange, founderName, startupId, blueprint }: SidebarProps) {
   const { completed, dismissed, show, dismiss } = useOnboarding();
+  const stage = blueprint?.companySnapshot?.stage || "";
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 border-r border-glass-border bg-background/50 backdrop-blur-xl">
-      <div className="flex items-center gap-2.5 h-14 px-5 border-b border-glass-border">
+    <aside className="hidden lg:flex flex-col w-64 border-r border-border bg-card">
+      <div className="flex items-center gap-2.5 h-14 px-5 border-b border-border">
         <Image
           src="/logo-square.png"
           alt="StartupOS"
@@ -57,14 +58,17 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
       </div>
 
       {founderName && (
-        <div className="px-5 py-4 border-b border-glass-border">
+        <div className="px-5 py-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">
+            <div className="h-8 w-8 rounded-lg border border-primary/30 bg-surface-green flex items-center justify-center text-xs font-bold text-primary font-mono">
               {founderName.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{founderName}</p>
-              <p className="text-xs text-muted-foreground">Founder</p>
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
+                {stage ? `stage: ${stage}` : "founder"}
+              </div>
             </div>
           </div>
         </div>
@@ -76,7 +80,11 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
         </div>
       )}
 
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <div className="px-3 pb-2 text-[10px] text-muted-foreground font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <Command className="h-3 w-3" />
+          workspace
+        </div>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -87,21 +95,28 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
               aria-selected={isActive}
               onClick={() => onTabChange(tab.id)}
               className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 group relative",
+                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 group relative",
                 isActive
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                  ? "text-primary bg-surface-green"
+                  : "text-muted-foreground hover:text-foreground hover:bg-surface"
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 rounded-lg bg-primary/10 border border-primary/20"
+                  className="absolute inset-0 rounded-lg border border-primary/20"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
               <Icon className={cn("h-4 w-4 relative z-10", isActive && "text-primary")} />
-              <span className="relative z-10">{tab.label}</span>
+              <span className="relative z-10 text-xs">{tab.label}</span>
+              {isActive && (
+                <motion.span
+                  className="relative z-10 ml-auto w-1 h-1 rounded-full bg-primary"
+                  layoutId="activeDot"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
             </button>
           );
         })}
@@ -111,19 +126,20 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
         <PanicButton blueprint={blueprint} />
       </div>
 
-      <div className="px-3 py-3 border-t border-glass-border space-y-1">
+      <div className="px-3 py-3 border-t border-border space-y-0.5">
+        <div className="px-3 pb-1.5 text-[10px] text-muted-foreground font-mono uppercase tracking-wider">nav</div>
         {startupId && (
           <>
             <Link
               href={`/dashboard?id=${startupId}`}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
             >
               <TrendingUp className="h-3.5 w-3.5" />
               Dashboard
             </Link>
             <Link
               href={`/competitors?startupId=${startupId}`}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
             >
               <Crosshair className="h-3.5 w-3.5" />
               Competitors
@@ -132,17 +148,17 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
         )}
         <Link
           href="/blueprints"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
         >
           <FolderOpen className="h-3.5 w-3.5" />
           My Startups
         </Link>
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
         >
-          <Sparkles className="h-3.5 w-3.5" />
-          Back to Home
+          <Command className="h-3.5 w-3.5" />
+          Home
         </Link>
       </div>
     </aside>
