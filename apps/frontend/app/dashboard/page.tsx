@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
 import { toFriendlyError } from "@/lib/api/client";
+import { FortuneCookie } from "@/components/dashboard/fortune-cookie";
+import { DeathPredictor } from "@/components/dashboard/death-predictor";
 import {
   Loader2, AlertTriangle, ArrowLeft, TrendingUp,
   Target, Globe, Rocket, Activity,
@@ -366,6 +368,15 @@ function DashboardContent() {
                     )}
                   </CardContent>
                 </Card>
+              </motion.div>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              <motion.div variants={itemVariants}>
+                <FortuneCookie />
+              </motion.div>
+              <motion.div variants={itemVariants}>
+                <DeathPredictor dashboard={dashboard} />
               </motion.div>
             </div>
           </motion.div>

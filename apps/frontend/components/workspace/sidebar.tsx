@@ -9,6 +9,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { OnboardingChecklist, useOnboarding } from "@/components/ui/onboarding-checklist";
+import { PanicButton } from "./panic-button";
+import type { StartupBlueprint } from "@/lib/types";
 
 interface Tab {
   id: string;
@@ -32,9 +34,10 @@ interface SidebarProps {
   onTabChange: (tab: string) => void;
   founderName?: string;
   startupId?: string;
+  blueprint?: StartupBlueprint | null;
 }
 
-export function Sidebar({ activeTab, onTabChange, founderName, startupId }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, founderName, startupId, blueprint }: SidebarProps) {
   const { completed, dismissed, show, dismiss } = useOnboarding();
 
   return (
@@ -103,6 +106,10 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId }: Side
           );
         })}
       </nav>
+
+      <div className="px-3 pb-1">
+        <PanicButton blueprint={blueprint} />
+      </div>
 
       <div className="px-3 py-3 border-t border-glass-border space-y-1">
         {startupId && (

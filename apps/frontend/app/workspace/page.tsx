@@ -98,12 +98,13 @@ function WorkspaceContent() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar
-        activeTab={activeTab}
-        onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
-        founderName={startup?.name || blueprint?.startupName || ""}
-        startupId={startupIdParam || undefined}
-      />
+        <Sidebar
+          activeTab={activeTab}
+          onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
+          founderName={startup?.name || blueprint?.startupName || ""}
+          startupId={startupIdParam || undefined}
+          blueprint={blueprint}
+        />
 
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">
         <div className="flex items-center justify-between h-14 px-4">
