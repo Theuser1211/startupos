@@ -18,6 +18,7 @@ import {
   ChevronDown, ChevronRight, Clock, Crosshair, FileText,
   TrendingUp, Search, X, Building2, Globe,
 } from "lucide-react";
+import { persistStartupId } from "@/lib/utils/startup-utils";
 
 const containerVariants = {
   hidden: { opacity: 0 },

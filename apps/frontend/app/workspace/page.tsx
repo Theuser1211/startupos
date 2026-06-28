@@ -22,14 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import type { StartupBlueprint } from "@/lib/types";
 import { normalizeBlueprint } from "@/lib/utils/blueprint";
-
-const STARTUP_ID_KEY = "startupos-current-startup-id";
-
-function getStartupIdFromUrl(): string | null {
-  if (typeof window === "undefined") return null;
-  const params = new URLSearchParams(window.location.search);
-  return params.get("id");
-}
+import { getStartupIdFromUrl, getPersistedStartupId, persistStartupId } from "@/lib/utils/startup-utils";
 
 const tabComponents: Record<string, React.ComponentType<{ blueprint?: StartupBlueprint | null }>> = {
   overview: OverviewTab,
@@ -60,7 +53,7 @@ function WorkspaceContent() {
   const startupIdParam = startupIdFromUrl || startupIdFromUrlFallback;
   const [activeTab, setActiveTab] = useState("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [paramsReady, setParamsReady] = useState(false);
   const [redirectAttempted, setRedirectAttempted] = useState(false);
 
@@ -72,7 +65,7 @@ function WorkspaceContent() {
   useEffect(() => {
     console.log("[Workspace] startupIdParam changed:", startupIdParam);
     if (startupIdParam) {
-      localStorage.setItem(STARTUP_ID_KEY, startupIdParam);
+      persistStartupId(startupIdParam);
       console.log("[Workspace] Persisted startupId to localStorage:", startupIdParam);
     }
   }, [startupIdParam]);
@@ -103,7 +96,7 @@ function WorkspaceContent() {
 
   useEffect(() => {
     if (!startupIdParam && paramsReady && !redirectAttempted) {
-      const persistedId = localStorage.getItem(STARTUP_ID_KEY);
+      const persistedId = getPersistedStartupId();
       console.log("[Workspace] No startupId in URL | persistedId:", persistedId);
       if (persistedId) {
         setRedirectAttempted(true);
@@ -117,6 +110,14 @@ function WorkspaceContent() {
     console.log("[Workspace] Manual blueprint retry triggered");
     refetchBlueprint();
   }, [refetchBlueprint]);
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen bg-background items-center justify-center" role="status" aria-label="Checking authentication">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
+      </div>
+    );
+  }
 
   if (isLoading) {
     console.log("[Workspace] Rendering loading state");
@@ -201,7 +202,7 @@ function WorkspaceContent() {
   }
 
   if (noBlueprint && !startupIdParam && paramsReady) {
-    const persistedId = typeof window !== "undefined" ? localStorage.getItem(STARTUP_ID_KEY) : null;
+    const persistedId = getPersistedStartupId();
     console.log("[Workspace] No startupId and no blueprint | paramsReady:", paramsReady, "| persistedId:", persistedId);
 
     if (persistedId && !redirectAttempted) {

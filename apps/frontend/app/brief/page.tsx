@@ -15,6 +15,7 @@ import {
   CheckCircle2, Target, Crosshair, TrendingUp, Clock,
   Zap, RefreshCw,
 } from "lucide-react";
+import { persistStartupId } from "@/lib/utils/startup-utils";
 
 const containerVariants = {
   hidden: { opacity: 0 },

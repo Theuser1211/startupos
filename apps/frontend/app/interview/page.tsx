@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { StagedProgress } from "@/components/ui/staged-progress";
-import { ArrowRight, ArrowLeft, Check, Loader2, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Loader2, Sparkles, AlertTriangle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { InterviewData } from "@/lib/types";
@@ -143,6 +143,7 @@ export default function InterviewPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [genStage, setGenStage] = useState(0);
   const [genProgress, setGenProgress] = useState(0);
+  const [genError, setGenError] = useState<string | null>(null);
   const genTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const step = steps[currentStep];
@@ -190,8 +191,13 @@ export default function InterviewPage() {
     const companyName = extractCompany(data.idea) || "My Startup";
 
     setIsSaving(true);
+    setGenError(null);
     try {
-      localStorage.setItem("startupos-founder", JSON.stringify(data));
+      try {
+        localStorage.setItem("startupos-founder", JSON.stringify(data));
+      } catch {
+        // localStorage unavailable, continue
+      }
 
       if (isAuthenticated()) {
         setIsGenerating(true);
@@ -234,14 +240,25 @@ export default function InterviewPage() {
       router.push("/workspace");
     } catch (err) {
       setIsGenerating(false);
+      if (genTimerRef.current) {
+        clearInterval(genTimerRef.current);
+        genTimerRef.current = null;
+      }
+      const msg = toFriendlyError(err instanceof Error ? err.message : "Please try again.");
+      setGenError(msg);
       toast({
         variant: "error",
         title: "Generation failed",
-        message: toFriendlyError(err instanceof Error ? err.message : "Please try again."),
+        message: msg,
       });
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleRetryGeneration = () => {
+    setGenError(null);
+    handleFinish();
   };
 
   return (
@@ -300,6 +317,34 @@ export default function InterviewPage() {
                     </div>
                     <h2 className="text-2xl font-display font-bold mb-8">Generating Your Blueprint</h2>
                     <StagedProgress stages={blueprintStages} currentStage={genStage} progress={genProgress} />
+                  </motion.div>
+                </div>
+              ) : step.id === "done" && genError ? (
+                <div className="text-center py-8">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
+                      <AlertTriangle className="h-8 w-8 text-red-400" />
+                    </div>
+                    <h2 className="text-2xl font-display font-bold mb-3">Generation Failed</h2>
+                    <p className="text-sm text-muted-foreground mb-2 max-w-md mx-auto font-mono">
+                      {genError}
+                    </p>
+                    <p className="text-xs text-muted-foreground/60 mb-8 max-w-md mx-auto">
+                      You can retry or save your responses and try again later.
+                    </p>
+                    <div className="flex items-center justify-center gap-3">
+                      <Button size="lg" onClick={handleRetryGeneration} disabled={isSaving} className="gap-2">
+                        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                        Retry Generation
+                      </Button>
+                      <Button size="lg" variant="outline" onClick={() => { setGenError(null); setCurrentStep(0); }} className="gap-2">
+                        Start Over
+                      </Button>
+                    </div>
                   </motion.div>
                 </div>
               ) : step.id === "done" ? (

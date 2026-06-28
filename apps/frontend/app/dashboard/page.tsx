@@ -19,6 +19,7 @@ import {
   CheckCircle2, ChevronRight, Zap,
 } from "lucide-react";
 import type { DashboardData } from "@startupos/shared";
+import { persistStartupId } from "@/lib/utils/startup-utils";
 
 const EVENT_LABELS: Record<string, string> = {
   STARTUP_CREATED: "Startup Created",
@@ -246,7 +247,7 @@ function DashboardContent() {
 
   useEffect(() => {
     if (startupId) {
-      localStorage.setItem("startupos-current-startup-id", startupId);
+      persistStartupId(startupId);
       console.log("[Dashboard] Persisted startupId:", startupId);
     }
   }, [startupId]);
