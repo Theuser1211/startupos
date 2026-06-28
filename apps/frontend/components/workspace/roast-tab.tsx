@@ -45,7 +45,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
             <Flame className="h-5 w-5 text-red-400" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-red-400 font-mono text-xl">!</span> Startup Roast</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-red-400 font-mono text-xl">!</span> Startup Roast</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">$ ./roast --brutal</p>
           </div>
         </div>
@@ -75,7 +75,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-mono text-red-400">$ score</span>
-                  <h2 className="text-xl font-display font-bold">Roast Score: {roast.score}/100</h2>
+                  <h2 className="text-xl font-bold">Roast Score: {roast.score}/100</h2>
                   <Badge variant="destructive" className="text-xs font-mono">{roast.verdict}</Badge>
                 </div>
                 <p className="text-sm font-mono text-muted-foreground leading-relaxed">{roast.verdict}</p>
@@ -88,7 +88,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-4">
           <Flame className="h-5 w-5 text-red-400" />
-          <h2 className="text-lg font-display font-bold mono-label"><span className="text-red-400 mr-2">!</span> Findings</h2>
+          <h2 className="text-lg font-bold mono-label"><span className="text-red-400 mr-2">!</span> Findings</h2>
           <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-mono">
             Showing {displayed.length} of {roast.items.length}
           </Badge>

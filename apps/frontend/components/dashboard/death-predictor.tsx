@@ -34,32 +34,32 @@ function computeRisk(dashboard: DashboardData): RiskResult {
 
   const healthFactor = 100 - healthScore;
   if (healthFactor > 20) {
-    factors.push({ label: "Low overall health score", contribution: Math.round(healthFactor * 0.3), icon: "\u{1FA79}" });
+    factors.push({ label: "Low overall health score", contribution: Math.round(healthFactor * 0.3), icon: "" });
   }
   const foundational = 100 - (healthBreakdown.foundational / 25) * 100;
   if (foundational > 30) {
-    factors.push({ label: "Weak startup foundation", contribution: Math.round(foundational * 0.2), icon: "\u{1F3D7}\uFE0F" });
+    factors.push({ label: "Weak startup foundation", contribution: Math.round(foundational * 0.2), icon: "" });
   }
   const product = 100 - (healthBreakdown.product / 25) * 100;
   if (product > 30) {
-    factors.push({ label: "No product or website ready", contribution: Math.round(product * 0.15), icon: "\u{1F4E6}" });
+    factors.push({ label: "No product or website ready", contribution: Math.round(product * 0.15), icon: "" });
   }
   const launch = 100 - (healthBreakdown.launch / 25) * 100;
   if (launch > 30) {
-    factors.push({ label: "Hasn't launched yet", contribution: Math.round(launch * 0.15), icon: "\u{1F680}" });
+    factors.push({ label: "Hasn't launched yet", contribution: Math.round(launch * 0.15), icon: "" });
   }
   const engagement = 100 - (healthBreakdown.engagement / 25) * 100;
   if (engagement > 30) {
-    factors.push({ label: "Low user engagement", contribution: Math.round(engagement * 0.1), icon: "\u{1F4CA}" });
+    factors.push({ label: "Low user engagement", contribution: Math.round(engagement * 0.1), icon: "" });
   }
   if (recentEvents.length < 3) {
-    factors.push({ label: "No recent activity", contribution: 10, icon: "\u{1F4A4}" });
+    factors.push({ label: "No recent activity", contribution: 10, icon: "" });
   }
   const matchedIndustry = Object.entries(industryRisk).find(([key]) =>
     industry.includes(key)
   );
   if (matchedIndustry) {
-    factors.push({ label: `High-risk industry (${startup.industry})`, contribution: matchedIndustry[1], icon: "\u26A0\uFE0F" });
+    factors.push({ label: `High-risk industry (${startup.industry})`, contribution: matchedIndustry[1], icon: "" });
   }
 
   let rawRisk = 0;
@@ -192,8 +192,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.08 }}
               >
-                <div className="flex items-center gap-2 text-xs">
-                  <span className="text-xs">{factor.icon}</span>
+                 <div className="flex items-center gap-2 text-xs">
                   <span className="text-muted-foreground">{factor.label}</span>
                 </div>
                 <div className="flex items-center gap-2">

@@ -44,14 +44,14 @@ export default function ContactPage() {
       <main className="flex-1">
         <section className="relative py-24 md:py-32 px-6 overflow-hidden">
           <div className="absolute inset-0 grid-bg" />
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px]" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px]" />
 
           <div className="relative z-10 mx-auto max-w-4xl">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-center mb-16">
-              <span className="inline-flex items-center rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
+              <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
                 Get in Touch
               </span>
-              <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tight mb-4">We&apos;d Love to Hear From You</h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">We&apos;d Love to Hear From You</h1>
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Have feedback, running into issues, or want to share what you&apos;re building? Reach out — we read every message.
               </p>
@@ -65,18 +65,18 @@ export default function ContactPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl p-8 hover:border-purple-500/30 transition-colors group"
+                  className="rounded-2xl border border-border bg-card p-8 hover:border-primary/30 transition-colors group"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10">
-                      <method.icon className="h-6 w-6 text-purple-400" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                      <method.icon className="h-6 w-6 text-primary" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold">{method.title}</h3>
                       <p className="text-xs text-muted-foreground">{method.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-purple-400 group-hover:gap-3 transition-all">
+                  <div className="flex items-center gap-2 text-sm text-primary group-hover:gap-3 transition-all">
                     {method.action}
                     <ExternalLink className="h-3 w-3" />
                   </div>
@@ -88,7 +88,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl p-8 text-center"
+              className="rounded-2xl border border-border bg-card p-8 text-center"
             >
               <h2 className="text-xl font-semibold mb-2">Building something amazing?</h2>
               <p className="text-sm text-muted-foreground mb-6">
@@ -96,7 +96,7 @@ export default function ContactPage() {
               </p>
               <Link
                 href="/interview"
-                className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-medium text-white hover:bg-purple-500 transition-colors glow-purple"
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white hover:bg-primary transition-colors"
               >
                 Start Building Free
               </Link>

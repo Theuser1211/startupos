@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, type LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
@@ -29,50 +29,49 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2 }}
       className="flex flex-col items-center justify-center py-20 px-6 text-center"
     >
       <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-        className={`mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.2 }}
+        className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-accent"
       >
-        <Icon className="h-7 w-7 text-white" />
+        <Icon className="h-6 w-6 text-muted-foreground" />
       </motion.div>
 
       <motion.h3
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
-        className="text-xl font-display font-bold text-foreground mb-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1, duration: 0.2 }}
+        className="text-xl font-sans font-semibold text-foreground mb-2"
       >
         {title}
       </motion.h3>
 
       <motion.p
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.4 }}
-        className="text-sm font-mono text-muted-foreground/70 max-w-md leading-relaxed mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.15, duration: 0.2 }}
+        className="text-sm font-mono text-muted-foreground max-w-md leading-relaxed mb-8"
       >
         {description}
       </motion.p>
 
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.4 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.2 }}
         className="flex flex-col sm:flex-row items-center gap-3"
       >
         {actionLabel && actionHref && (
-          <Button asChild className="glow-green-btn group">
+          <Button asChild>
             <Link href={actionHref}>
-              <Sparkles className="h-4 w-4" />
+              {">"}
               {actionLabel}
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </Button>
         )}

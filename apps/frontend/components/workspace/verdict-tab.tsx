@@ -317,7 +317,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                     <span className="text-xs text-muted-foreground font-mono">Composite Score: {verdict.compositeScore}/100</span>
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0">Confidence: {verdict.confidenceLabel} ({verdict.confidence}%)</Badge>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4"><span className="text-primary font-mono text-2xl">$</span> StartupOS Verdict</h1>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"><span className="text-primary font-mono text-2xl">$</span> StartupOS Verdict</h1>
                   <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">{config.description}</p>
                   <p className="text-sm text-foreground/80 mt-4 max-w-2xl leading-relaxed italic border-l-2 border-primary/30 pl-4">
                     &ldquo;{verdict.summary}&rdquo;
@@ -332,7 +332,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
           <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20"><BarChart3 className="h-4 w-4 text-primary" /></div>
-          <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> 7-Dimension Assessment</h2>
+          <h2 className="text-lg font-bold mono-label"><span className="text-primary mr-2">$</span> 7-Dimension Assessment</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {dimEntries.map(([key, dim]) => (
@@ -370,7 +370,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-emerald-400" />
-            <h2 className="text-lg font-display font-bold text-emerald-400 mono-label"><span className="text-emerald-400 mr-2">$</span> Top Strengths</h2>
+            <h2 className="text-lg font-bold text-emerald-400 mono-label"><span className="text-emerald-400 mr-2">$</span> Top Strengths</h2>
           </div>
           <div className="space-y-3">
             {verdict.strengths.length > 0 ? verdict.strengths.map((s, i) => (
@@ -381,7 +381,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="h-5 w-5 text-red-400" />
-            <h2 className="text-lg font-display font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Top Weaknesses</h2>
+            <h2 className="text-lg font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Top Weaknesses</h2>
           </div>
           <div className="space-y-3">
             {verdict.weaknesses.length > 0 ? verdict.weaknesses.map((w, i) => (
@@ -398,7 +398,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-5">
                 <div className="flex h-8 w-8 items-center justify-center rounded bg-red-500/20 border border-red-500/30"><Crosshair className="h-4 w-4 text-red-400" /></div>
-                <h2 className="text-lg font-display font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Fatal Risks</h2>
+                <h2 className="text-lg font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Fatal Risks</h2>
                 <Badge variant="destructive" className="text-[10px] px-1.5 py-0">{verdict.fatalRisks.length} identified</Badge>
               </div>
               <div className="space-y-3">{verdict.fatalRisks.map((risk, i) => (<FatalRiskItem key={i} text={risk} index={i} />))}</div>
@@ -416,7 +416,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-5">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20"><Award className="h-4 w-4 text-primary" /></div>
-              <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> Confidence Breakdown</h2>
+              <h2 className="text-lg font-bold mono-label"><span className="text-primary mr-2">$</span> Confidence Breakdown</h2>
               <Badge variant="outline" className="text-[10px] px-1.5 py-0">{verdict.confidenceLabel}</Badge>
             </div>
             <div className="space-y-3">
@@ -432,7 +432,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Lightbulb className="h-4 w-4 text-primary" /></div>
-          <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> Improvement Paths</h2>
+          <h2 className="text-lg font-bold mono-label"><span className="text-primary mr-2">$</span> Improvement Paths</h2>
           <span className="text-xs text-muted-foreground font-mono">What would change your verdict</span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

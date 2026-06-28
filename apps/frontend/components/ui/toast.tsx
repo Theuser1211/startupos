@@ -22,16 +22,16 @@ interface ToastContextValue {
 }
 
 const variantConfig: Record<ToastVariant, { icon: typeof CheckCircle; border: string; bg: string }> = {
-  success: { icon: CheckCircle, border: "border-emerald-500/30", bg: "bg-emerald-500/10" },
-  error: { icon: AlertCircle, border: "border-red-500/30", bg: "bg-red-500/10" },
-  info: { icon: Info, border: "border-blue-500/30", bg: "bg-blue-500/10" },
-  warning: { icon: AlertTriangle, border: "border-amber-500/30", bg: "bg-amber-500/10" },
+  success: { icon: CheckCircle, border: "border-l-emerald-500", bg: "bg-emerald-500/10" },
+  error: { icon: AlertCircle, border: "border-l-red-500", bg: "bg-red-500/10" },
+  info: { icon: Info, border: "border-l-cyan-500", bg: "bg-cyan-500/10" },
+  warning: { icon: AlertTriangle, border: "border-l-amber-500", bg: "bg-amber-500/10" },
 };
 
 const iconColors: Record<ToastVariant, string> = {
   success: "text-emerald-400",
   error: "text-red-400",
-  info: "text-blue-400",
+  info: "text-cyan-400",
   warning: "text-amber-400",
 };
 
@@ -65,7 +65,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ toasts, toast: addToast, dismiss }}>
       {children}
       <div
-        className="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 pointer-events-none"
+        className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none"
         aria-live="polite"
         aria-label="Notifications"
       >
@@ -77,12 +77,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               <motion.div
                 key={t.id}
                 layout
-                initial={{ opacity: 0, x: 80, scale: 0.95 }}
-                animate={{ opacity: 1, x: 0, scale: 1 }}
-                exit={{ opacity: 0, x: 80, scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                initial={{ opacity: 0, x: 80 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 80 }}
+                transition={{ duration: 0.2 }}
                 className={cn(
-                  "pointer-events-auto relative w-80 rounded-xl border border-primary/10 shadow-xl shadow-black/20",
+                  "pointer-events-auto relative w-80 rounded-lg border border-border shadow-lg border-l-2",
                   config.border,
                   config.bg,
                   "bg-[#0d0d10]/95",

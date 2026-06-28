@@ -28,17 +28,17 @@ const itemVariants = {
 };
 
 function getScoreColor(score: number): string {
-  if (score >= 75) return "text-emerald-400";
-  if (score >= 50) return "text-amber-400";
+  if (score >= 75) return "text-primary";
+  if (score >= 50) return "text-warning";
   if (score >= 25) return "text-orange-400";
-  return "text-red-400";
+  return "text-destructive";
 }
 
 function getScoreRing(score: number): string {
-  if (score >= 75) return "stroke-emerald-400";
-  if (score >= 50) return "stroke-amber-400";
+  if (score >= 75) return "stroke-primary";
+  if (score >= 50) return "stroke-warning";
   if (score >= 25) return "stroke-orange-400";
-  return "stroke-red-400";
+  return "stroke-destructive";
 }
 
 function getScoreLabel(score: number): string {
@@ -60,7 +60,7 @@ function ScoreRing({ score, size = 80 }: { score: number; size?: number }) {
       <circle
         cx={center} cy={center} r={radius}
         fill="none" stroke="currentColor" strokeWidth={strokeWidth}
-        className="text-glass-border"
+        className="text-border"
       />
       <circle
         cx={center} cy={center} r={radius}
@@ -181,7 +181,7 @@ function BriefContent() {
         )}
 
         {brief && (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             <motion.div variants={itemVariants}>
               <Card className="terminal-card overflow-hidden">
                 <CardContent className="p-6">
@@ -189,7 +189,7 @@ function BriefContent() {
                     <div className="relative">
                       <ScoreRing score={brief.healthScore} size={80} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className={`text-lg font-bold font-display ${getScoreColor(brief.healthScore)}`}>
+                        <span className={`text-base font-bold font-mono ${getScoreColor(brief.healthScore)}`}>
                           {brief.healthScore}
                         </span>
                       </div>
@@ -228,9 +228,9 @@ function BriefContent() {
                     ) : (
                       <div className="space-y-0">
                         {brief.wins.map((win: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 mt-0.5 shrink-0">
-                              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                          <div key={i} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 mt-0.5 shrink-0">
+                              <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                             </div>
                             <p className="text-sm">{win}</p>
                           </div>
@@ -259,7 +259,7 @@ function BriefContent() {
                     ) : (
                       <div className="space-y-0">
                         {brief.priorities.map((priority: string, i: number) => (
-                          <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
+                          <div key={i} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500/10 mt-0.5 shrink-0">
                               <Target className="h-3.5 w-3.5 text-amber-400" />
                             </div>
@@ -296,7 +296,7 @@ function BriefContent() {
                   ) : (
                     <div className="space-y-0">
                       {brief.competitorUpdates.map((update: string, i: number) => (
-                        <div key={i} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
+                        <div key={i} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/10 mt-0.5 shrink-0">
                             <Crosshair className="h-3.5 w-3.5 text-blue-400" />
                           </div>
@@ -337,10 +337,10 @@ function BriefContent() {
                             >
                               <div
                                 className={`absolute bottom-0 left-0 right-0 rounded-t transition-all duration-200 ${
-                                  point.score >= 75 ? "bg-emerald-500/60" :
-                                  point.score >= 50 ? "bg-amber-500/60" :
+                                  point.score >= 75 ? "bg-primary/60" :
+                                  point.score >= 50 ? "bg-warning/60" :
                                   point.score >= 25 ? "bg-orange-500/60" :
-                                  "bg-red-500/60"
+                                  "bg-destructive/60"
                                 } hover:opacity-80`}
                                 style={{ height: "100%" }}
                               />
@@ -359,11 +359,11 @@ function BriefContent() {
                           </>
                         )}
                       </div>
-                      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t border-glass-border">
-                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-emerald-500/60" /> Thriving (75-100)</span>
-                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-amber-500/60" /> On Track (50-74)</span>
+                      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2 border-t border-border">
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-primary/60" /> Thriving (75-100)</span>
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-warning/60" /> On Track (50-74)</span>
                         <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-orange-500/60" /> Developing (25-49)</span>
-                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-red-500/60" /> Needs Work (0-24)</span>
+                        <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-sm bg-destructive/60" /> Needs Work (0-24)</span>
                       </div>
                     </div>
                   )}

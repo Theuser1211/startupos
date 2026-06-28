@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Terminal, RefreshCw } from "lucide-react";
 
 interface PageErrorProps {
   error: Error & { digest?: string };
@@ -29,9 +28,8 @@ export function PageErrorFallback({ error, reset, title }: PageErrorProps) {
           </span>
         </div>
         <div className="p-8 text-center">
-          <Terminal className="h-8 w-8 text-destructive mx-auto mb-4" />
-          <h2 className="text-lg font-display font-bold mb-2">Something went wrong</h2>
-          <p className="text-sm text-muted-foreground mb-2 font-mono text-xs">
+          <h2 className="text-lg font-sans font-semibold mb-2">Something went wrong</h2>
+          <p className="text-xs font-mono text-muted-foreground mb-2">
             {error.message || "The application encountered an unexpected error."}
           </p>
           {title && (
@@ -39,8 +37,7 @@ export function PageErrorFallback({ error, reset, title }: PageErrorProps) {
               Error in: {title}
             </p>
           )}
-          <Button onClick={reset} className="gap-2">
-            <RefreshCw className="h-4 w-4" />
+          <Button onClick={reset}>
             Try Again
           </Button>
         </div>

@@ -48,41 +48,34 @@ export function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-card border-b border-primary/10 shadow-lg shadow-primary/5"
+          ? "bg-card/80 backdrop-blur-xl border-b border-border"
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Link href="/" className="flex items-center gap-3 group">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="flex items-center gap-2"
-            >
-              <span className="hidden sm:inline font-mono text-xs text-primary/60">
-                $ startupos ~ %
-              </span>
-              <Image
-                src="/logo-full.png"
-                alt="StartupOS"
-                width={1536}
-                height={1024}
-                className="h-7 w-auto"
-                priority
-              />
-            </motion.div>
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="hidden sm:inline font-mono text-[11px] text-primary/50">
+              $ startupos ~ %
+            </span>
+            <Image
+              src="/logo-full.png"
+              alt="StartupOS"
+              width={1536}
+              height={1024}
+              className="h-6 w-auto"
+              priority
+            />
           </Link>
         </motion.div>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link, i) => (
             <motion.div
               key={link.href}
@@ -93,143 +86,99 @@ export function Navbar() {
             >
               <a
                 href={link.href}
-                className="group relative text-sm font-mono text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 ./{link.label.toLowerCase()}
-                <motion.span
-                  className="absolute -bottom-0.5 left-0 h-px bg-primary"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                />
               </a>
             </motion.div>
           ))}
         </nav>
 
-        <motion.div
-          className="hidden md:flex items-center gap-3"
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <div className="hidden md:flex items-center gap-2">
           {user ? (
             <>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" className="font-mono text-xs" asChild>
-                  <Link href="/workspace">
-                    <LayoutDashboard className="h-3.5 w-3.5" />
-                    workspace
-                  </Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => { await signOut(); }}
-                  className="gap-2 font-mono text-xs"
-                >
-                  <LogOut className="h-3.5 w-3.5" />
-                  sign out
-                </Button>
-              </motion.div>
+              <Button variant="ghost" size="sm" className="font-mono text-xs h-8" asChild>
+                <Link href="/workspace">
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  workspace
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={async () => { await signOut(); }}
+                className="gap-2 font-mono text-xs h-8"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                sign out
+              </Button>
             </>
           ) : (
             <>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" className="font-mono text-xs" asChild>
-                  <Link href="/auth/sign-in">sign in</Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  size="sm"
-                  className="glow-green-btn font-mono text-xs group relative overflow-hidden border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary"
-                  asChild
-                >
-                  <Link href="/interview">
-                    <span className="relative z-10 flex items-center gap-2">
-                      <Terminal className="h-3.5 w-3.5" />
-                      ./start
-                    </span>
-                  </Link>
-                </Button>
-              </motion.div>
+              <Button variant="ghost" size="sm" className="font-mono text-xs h-8" asChild>
+                <Link href="/auth/sign-in">sign in</Link>
+              </Button>
+              <Button
+                size="sm"
+                className="font-mono text-xs h-8 border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary"
+                asChild
+              >
+                <Link href="/interview">
+                  <Terminal className="h-3.5 w-3.5" />
+                  ./start
+                </Link>
+              </Button>
             </>
           )}
-        </motion.div>
+        </div>
 
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+        <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden relative z-50 flex h-9 w-9 items-center justify-center rounded-lg border border-glass-border text-muted-foreground hover:text-foreground transition-colors"
+          className="md:hidden flex h-8 w-8 items-center justify-center rounded border border-border text-muted-foreground hover:text-foreground transition-colors"
         >
-          <AnimatePresence mode="wait">
-            {mobileOpen ? (
-              <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <X className="h-4 w-4" />
-              </motion.span>
-            ) : (
-              <motion.span key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <Menu className="h-4 w-4" />
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </motion.button>
+          {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        </button>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-card border-t border-primary/10 overflow-hidden"
-          >
-            <div className="flex flex-col gap-2 px-6 py-4">
-              {navLinks.map((link, i) => (
-                <motion.div key={link.href} custom={i} variants={mobileItemVariants} initial="hidden" animate="visible" exit="hidden">
-                  <a href={link.href} onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors">
-                    ./{link.label.toLowerCase()}
-                  </a>
-                </motion.div>
-              ))}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="flex gap-3 pt-2 border-t border-primary/10 mt-2">
-                {user ? (
-                  <>
-                    <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs" asChild>
-                      <Link href="/workspace" onClick={() => setMobileOpen(false)}>
-                        <LayoutDashboard className="h-3.5 w-3.5" />
-                        workspace
-                      </Link>
-                    </Button>
-                    <Button size="sm" className="flex-1 font-mono text-xs" onClick={async () => { await signOut(); setMobileOpen(false); }}>
-                      <LogOut className="h-3.5 w-3.5" />
-                      sign out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs" asChild>
-                      <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>sign in</Link>
-                    </Button>
-                    <Button size="sm" className="flex-1 font-mono text-xs glow-green-btn border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary" asChild>
-                      <Link href="/interview" onClick={() => setMobileOpen(false)}>
-                        <Terminal className="h-3.5 w-3.5" />
-                        ./start
-                      </Link>
-                    </Button>
-                  </>
-                )}
-              </motion.div>
+      {mobileOpen && (
+        <div className="md:hidden bg-card border-t border-border">
+          <div className="flex flex-col gap-1 px-4 py-3">
+            {navLinks.map((link, i) => (
+              <a key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="py-1.5 text-xs font-mono text-muted-foreground hover:text-foreground transition-colors">
+                ./{link.label.toLowerCase()}
+              </a>
+            ))}
+            <div className="flex gap-2 pt-2 border-t border-border mt-2">
+              {user ? (
+                <>
+                  <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs h-8" asChild>
+                    <Link href="/workspace" onClick={() => setMobileOpen(false)}>
+                      <LayoutDashboard className="h-3.5 w-3.5" />
+                      workspace
+                    </Link>
+                  </Button>
+                  <Button size="sm" className="flex-1 font-mono text-xs h-8" onClick={async () => { await signOut(); setMobileOpen(false); }}>
+                    <LogOut className="h-3.5 w-3.5" />
+                    sign out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs h-8" asChild>
+                    <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>sign in</Link>
+                  </Button>
+                  <Button size="sm" className="flex-1 font-mono text-xs h-8 border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary" asChild>
+                    <Link href="/interview" onClick={() => setMobileOpen(false)}>
+                      <Terminal className="h-3.5 w-3.5" />
+                      ./start
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
     </motion.header>
   );
 }

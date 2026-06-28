@@ -22,7 +22,7 @@ export function StagedProgress({
       <div className="relative mb-8">
         <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10 -translate-y-1/2" />
         <div
-          className="absolute top-1/2 left-0 h-px bg-gradient-to-r from-purple-500 to-purple-300 -translate-y-1/2 transition-all duration-700 ease-out"
+          className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-primary to-primary/60 -translate-y-1/2 transition-all duration-700 ease-out"
           style={{ width: `${Math.min(100, (currentStage / (stages.length - 1)) * 100)}%` }}
         />
         <div className="relative flex justify-between">
@@ -35,11 +35,11 @@ export function StagedProgress({
                   initial={false}
                   animate={{
                     scale: isCurrent ? 1.15 : 1,
-                    backgroundColor: isCompleted || isCurrent ? "rgb(168, 85, 247)" : "rgba(255,255,255,0.05)",
-                    borderColor: isCompleted || isCurrent ? "rgb(168, 85, 247)" : "rgba(255,255,255,0.1)",
+                    backgroundColor: isCompleted || isCurrent ? "rgb(34, 197, 94)" : "rgba(255,255,255,0.05)",
+                    borderColor: isCompleted || isCurrent ? "rgb(34, 197, 94)" : "rgba(255,255,255,0.1)",
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-medium"
+                  className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-mono"
                 >
                   {isCompleted ? (
                     <motion.div
@@ -54,8 +54,8 @@ export function StagedProgress({
                   )}
                 </motion.div>
                 <span
-                  className={`mt-2 text-[10px] font-medium text-center leading-tight max-w-16 ${
-                    isCompleted ? "text-purple-400" : isCurrent ? "text-white/80" : "text-white/30"
+                  className={`mt-2 text-[10px] font-mono text-center leading-tight max-w-16 ${
+                    isCompleted ? "text-primary" : isCurrent ? "text-white/80" : "text-white/30"
                   }`}
                 >
                   {stage.label}
@@ -75,7 +75,7 @@ export function StagedProgress({
           transition={{ duration: 0.3 }}
           className="text-center"
         >
-          <p className="text-sm font-medium text-white/90 mb-1">
+          <p className="text-sm font-mono text-white/90 mb-1">
             {stages[currentStage]?.label}
           </p>
           {stages[currentStage]?.description && (
@@ -86,7 +86,7 @@ export function StagedProgress({
 
       <div className="mt-6 h-1.5 rounded-full bg-white/5 overflow-hidden">
         <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400"
+          className="h-full rounded-full bg-primary"
           initial={{ width: "0%" }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.5, ease: "easeOut" }}

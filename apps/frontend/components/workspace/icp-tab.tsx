@@ -40,7 +40,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
             <Target className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-primary font-mono text-xl">$</span> Ideal Customer Profile</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-primary font-mono text-xl">$</span> Ideal Customer Profile</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">{icp.title}</p>
           </div>
         </div>

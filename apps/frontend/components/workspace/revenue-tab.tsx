@@ -40,7 +40,7 @@ export function RevenueTab({ blueprint }: { blueprint?: StartupBlueprint | null 
             <DollarSign className="h-5 w-5 text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-emerald-400 font-mono text-xl">$</span> Revenue Model</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-emerald-400 font-mono text-xl">$</span> Revenue Model</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">{revenue.model}</p>
           </div>
         </div>

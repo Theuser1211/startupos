@@ -2,22 +2,21 @@
 
 @theme inline {
   --color-background: #0a0a0c;
-  --color-foreground: #e4e4e9;
-  --color-muted: #7a7a8a;
-  --color-muted-foreground: #6b6b7e;
-  --color-card: #111114;
-  --color-card-foreground: #e4e4e9;
-  --color-popover: #111114;
-  --color-popover-foreground: #e4e4e9;
-  --color-border: #1a1a22;
-  --color-input: #1a1a22;
-  --color-border-hover: #24242e;
+  --color-foreground: #fafafa;
+  --color-muted: #a1a1aa;
+  --color-muted-foreground: #71717a;
+  --color-card: #111113;
+  --color-card-foreground: #fafafa;
+  --color-popover: #111113;
+  --color-popover-foreground: #fafafa;
+  --color-border: #27272a;
+  --color-input: #27272a;
   --color-primary: #22c55e;
   --color-primary-foreground: #0a0a0c;
-  --color-secondary: #6366f1;
-  --color-secondary-foreground: #e4e4e9;
-  --color-accent: #1c1c26;
-  --color-accent-foreground: #e4e4e9;
+  --color-secondary: #06b6d4;
+  --color-secondary-foreground: #0a0a0c;
+  --color-accent: #18181b;
+  --color-accent-foreground: #fafafa;
   --color-destructive: #ef4444;
   --color-destructive-foreground: #0a0a0c;
   --color-success: #22c55e;
@@ -27,21 +26,11 @@
   --color-info: #06b6d4;
   --color-info-foreground: #0a0a0c;
   --color-ring: #22c55e;
-  --color-glass-bg: rgba(255, 255, 255, 0.015);
-  --color-glass-border: rgba(255, 255, 255, 0.05);
-  --color-surface: rgba(255, 255, 255, 0.02);
-  --color-surface-hover: rgba(255, 255, 255, 0.04);
-  --color-surface-green: rgba(34, 197, 94, 0.04);
-  --color-surface-amber: rgba(245, 158, 11, 0.04);
-  --color-surface-red: rgba(239, 68, 68, 0.04);
-  --color-surface-cyan: rgba(6, 182, 212, 0.04);
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -73,10 +62,6 @@ body {
   background: rgba(255, 255, 255, 0.15);
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-}
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
@@ -97,61 +82,12 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(34, 197, 94, 0.15); }
-  50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
-}
-@keyframes typewriter {
-  from { width: 0; }
-  to { width: 100%; }
-}
 
-.animate-float { animation: float 6s ease-in-out infinite; }
 .animate-fade-in { animation: fade-in 0.4s ease-out; }
 .animate-scale-in { animation: scale-in 0.3s ease-out; }
 .animate-slide-up { animation: slide-up 0.3s ease-out; }
 .animate-pulse-subtle { animation: pulse-subtle 2s ease-in-out infinite; }
 .animate-terminal-blink { animation: terminal-blink 1s step-end infinite; }
-.animate-glow-pulse { animation: glow-pulse 2s ease-in-out infinite; }
-
-.glass {
-  background: var(--color-glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-glass-border);
-}
-.glass-strong {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.surface {
-  background: var(--color-surface);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-lg);
-}
-.surface-hover {
-  background: var(--color-surface-hover);
-  border: 1px solid var(--color-glass-border);
-  border-radius: var(--radius-lg);
-  transition: background 0.2s ease;
-}
-.surface-hover:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.terminal-card {
-  background: #0d0d10;
-  border: 1px solid rgba(34, 197, 94, 0.12);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 0 24px rgba(34, 197, 94, 0.03);
-}
-
-.terminal-card-border {
-  border-color: rgba(34, 197, 94, 0.12);
-}
 
 .terminal-prompt::before {
   content: "$ ";
@@ -170,16 +106,6 @@ body {
   color: rgba(255, 255, 255, 0.08);
 }
 
-.glow-green {
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.12);
-}
-.glow-amber {
-  box-shadow: 0 0 16px rgba(245, 158, 11, 0.12);
-}
-.glow-red {
-  box-shadow: 0 0 16px rgba(239, 68, 68, 0.12);
-}
-
 .focus-ring { outline: none; }
 .focus-ring:focus-visible {
   box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-ring);
@@ -187,8 +113,8 @@ body {
 
 .grid-bg {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 
@@ -219,22 +145,6 @@ body {
 .terminal-dot-red { background: #ef4444; }
 .terminal-dot-yellow { background: #f59e0b; }
 .terminal-dot-green { background: #22c55e; }
-
-/* Scanline overlay */
-.scanlines::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.03) 2px,
-    rgba(0, 0, 0, 0.03) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
 
 /* Sticker badge */
 .sticker-badge {
@@ -278,24 +188,6 @@ body {
   font-family: var(--font-mono);
 }
 
-/* Typewriter animation wrapper */
-.typewriter-line {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  animation: typewriter 1.5s steps(40) forwards;
-  max-width: fit-content;
-}
-
-/* Green glow for buttons */
-.glow-green-btn {
-  box-shadow: 0 0 16px rgba(34, 197, 94, 0.08);
-  transition: box-shadow 0.3s ease;
-}
-.glow-green-btn:hover {
-  box-shadow: 0 0 32px rgba(34, 197, 94, 0.2);
-}
-
 /* Terminal panel wrapper */
 .terminal-panel {
   background: #0d0d10;
@@ -318,53 +210,6 @@ body {
   padding: 16px;
 }
 
-/* Terminal input fields */
-.terminal-input {
-  background: #0d0d10 !important;
-  border: 1px solid rgba(34, 197, 94, 0.15) !important;
-  border-radius: var(--radius-md) !important;
-  color: var(--color-foreground) !important;
-  font-family: var(--font-mono) !important;
-  font-size: 0.8125rem !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-.terminal-input:focus {
-  border-color: rgba(34, 197, 94, 0.4) !important;
-  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15) !important;
-  outline: none !important;
-}
-.terminal-input::placeholder {
-  color: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* Terminal progress bar */
-.terminal-progress-track {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 2px;
-  height: 4px;
-  overflow: hidden;
-}
-.terminal-progress-fill {
-  background: var(--color-primary);
-  height: 100%;
-  transition: width 0.3s ease;
-  border-radius: 2px;
-}
-
-/* Terminal badge style */
-.terminal-badge {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 2px 8px;
-  border-radius: 2px;
-  border: 1px solid rgba(34, 197, 94, 0.15);
-  background: rgba(34, 197, 94, 0.05);
-  color: var(--color-primary);
-  white-space: nowrap;
-}
-
 /* Terminal list item */
 .terminal-list-item {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -383,14 +228,6 @@ body {
   border-color: rgba(34, 197, 94, 0.08);
 }
 
-/* Sticker hover */
-.sticker-hover {
-  transition: all 0.2s ease;
-}
-.sticker-hover:hover {
-  transform: rotate(-2deg) scale(1.03);
-}
-
 /* Terminal divider line */
 .terminal-divider {
   height: 1px;
@@ -407,13 +244,7 @@ body {
   color: var(--color-muted-foreground);
 }
 
-/* Green glow focus ring */
-.focus-glow:focus-visible {
-  outline: none !important;
-  box-shadow: 0 0 0 1px var(--color-background), 0 0 0 3px rgba(34, 197, 94, 0.25) !important;
-}
-
-/* Terminal status dot */
+/* Status dot */
 .status-dot {
   width: 6px;
   height: 6px;
@@ -432,4 +263,29 @@ body {
   background: var(--color-primary);
   animation: terminal-blink 1s step-end infinite;
   vertical-align: text-bottom;
+}
+
+/* Scanline overlay */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Typewriter animation wrapper */
+.typewriter-line {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 1.5s steps(40) forwards;
+  max-width: fit-content;
 }

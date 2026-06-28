@@ -32,9 +32,9 @@ const EVENT_LABELS: Record<string, string> = {
 };
 
 const PRIORITY_COLORS: Record<string, string> = {
-  high: "text-red-400 border-red-500/30 bg-surface-red",
-  medium: "text-amber-400 border-amber-500/30 bg-surface-amber",
-  low: "text-info border-cyan-500/30 bg-surface-cyan",
+  high: "text-destructive border-destructive/30 bg-destructive/10",
+  medium: "text-warning border-warning/30 bg-warning/10",
+  low: "text-info border-info/30 bg-info/10",
 };
 
 const MICROCOPY: Record<string, string> = {
@@ -47,11 +47,11 @@ const MICROCOPY: Record<string, string> = {
 };
 
 const BADGE_CONFIG = [
-  { key: "launched", label: "Launched", emoji: "🚀", color: "text-info border-info/30 bg-surface-cyan" },
-  { key: "building", label: "Building", emoji: "🛠️", color: "text-primary border-primary/30 bg-surface-green" },
-  { key: "momentum", label: "Momentum", emoji: "🔥", color: "text-warning border-warning/30 bg-surface-amber" },
-  { key: "pivot_risk", label: "Pivot Risk", emoji: "⚠️", color: "text-warning border-warning/30 bg-surface-amber" },
-  { key: "danger_zone", label: "Danger Zone", emoji: "💀", color: "text-destructive border-destructive/30 bg-surface-red" },
+  { key: "launched", label: "Launched", color: "text-info" },
+  { key: "building", label: "Building", color: "text-primary" },
+  { key: "momentum", label: "Momentum", color: "text-warning" },
+  { key: "pivot_risk", label: "Pivot Risk", color: "text-warning" },
+  { key: "danger_zone", label: "Danger Zone", color: "text-destructive" },
 ];
 
 function getStatusBadges(dashboard: DashboardData) {
@@ -162,7 +162,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
 
 function TerminalHealthCard({ dashboard: d }: { dashboard: DashboardData }) {
   return (
-    <div className="terminal-card p-5 h-full font-mono text-sm space-y-3 glow-green">
+    <div className="terminal-panel p-4 h-full font-mono text-sm space-y-2.5">
       <div className="flex items-center gap-2 text-xs text-primary/60 mb-3">
         <span className="w-2 h-2 rounded-full bg-primary/60 animate-pulse-subtle" />
         <span className="tracking-wide">startup analyze --health</span>
@@ -221,13 +221,12 @@ function StartupBadges({ dashboard }: { dashboard: DashboardData }) {
   const configs = active.map((b) => BADGE_CONFIG.find((c) => c.key === b.key)).filter(Boolean);
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5">
       {configs.map((c) => (
         <span
           key={c!.key}
-          className={`sticker-badge sticker-hover ${c!.color}`}
+          className={`sticker-badge ${c!.color}`}
         >
-          <span>{c!.emoji}</span>
           {c!.label}
         </span>
       ))}
@@ -270,25 +269,25 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-primary/10 bg-card scanlines">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo-square.png" alt="StartupOS" width={1254} height={1254} className="h-6 w-6" />
-            <span className="text-sm font-bold tracking-tight">
-              Startup<span className="text-primary">OS</span>
+            <Image src="/logo-square.png" alt="StartupOS" width={1254} height={1254} className="h-5 w-5" />
+            <span className="text-xs font-bold font-mono">
+              <span className="text-primary">$</span> startupos
             </span>
           </Link>
           <div className="flex items-center gap-2">
             {user && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Link href="/blueprints">
-                  <Button variant="ghost" size="sm" className="text-xs">My Startups</Button>
+                  <Button variant="ghost" size="sm" className="text-[11px] font-mono h-7">My Startups</Button>
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-[11px] font-mono text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Sign Out
+                  sign out
                 </button>
               </div>
             )}
@@ -296,8 +295,8 @@ function DashboardContent() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <Link href="/blueprints" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground mb-6 transition-colors font-mono">
+      <main className="mx-auto max-w-5xl px-6 py-6">
+        <Link href="/blueprints" className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground mb-5 transition-colors font-mono">
           <ArrowLeft className="h-3.5 w-3.5" /> ../startups
         </Link>
 
@@ -353,7 +352,7 @@ function DashboardContent() {
               <span className="text-2xl mb-3">🫗</span>
               <p className="text-sm text-muted-foreground font-mono">No startup selected.</p>
               <p className="text-xs text-muted-foreground/60 mt-2">Select a startup to analyze.</p>
-              <Button size="sm" className="mt-6 font-mono glow-green-btn" asChild>
+              <Button size="sm" className="mt-6 font-mono font-mono" asChild>
                 <Link href="/blueprints">$ view_startups --list</Link>
               </Button>
             </div>
@@ -361,46 +360,47 @@ function DashboardContent() {
         )}
 
         {dashboard && (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-5">
             <motion.div variants={itemVariants}>
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-2xl font-display font-bold text-foreground">{dashboard.startup.name}</span>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-lg font-bold">{dashboard.startup.name}</span>
+                    <span className="mono-label">$ mission_control</span>
                   </div>
-                  <p className="text-sm text-muted-foreground font-mono">
-                    {dashboard.startup.industry || "no industry set"}<span className="animate-terminal-blink ml-0.5 text-primary">_</span>
+                  <p className="text-xs text-muted-foreground font-mono">
+                    {dashboard.startup.industry || "no industry set"}
                   </p>
                 </div>
                 <StartupBadges dashboard={dashboard} />
               </div>
-              <p className="text-xs text-muted-foreground mt-3 italic border-l-2 border-primary/30 pl-3">
-                &ldquo;{getMicrocopy(dashboard.healthScore, dashboard.recentEvents.length > 0)}&rdquo;
+              <p className="text-[11px] text-muted-foreground mt-2 border-l-2 border-primary/30 pl-3 font-mono">
+                {getMicrocopy(dashboard.healthScore, dashboard.recentEvents.length > 0)}
               </p>
             </motion.div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
               <motion.div variants={itemVariants} className="lg:col-span-1">
-                <Card className="terminal-card h-full hover:border-primary/30 transition-all duration-200 group">
-                  <CardContent className="flex flex-col items-center justify-center p-8">
-                    <div className="relative mb-4">
-                      <ScoreRing score={dashboard.healthScore} size={160} />
+                <Card className="terminal-panel h-full">
+                  <CardContent className="flex flex-col items-center justify-center p-5">
+                    <div className="relative mb-3">
+                      <ScoreRing score={dashboard.healthScore} size={120} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <motion.span
-                          className={`text-4xl font-bold font-mono ${getScoreColor(dashboard.healthScore)}`}
+                          className={`text-3xl font-bold font-mono ${getScoreColor(dashboard.healthScore)}`}
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.2 }}
                         >
                           <AnimatedCounter value={dashboard.healthScore} />
                         </motion.span>
-                        <span className={`text-xs font-mono mt-0.5 ${getScoreColor(dashboard.healthScore)}`}>
+                        <span className={`text-[10px] font-mono mt-0.5 ${getScoreColor(dashboard.healthScore)}`}>
                           {getScoreLabel(dashboard.healthScore)}
                         </span>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground text-center max-w-[200px] font-mono opacity-60 group-hover:opacity-100 transition-opacity">
-                      health score based on milestones &amp; activity
+                    <p className="text-[10px] text-muted-foreground text-center font-mono">
+                      health score
                     </p>
                   </CardContent>
                 </Card>
@@ -411,7 +411,7 @@ function DashboardContent() {
               </motion.div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
               <motion.div variants={itemVariants}>
                 <Card className="terminal-panel h-full">
                   <CardHeader className="terminal-panel-header">
@@ -463,30 +463,29 @@ function DashboardContent() {
                     ) : (
                       <div className="space-y-3">
                         {(showAllActions ? dashboard.topActions : dashboard.topActions.slice(0, 3)).map((action) => (
-                          <motion.div
-                            key={action.id}
-                            className="rounded-lg border border-border bg-surface p-4 hover:border-primary/20 hover:bg-surface-hover transition-all duration-200 cursor-default"
-                            whileHover={{ x: 2 }}
-                          >
-                            <div className="flex items-start gap-3">
-                              <Badge className={`terminal-badge ${PRIORITY_COLORS[action.priority] || ""}`}>
-                                {action.priority}
-                              </Badge>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium">{action.action}</p>
-                                <p className="text-xs text-muted-foreground mt-1">{action.description}</p>
-                              </div>
-                            </div>
-                            {action.link && (
-                              <div className="mt-3 flex justify-end">
-                                <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" asChild>
-                                  <Link href={action.link}>
-                                    Go <ChevronRight className="h-3 w-3" />
-                                  </Link>
-                                </Button>
-                              </div>
-                            )}
-                          </motion.div>
+                  <motion.div
+                    key={action.id}
+                    className="terminal-panel p-3 cursor-default terminal-row"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <Badge className={`text-[9px] px-1.5 py-0 font-mono uppercase ${PRIORITY_COLORS[action.priority] || ""}`}>
+                        {action.priority}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium font-mono">{action.action}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5">{action.description}</p>
+                      </div>
+                    </div>
+                    {action.link && (
+                      <div className="mt-2 flex justify-end">
+                        <Button size="sm" variant="ghost" className="h-6 text-[10px] gap-0.5 font-mono" asChild>
+                          <Link href={action.link}>
+                            Go <ChevronRight className="h-3 w-3" />
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
+                  </motion.div>
                         ))}
                         {dashboard.topActions.length > 3 && (
                           <button
@@ -503,7 +502,7 @@ function DashboardContent() {
               </motion.div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid gap-4 lg:grid-cols-2">
               <motion.div variants={itemVariants}>
                 <FortuneCookie />
               </motion.div>

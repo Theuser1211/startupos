@@ -67,10 +67,10 @@ export function FeaturesSection() {
   const bgOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.5, 0]);
 
   return (
-    <section id="features" ref={sectionRef} className="relative py-32 px-6 overflow-hidden">
+    <section id="features" ref={sectionRef} className="relative py-24 px-6 overflow-hidden">
       <motion.div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent"
+        className="absolute inset-0"
         style={{ opacity: bgOpacity }}
       />
 
@@ -80,13 +80,13 @@ export function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-12"
         >
-          <div className="flex items-center gap-2 font-mono text-sm text-primary/60 mb-4">
+          <div className="flex items-center gap-2 font-mono text-xs text-primary/60 mb-3">
             <Terminal className="h-3.5 w-3.5" />
             <span>$ ls features/</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-display font-bold tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
             The Complete{" "}
             <span className="text-primary">
               Founder Toolkit
@@ -97,10 +97,9 @@ export function FeaturesSection() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-4 text-muted-foreground max-w-2xl font-mono text-sm"
+            className="mt-3 text-sm text-muted-foreground max-w-2xl font-mono"
           >
-            From ideation to Series A, StartupOS provides every tool you need to build
-            a successful company — no MBA required.
+            Every tool you need to build a successful company — no MBA required.
           </motion.p>
         </motion.div>
 
@@ -125,28 +124,23 @@ export function FeaturesSection() {
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="h-full"
                 >
-                  <div className="terminal-window h-full group transition-all duration-500 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/5">
-                    <div className="p-5 h-full flex flex-col">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 text-primary">
-                          <Icon className="h-4.5 w-4.5" />
+                  <div className="terminal-window h-full group transition-all duration-300 hover:border-primary/25">
+                    <div className="p-4 h-full flex flex-col">
+                      <div className="flex items-center gap-2.5 mb-3">
+                        <div className="flex items-center justify-center w-8 h-8 rounded bg-primary/10 text-primary">
+                          <Icon className="h-4 w-4" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-mono text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">
+                          <h3 className="font-mono text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate">
                             {feature.title}
                           </h3>
                         </div>
-                        <div className="flex gap-1 opacity-30 group-hover:opacity-60 transition-opacity">
-                          <div className="w-2 h-2 rounded-full border border-muted-foreground/30" />
-                          <div className="w-2 h-2 rounded-full border border-muted-foreground/30" />
-                          <div className="w-2 h-2 rounded-full border border-muted-foreground/30" />
-                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed font-mono text-xs flex-1">
+                      <p className="text-xs text-muted-foreground leading-relaxed font-mono flex-1">
                         {feature.description}
                       </p>
-                      <div className="mt-4 pt-3 border-t border-primary/5 flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-primary/40">
+                      <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between">
+                        <span className="font-mono text-[10px] text-muted-foreground/40">
                           $ {" "}{feature.title.toLowerCase().replace(/\s+/g, "-")} --help
                         </span>
                         <span className="text-primary/30 text-[10px] font-mono">

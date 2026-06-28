@@ -148,10 +148,10 @@ function WorkspaceContent() {
       const is401 = (startupQueryError as { status?: number })?.status === 401;
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
-          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
-            <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
+          <Card className={`max-w-md w-full border-border bg-card`}>
+            <CardContent className="flex flex-col items-center text-center p-6 space-y-3">
               <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-destructive"}`} />
-              <h2 className="text-lg font-display font-bold">{is401 ? "Authentication required" : "Could not load startup"}</h2>
+              <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load startup"}</h2>
               <p className="text-sm text-muted-foreground">
                 {is401 ? "Your session has expired. Please sign in again." : "There was a problem fetching your startup data. Please try again."}
               </p>
@@ -174,7 +174,7 @@ function WorkspaceContent() {
           <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-warning/30 bg-surface-amber"}`}>
             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
               <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-warning"}`} />
-              <h2 className="text-lg font-display font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
+              <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
               <p className="text-sm text-muted-foreground">
                 {is401 ? "Your session has expired. Please sign in again." : "We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation."}
               </p>
@@ -215,7 +215,7 @@ function WorkspaceContent() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
-          <h2 className="text-xl font-display font-bold">No blueprint found</h2>
+          <h2 className="text-lg font-bold font-mono">$ blueprint --not-found</h2>
           <p className="text-sm text-muted-foreground">
             This startup doesn&apos;t have a blueprint yet. Complete the founder interview to generate one.
           </p>
@@ -242,7 +242,7 @@ function WorkspaceContent() {
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
-          <h2 className="text-xl font-display font-bold">No startup selected</h2>
+          <h2 className="text-lg font-bold font-mono">$ startup --not-selected</h2>
           <p className="text-sm text-muted-foreground">Select a startup from your list or create a new one to get started.</p>
           <div className="flex gap-3 justify-center">
             <Link href="/blueprints">

@@ -40,7 +40,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
             <Palette className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-primary font-mono text-xl">$</span> Brand Identity</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-primary font-mono text-xl">$</span> Brand Identity</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">$ cat ~/brand/guidelines</p>
           </div>
         </div>
@@ -130,7 +130,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="space-y-2 rounded border border-primary/10 bg-[#0d0d10] p-4">
                 <p className="mono-label text-xs text-muted-foreground">Heading Font</p>
-                <p className="text-lg font-display font-bold">{typography.heading}</p>
+                <p className="text-lg font-bold">{typography.heading}</p>
               </div>
               <div className="space-y-2 rounded border border-primary/10 bg-[#0d0d10] p-4">
                 <p className="mono-label text-xs text-muted-foreground">Body Font</p>

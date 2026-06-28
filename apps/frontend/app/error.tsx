@@ -30,7 +30,7 @@ export default function GlobalError({
         </div>
         <div className="p-8 text-center">
           <Terminal className="h-8 w-8 text-destructive mx-auto mb-4" />
-          <h2 className="text-lg font-display font-bold mb-2">Something went wrong</h2>
+          <h2 className="text-lg font-bold mb-2">Something went wrong</h2>
           <p className="text-sm text-muted-foreground mb-6 font-mono">
             {error.message || "The application encountered an unexpected error."}
           </p>

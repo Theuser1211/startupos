@@ -37,11 +37,11 @@ export default function AboutPage() {
       <main className="flex-1">
         <section className="relative py-24 md:py-32 px-6 overflow-hidden">
           <div className="absolute inset-0 grid-bg" />
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px]" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px]" />
 
           <div className="relative z-10 mx-auto max-w-4xl text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <span className="inline-flex items-center rounded-full border border-glass-border bg-glass-bg px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
+              <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
                 About StartupOS
               </span>
             </motion.div>
@@ -50,9 +50,9 @@ export default function AboutPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl md:text-6xl font-display font-bold tracking-tight mb-6"
+              className="text-4xl md:text-6xl font-bold tracking-tight mb-6"
             >
-              Your <span className="bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">Co-Founder</span> in Code
+              Your <span className="text-primary">Co-Founder</span> in Code
             </motion.h1>
 
             <motion.p
@@ -76,7 +76,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="text-center mb-16"
             >
-              <h2 className="text-3xl font-display font-bold mb-4">What We Believe</h2>
+              <h2 className="text-3xl font-bold mb-4">What We Believe</h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
                 These principles guide every decision we make and every feature we ship.
               </p>
@@ -90,11 +90,11 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl p-8 hover:border-purple-500/30 transition-colors"
+                  className="rounded-2xl border border-border bg-card p-8 hover:border-primary/30 transition-colors"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10">
-                      <value.icon className="h-6 w-6 text-purple-400" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+                      <value.icon className="h-6 w-6 text-primary" />
                     </div>
                     <h3 className="text-lg font-semibold">{value.title}</h3>
                   </div>
@@ -105,10 +105,10 @@ export default function AboutPage() {
           </div>
         </section>
 
-        <section className="relative py-20 px-6 border-t border-glass-border">
+        <section className="relative py-20 px-6 border-t border-border">
           <div className="mx-auto max-w-4xl text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <h2 className="text-3xl font-display font-bold mb-4">For Founders, by Founders</h2>
+              <h2 className="text-3xl font-bold mb-4">For Founders, by Founders</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
                 We started StartupOS because we experienced the pain firsthand — spending weeks on pitch decks,
                 market research, and brand strategy instead of building product. We believe founders deserve
@@ -116,7 +116,7 @@ export default function AboutPage() {
               </p>
               <Link
                 href="/interview"
-                className="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-6 py-3 text-sm font-medium text-white hover:bg-purple-500 transition-colors glow-purple"
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-white hover:bg-primary transition-colors"
               >
                 Start Building Free
                 <Rocket className="h-4 w-4" />

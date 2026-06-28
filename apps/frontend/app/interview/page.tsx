@@ -363,11 +363,10 @@ export default function InterviewPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
-                      <Sparkles className="h-8 w-8 text-primary" />
+                    <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                      <Sparkles className="h-6 w-6 text-primary" />
                     </div>
-                    <p className="font-mono text-sm text-primary mb-4 animate-pulse">$ generating blueprint...</p>
-                    <h2 className="text-2xl font-display font-bold mb-8">Generating Your Blueprint</h2>
+                    <p className="font-mono text-sm text-primary mb-5 animate-pulse">$ generating blueprint...</p>
                     <StagedProgress stages={blueprintStages} currentStage={genStage} progress={genProgress} />
                   </motion.div>
                 </div>
@@ -378,10 +377,10 @@ export default function InterviewPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
-                      <AlertTriangle className="h-8 w-8 text-red-400" />
+                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
+                      <AlertTriangle className="h-7 w-7 text-red-400" />
                     </div>
-                    <h2 className="text-2xl font-display font-bold mb-3">Generation Failed</h2>
+                    <h2 className="text-lg font-bold mb-2">Generation Failed</h2>
                     <p className="text-sm text-muted-foreground mb-2 max-w-md mx-auto font-mono">
                       {genError}
                     </p>
@@ -405,33 +404,31 @@ export default function InterviewPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                    className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-xl shadow-primary/30"
+                    className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 border border-primary/20"
                   >
-                    <Check className="h-10 w-10 text-white" />
+                    <Check className="h-8 w-8 text-primary" />
                   </motion.div>
 
-                  <h2 className="text-3xl font-display font-bold mb-3">
-                    Your Blueprint is Ready ✨
-                  </h2>
-                  <p className="text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed">
-                    We&apos;ve analyzed your input and built a personalized StartupOS workspace with your brand, ICP, revenue model, roadmap, and more.
+                  <h2 className="text-2xl font-bold mb-2 font-mono">$ blueprint --complete</h2>
+                  <p className="text-sm text-muted-foreground mb-8 max-w-md mx-auto font-mono">
+                    We&apos;ve analyzed your input and generated a personalized startup blueprint.
                   </p>
 
                   <div className="flex flex-col items-center gap-3">
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground mb-6">
-                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Brand Analysis</span>
-                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> ICP Identified</span>
-                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Revenue Model</span>
-                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Startup Roast</span>
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground mb-5">
+                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-primary" /> Brand Analysis</span>
+                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-primary" /> ICP Identified</span>
+                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-primary" /> Revenue Model</span>
+                      <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-primary" /> Startup Roast</span>
                     </div>
 
-                    <Button size="xl" className="glow-green-btn px-12 text-base font-mono" onClick={handleFinish} disabled={isSaving}>
+                    <Button size="lg" className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary" onClick={handleFinish} disabled={isSaving}>
                       {isSaving ? "Saving..." : "Enter Workspace"}
                       {!isSaving && <ArrowRight className="h-4 w-4 ml-1" />}
                     </Button>
                   </div>
 
-                  <div className="mt-10 max-w-sm mx-auto">
+                  <div className="mt-8 max-w-sm mx-auto">
                     <p className="text-xs text-muted-foreground mb-3">Your Blueprint is based on:</p>
                     <div className="space-y-1.5 text-xs text-left">
                       <ReviewLine label="Idea" value={data.idea} />
@@ -448,10 +445,10 @@ export default function InterviewPage() {
                   <div className="mb-2">
                     <span className="mono-label text-xs text-primary uppercase tracking-wider">Question {currentStep + 1} of {steps.length - 1}</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-display font-bold mb-2">{step.title}</h2>
-                  <p className="text-muted-foreground mb-10 leading-relaxed">{step.description}</p>
+                  <h2 className="text-xl sm:text-2xl font-bold mb-1">{step.title}</h2>
+                  <p className="text-xs text-muted-foreground mb-6 font-mono">{step.description}</p>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {step.fields.map((field) => {
                       if (field.showIf) {
                         const dependentValue = data[field.showIf.field as keyof InterviewData] as string;
@@ -483,12 +480,12 @@ export default function InterviewPage() {
                     })}
                   </div>
 
-                  <div className="mt-10 flex items-center justify-between">
-                    <Button variant="ghost" onClick={prevStep} disabled={currentStep === 0} className="gap-2 font-mono text-xs">
-                      <ArrowLeft className="h-4 w-4" /> Back
+                  <div className="mt-8 flex items-center justify-between">
+                    <Button variant="ghost" onClick={prevStep} disabled={currentStep === 0} className="gap-1.5 font-mono text-xs h-8">
+                      <ArrowLeft className="h-3.5 w-3.5" /> Back
                     </Button>
-                    <Button onClick={nextStep} disabled={!validateStep(step, data)} className="gap-2 glow-green-btn font-mono text-xs">
-                      Continue <ArrowRight className="h-4 w-4" />
+                    <Button onClick={nextStep} disabled={!validateStep(step, data)} className="gap-1.5 font-mono text-xs h-8 border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary">
+                      Continue <ArrowRight className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -499,8 +496,8 @@ export default function InterviewPage() {
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-40">
-        <div className="mx-auto flex h-12 max-w-5xl items-center justify-center px-6">
-          <p className="text-xs text-muted-foreground">StartupOS Beta · Your data stays private</p>
+        <div className="mx-auto flex h-10 max-w-5xl items-center justify-center px-6">
+          <p className="text-[10px] text-muted-foreground font-mono">StartupOS Beta · Your data stays private</p>
         </div>
       </div>
     </div>

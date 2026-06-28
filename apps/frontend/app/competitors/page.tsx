@@ -31,9 +31,9 @@ const itemVariants = {
 };
 
 const CHANGE_TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  pricing: { label: "Pricing Change", color: "text-amber-400" },
-  feature: { label: "Feature Change", color: "text-blue-400" },
-  positioning: { label: "Positioning Change", color: "text-purple-400" },
+  pricing: { label: "Pricing Change", color: "text-warning" },
+  feature: { label: "Feature Change", color: "text-info" },
+  positioning: { label: "Positioning Change", color: "text-primary" },
 };
 
 function CompetitorsContent() {
@@ -111,11 +111,11 @@ function CompetitorsContent() {
               <Crosshair className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-display font-bold">Competitor Intelligence</h1>
-              <p className="text-sm text-muted-foreground">Track competitors and detect changes over time</p>
+              <h1 className="text-lg font-bold font-mono">$ competitors --track</h1>
+              <p className="text-xs text-muted-foreground font-mono">Monitor competitors and detect changes</p>
             </div>
           </div>
-          <Button size="sm" className="glow-green-btn text-xs font-mono" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
+          <Button size="sm" className="font-mono text-xs font-mono" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
             <Plus className="h-4 w-4" /> Add Competitor
           </Button>
         </div>
@@ -227,7 +227,7 @@ function CompetitorsContent() {
                     <Search className="h-10 w-10 text-primary mb-3" />
                     <p className="text-sm font-mono">No competitors tracked yet</p>
                     <p className="text-xs font-mono text-muted-foreground mt-1 max-w-sm">No competitors tracked yet. Add your first competitor.</p>
-                    <Button size="sm" className="mt-4 font-mono text-xs glow-green-btn" onClick={() => setShowAddForm(true)}>
+                    <Button size="sm" className="mt-4 font-mono text-xs font-mono" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-4 w-4" /> Add Your First Competitor
                     </Button>
                   </CardContent>
@@ -325,7 +325,7 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
               ) : (
                 <div className="space-y-0">
                   {history.snapshots.map((snapshot, i) => (
-                    <div key={snapshot.id} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
+                    <div key={snapshot.id} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 mt-0.5 shrink-0">
                           <FileText className="h-3 w-3 text-primary" />
                       </div>
@@ -363,8 +363,8 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
                   {history.changes.map((change) => {
                     const typeInfo = CHANGE_TYPE_LABELS[change.type] || { label: change.type, color: "text-muted-foreground" };
                     return (
-                      <div key={change.id} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
-                        <div className={`flex h-6 w-6 items-center justify-center rounded-full bg-opacity-10 mt-0.5 shrink-0 ${change.type === "pricing" ? "bg-amber-500/10" : change.type === "feature" ? "bg-blue-500/10" : "bg-purple-500/10"}`}>
+                      <div key={change.id} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
+                        <div className={`flex h-6 w-6 items-center justify-center rounded-full mt-0.5 shrink-0 ${change.type === "pricing" ? "bg-warning/10" : change.type === "feature" ? "bg-info/10" : "bg-primary/10"}`}>
                           <TrendingUp className={`h-3 w-3 ${typeInfo.color}`} />
                         </div>
                         <div className="flex-1 min-w-0">

@@ -61,7 +61,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-3 mb-2">
           <span className="text-primary font-mono text-lg">$</span>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold">
+          <h1 className="text-2xl sm:text-3xl font-bold">
             Welcome back{startupName ? `, ${startupName.split(" ")[0]}` : ""}
           </h1>
         </div>

@@ -40,7 +40,7 @@ export function RoadmapTab({ blueprint }: { blueprint?: StartupBlueprint | null 
             <Map className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-primary font-mono text-xl">$</span> Product Roadmap</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-primary font-mono text-xl">$</span> Product Roadmap</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">{roadmap.length} quarters planned</p>
           </div>
         </div>
@@ -57,7 +57,7 @@ export function RoadmapTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               </div>
 
               <div className="flex items-center gap-3 mb-4">
-                <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> {quarter.quarter}</h2>
+                <h2 className="text-lg font-bold mono-label"><span className="text-primary mr-2">$</span> {quarter.quarter}</h2>
                 <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-mono">{quarter.items.length} items</Badge>
               </div>
 

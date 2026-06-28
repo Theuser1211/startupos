@@ -141,7 +141,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
             <Globe className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-primary font-mono text-xl">$</span> Website</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-primary font-mono text-xl">$</span> Website</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">$ generate --deploy startup_website</p>
           </div>
         </div>
@@ -157,11 +157,11 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="text-xs font-mono text-primary">$ generate</span>
               </div>
-              <h2 className="text-xl font-display font-bold mb-2">Generate Your Website</h2>
+              <h2 className="text-xl font-bold mb-2">Generate Your Website</h2>
               <p className="text-sm text-muted-foreground max-w-md mx-auto mb-8 font-mono text-xs">
                 Create a professional website from your blueprint data. AI generates copy, layout, and design tailored to your startup.
               </p>
-              <Button size="lg" className="glow-green-btn" onClick={handleGenerate} disabled={generateWebsiteMut.isPending}>
+              <Button size="lg" className="font-mono" onClick={handleGenerate} disabled={generateWebsiteMut.isPending}>
                 <Sparkles className="h-4 w-4" />
                 {generateWebsiteMut.isPending ? "$ generating..." : "$ generate website"}
               </Button>
@@ -180,7 +180,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               <div className="flex items-center justify-center gap-2 mb-2">
                 <span className="text-xs font-mono text-emerald-400">$ generating...</span>
               </div>
-              <h2 className="text-lg font-display font-bold mb-2">Generating Your Website</h2>
+              <h2 className="text-lg font-bold mb-2">Generating Your Website</h2>
               <p className="text-sm text-muted-foreground mb-8 font-mono text-xs">Building your site from your blueprint...</p>
               <StagedProgress stages={websiteStages} currentStage={genStage} progress={genProgress} />
             </CardContent>
@@ -277,7 +277,7 @@ function WebsitePreview({
 
       {sections && sections.length > 0 && (
         <motion.div variants={itemVariants} className="space-y-3">
-          <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> Website Preview</h2>
+          <h2 className="text-lg font-bold mono-label"><span className="text-primary mr-2">$</span> Website Preview</h2>
           <div className="terminal-window border border-primary/20 overflow-hidden">
             <div className="terminal-panel-header flex items-center gap-2 px-4 py-2 border-b border-primary/10 bg-[#0d0d10]">
               <div className="flex gap-1.5">
@@ -303,7 +303,7 @@ function WebsitePreview({
       )}
 
       <motion.div variants={itemVariants} className="flex gap-3">
-        <Button size="lg" className="glow-green-btn flex-1 font-mono" onClick={onDeploy} disabled={deploying || !!deployedUrl}>
+        <Button size="lg" className="font-mono flex-1 font-mono" onClick={onDeploy} disabled={deploying || !!deployedUrl}>
           {deploying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
           {deployedUrl ? "$ deployed" : "$ deploy --vercel"}
         </Button>

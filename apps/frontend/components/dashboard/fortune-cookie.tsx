@@ -173,18 +173,11 @@ export function FortuneCookie() {
         <span className="tracking-wide text-primary">startup fortune</span>
       </div>
 
-      <div className="terminal-panel-body flex flex-col items-center text-center space-y-4">
-        <motion.div
-          className="text-2xl mb-3"
-          animate={{ rotate: [0, -5, 5, -5, 0] }}
-          transition={{ duration: 2, repeat: Infinity, repeatDelay: 6, ease: "easeInOut" }}
-        >
-          🥠
-        </motion.div>
+      <div className="terminal-panel-body flex flex-col items-center text-center space-y-3">
         <AnimatePresence mode="wait">
           <motion.p
             key={key}
-            className="text-sm leading-relaxed text-foreground/90 font-mono"
+            className="text-xs leading-relaxed text-foreground/90 font-mono"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -193,14 +186,12 @@ export function FortuneCookie() {
             &ldquo;{fortune}&rdquo;
           </motion.p>
         </AnimatePresence>
-        <motion.button
+        <button
           onClick={newFortune}
-          className="mt-2 text-[11px] text-primary border border-primary/20 rounded-md px-3 py-1.5 hover:border-primary/40 transition-all bg-surface hover:bg-surface-hover glow-green-btn font-mono"
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          className="text-[10px] text-primary border border-primary/20 rounded px-2.5 py-1 hover:border-primary/40 transition-all font-mono"
         >
           $ roll_fortune
-        </motion.button>
+        </button>
       </div>
     </div>
   );

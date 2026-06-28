@@ -72,8 +72,8 @@ function SignInForm() {
           <Link href="/" className="inline-flex items-center justify-center mb-6">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-8 w-auto" priority />
           </Link>
-          <h1 className="text-2xl font-display font-bold mb-2">Welcome back</h1>
-          <p className="text-sm font-mono text-muted-foreground">Sign in to access your blueprints</p>
+          <h1 className="text-xl font-bold mb-1">welcome back</h1>
+          <p className="text-xs font-mono text-muted-foreground">$ sign_in --access blueprints</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,21 +84,21 @@ function SignInForm() {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">Email</label>
+            <label htmlFor="email" className="mono-label block text-xs mb-1.5">Email</label>
             <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" className="terminal-input" />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">Password</label>
+            <label htmlFor="password" className="mono-label block text-xs mb-1.5">Password</label>
             <div className="relative">
-              <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="terminal-input pr-10" />
+              <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="terminal-input pr-10" />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label={showPassword ? "Hide password" : "Show password"}>
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
           </div>
 
-          <Button type="submit" className="w-full glow-green-btn font-mono text-xs" disabled={isLoading}>
+          <Button type="submit" className="w-full font-mono text-xs border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary" disabled={isLoading}>
             {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
           </Button>
         </form>

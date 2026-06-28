@@ -26,8 +26,8 @@ const stickers = [
 ];
 
 const terminalLines = [
-  { text: "Initializing founder environment...", delay: 0.8 },
-  { text: "Loading AI startup kernel...", delay: 1.2 },
+  { text: "Compiling founder environment...", delay: 0.8 },
+  { text: "Analyzing founder interview...", delay: 1.2 },
   { text: "✓ System ready", delay: 1.6 },
 ];
 
@@ -70,7 +70,7 @@ export function HeroSection() {
             </span>
           </div>
 
-          <div className="p-8 sm:p-12 md:p-16">
+          <div className="p-6 sm:p-8 md:p-10">
             <motion.div
               variants={containerVariants}
               initial="hidden"
@@ -87,9 +87,9 @@ export function HeroSection() {
 
               <motion.h1
                 variants={itemVariants}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-none tracking-tight mt-6"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5"
               >
-                <span className="text-foreground">Build Your</span>
+                <span className="text-foreground">Compile Your</span>
                 <br />
                 <span className="text-primary">
                   Startup OS
@@ -98,41 +98,34 @@ export function HeroSection() {
 
               <motion.p
                 variants={itemVariants}
-                className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed font-mono text-sm sm:text-base"
+                className="mt-4 max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed font-mono"
               >
-                The operating system for modern founders. Clarify your vision, align your team,
-                and execute with precision — all powered by AI that understands your startup.
+                Compile your startup operating system. AI-powered blueprint generation, market analysis, and execution tools for serious founders.
               </motion.p>
 
-              <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row items-start gap-4">
-                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                  <Button
-                    size="xl"
-                    className="glow-green-btn font-mono text-sm border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary"
-                    asChild
-                  >
-                    <Link href="/interview">
-                      <span className="flex items-center gap-2">
-                        <Terminal className="h-4 w-4" />
-                        ./start --free
-                        <motion.span className="inline-flex" animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
-                          <ArrowRight className="h-4 w-4" />
-                        </motion.span>
-                      </span>
-                    </Link>
-                  </Button>
-                </motion.div>
+              <motion.div variants={itemVariants} className="mt-8 flex flex-col sm:flex-row items-start gap-3">
+                <Button
+                  size="lg"
+                  className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary h-10"
+                  asChild
+                >
+                  <Link href="/interview">
+                    <Terminal className="h-4 w-4" />
+                    ./start --free
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
               </motion.div>
 
-              <motion.div variants={itemVariants} className="mt-16 flex flex-wrap gap-3">
+              <motion.div variants={itemVariants} className="mt-6 flex flex-wrap gap-2">
                 {stickers.map((s) => (
                   <span key={s.text} className="sticker-badge">
-                    ◆ {s.text}
+                    {s.text}
                   </span>
                 ))}
               </motion.div>
 
-              <motion.div variants={itemVariants} className="mt-8 space-y-1 font-mono text-xs text-muted-foreground/40">
+              <motion.div variants={itemVariants} className="mt-5 space-y-0.5 font-mono text-[11px] text-muted-foreground/40">
                 {terminalLines.map((line) => (
                   <motion.p
                     key={line.text}
@@ -152,13 +145,13 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="mt-8 flex items-center gap-4 font-mono text-xs text-muted-foreground/40">
+        <div className="mt-6 flex items-center gap-3 font-mono text-[11px] text-muted-foreground/40">
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-subtle" />
             system online
           </span>
           <span className="text-muted-foreground/20">|</span>
-          <span>From idea to blueprint in minutes — no MBA required</span>
+          <span>Mission Control</span>
         </div>
       </motion.div>
 
@@ -174,7 +167,7 @@ export function HeroSection() {
             className="flex flex-col items-center gap-2 text-muted-foreground"
           >
             <span className="text-xs font-mono">scroll</span>
-            <div className="h-8 w-5 rounded-full border border-glass-border flex justify-center p-1">
+            <div className="h-8 w-5 rounded-full border border-border flex justify-center p-1">
               <motion.div
                 className="h-2 w-1 rounded-full bg-primary/60"
                 animate={{ y: [0, 6, 0], opacity: [0.6, 1, 0.6] }}
