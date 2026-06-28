@@ -194,3 +194,104 @@ body {
 
 ::selection { background: rgba(34, 197, 94, 0.2); color: white; }
 :focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+
+/* Terminal window frame */
+.terminal-window {
+  background: #0d0d10;
+  border: 1px solid rgba(34, 197, 94, 0.12);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+.terminal-window-titlebar {
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.terminal-dot-red { background: #ef4444; }
+.terminal-dot-yellow { background: #f59e0b; }
+.terminal-dot-green { background: #22c55e; }
+
+/* Scanline overlay */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Sticker badge */
+.sticker-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  background: rgba(34, 197, 94, 0.04);
+  color: var(--color-primary);
+  border-radius: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ASCII divider */
+.ascii-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.08);
+  user-select: none;
+}
+.ascii-divider::before,
+.ascii-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Section command prefix */
+.section-cmd::before {
+  content: "$ ";
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+}
+
+/* Typewriter animation wrapper */
+.typewriter-line {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter 1.5s steps(40) forwards;
+  max-width: fit-content;
+}
+
+/* Green glow for buttons */
+.glow-green-btn {
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+.glow-green-btn:hover {
+  box-shadow: 0 0 32px rgba(34, 197, 94, 0.2);
+}

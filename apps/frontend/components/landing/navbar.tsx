@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/contexts/auth-context";
-import { Menu, X, Sparkles, LayoutDashboard, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, LogOut, Terminal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -49,7 +49,9 @@ export function Navbar() {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-        scrolled ? "glass-strong shadow-lg shadow-primary/5" : "bg-transparent"
+        scrolled
+          ? "bg-card border-b border-primary/10 shadow-lg shadow-primary/5"
+          : "bg-transparent"
       )}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -58,12 +60,16 @@ export function Navbar() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              className="flex items-center gap-2"
             >
+              <span className="hidden sm:inline font-mono text-xs text-primary/60">
+                $ startupos ~ %
+              </span>
               <Image
                 src="/logo-full.png"
                 alt="StartupOS"
@@ -87,9 +93,9 @@ export function Navbar() {
             >
               <a
                 href={link.href}
-                className="group relative text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="group relative text-sm font-mono text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
-                {link.label}
+                ./{link.label.toLowerCase()}
                 <motion.span
                   className="absolute -bottom-0.5 left-0 h-px bg-primary"
                   initial={{ width: 0 }}
@@ -110,10 +116,10 @@ export function Navbar() {
           {user ? (
             <>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" asChild>
+                <Button variant="ghost" size="sm" className="font-mono text-xs" asChild>
                   <Link href="/workspace">
                     <LayoutDashboard className="h-3.5 w-3.5" />
-                    Workspace
+                    workspace
                   </Link>
                 </Button>
               </motion.div>
@@ -122,37 +128,31 @@ export function Navbar() {
                   variant="outline"
                   size="sm"
                   onClick={async () => { await signOut(); }}
-                  className="gap-2"
+                  className="gap-2 font-mono text-xs"
                 >
                   <LogOut className="h-3.5 w-3.5" />
-                  Sign Out
+                  sign out
                 </Button>
               </motion.div>
             </>
           ) : (
             <>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/auth/sign-in">Sign In</Link>
+                <Button variant="ghost" size="sm" className="font-mono text-xs" asChild>
+                  <Link href="/auth/sign-in">sign in</Link>
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button size="sm" className="glow-purple group relative overflow-hidden" asChild>
+                <Button
+                  size="sm"
+                  className="glow-green-btn font-mono text-xs group relative overflow-hidden border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary"
+                  asChild
+                >
                   <Link href="/interview">
                     <span className="relative z-10 flex items-center gap-2">
-                      Get Started
-                      <motion.span
-                        animate={{ x: [0, 3, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                      >
-                        <Sparkles className="h-3.5 w-3.5" />
-                      </motion.span>
+                      <Terminal className="h-3.5 w-3.5" />
+                      ./start
                     </span>
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-white/10 to-purple-400/0"
-                      animate={{ x: ["-100%", "200%"] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    />
                   </Link>
                 </Button>
               </motion.div>
@@ -188,37 +188,39 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden glass-strong border-t border-glass-border overflow-hidden"
+            className="md:hidden bg-card border-t border-primary/10 overflow-hidden"
           >
             <div className="flex flex-col gap-2 px-6 py-4">
               {navLinks.map((link, i) => (
                 <motion.div key={link.href} custom={i} variants={mobileItemVariants} initial="hidden" animate="visible" exit="hidden">
-                  <a href={link.href} onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">{link.label}</a>
+                  <a href={link.href} onClick={() => setMobileOpen(false)} className="block py-2 text-sm font-mono text-muted-foreground hover:text-foreground transition-colors">
+                    ./{link.label.toLowerCase()}
+                  </a>
                 </motion.div>
               ))}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="flex gap-3 pt-2 border-t border-glass-border mt-2">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }} className="flex gap-3 pt-2 border-t border-primary/10 mt-2">
                 {user ? (
                   <>
-                    <Button variant="ghost" size="sm" className="flex-1" asChild>
+                    <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs" asChild>
                       <Link href="/workspace" onClick={() => setMobileOpen(false)}>
                         <LayoutDashboard className="h-3.5 w-3.5" />
-                        Workspace
+                        workspace
                       </Link>
                     </Button>
-                    <Button size="sm" className="flex-1" onClick={async () => { await signOut(); setMobileOpen(false); }}>
+                    <Button size="sm" className="flex-1 font-mono text-xs" onClick={async () => { await signOut(); setMobileOpen(false); }}>
                       <LogOut className="h-3.5 w-3.5" />
-                      Sign Out
+                      sign out
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button variant="ghost" size="sm" className="flex-1" asChild>
-                      <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>Sign In</Link>
+                    <Button variant="ghost" size="sm" className="flex-1 font-mono text-xs" asChild>
+                      <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>sign in</Link>
                     </Button>
-                    <Button size="sm" className="flex-1 glow-purple" asChild>
+                    <Button size="sm" className="flex-1 font-mono text-xs glow-green-btn border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary" asChild>
                       <Link href="/interview" onClick={() => setMobileOpen(false)}>
-                        Get Started
-                        <Sparkles className="h-3.5 w-3.5" />
+                        <Terminal className="h-3.5 w-3.5" />
+                        ./start
                       </Link>
                     </Button>
                   </>

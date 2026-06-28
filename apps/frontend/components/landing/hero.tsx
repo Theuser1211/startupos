@@ -1,36 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useMemo } from "react";
-import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Terminal } from "lucide-react";
 import Link from "next/link";
-
-function Particle({ size, x, y, duration, delay }: {
-  size: number; x: number; y: number; duration: number; delay: number;
-}) {
-  return (
-    <motion.div
-      aria-hidden="true"
-      className="absolute rounded-full bg-primary/15"
-      style={{ width: size, height: size, left: `${x}%`, top: `${y}%` }}
-      animate={{ y: [0, -30, 0], opacity: [0.2, 0.6, 0.2], scale: [1, 1.5, 1] }}
-      transition={{ duration, repeat: Infinity, delay, ease: "easeInOut" }}
-    />
-  );
-}
-
-function FloatingOrb({ className, size, delay = 0 }: { className?: string; size: number; delay?: number }) {
-  return (
-    <motion.div
-      aria-hidden="true"
-      className={`absolute rounded-full ${className}`}
-      style={{ width: size, height: size }}
-      animate={{ y: [0, -40, 0], x: [0, 20, 0], scale: [1, 1.05, 1] }}
-      transition={{ duration: 8, repeat: Infinity, delay, ease: "easeInOut" }}
-    />
-  );
-}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,148 +15,151 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
+
+const stickers = [
+  { text: "Founder Tested" },
+  { text: "Ship Fast" },
+  { text: "Beta" },
+];
+
+const terminalLines = [
+  { text: "Initializing founder environment...", delay: 0.8 },
+  { text: "Loading AI startup kernel...", delay: 1.2 },
+  { text: "✓ System ready", delay: 1.6 },
+];
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  const mouseX = useMotionValue(0.5);
-  const mouseY = useMotionValue(0.5);
-  const springX = useSpring(mouseX, { stiffness: 100, damping: 30 });
-  const springY = useSpring(mouseY, { stiffness: 100, damping: 30 });
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      const rect = sectionRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      mouseX.set((e.clientX - rect.left) / rect.width);
-      mouseY.set((e.clientY - rect.top) / rect.height);
-    },
-    [mouseX, mouseY]
-  );
-
-  useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
-
-  const glowX = useTransform(springX, [0, 1], ["40%", "60%"]);
-  const glowY = useTransform(springY, [0, 1], ["35%", "45%"]);
-
-  const particles = useMemo(() => Array.from({ length: 20 }, () => ({
-    size: Math.random() * 4 + 2,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 6 + 4,
-    delay: Math.random() * 4,
-  })), []);
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background"
     >
-      <motion.div aria-hidden="true" className="absolute inset-0" style={{ y: bgY }}>
-        <div className="absolute inset-0 grid-bg" />
-        <motion.div
-          className="absolute w-[700px] h-[700px] rounded-full bg-primary/10 blur-[150px]"
-          style={{ left: glowX, top: glowY, x: "-50%", y: "-50%" }}
-        />
-        <motion.div
-          className="absolute w-[500px] h-[500px] rounded-full bg-secondary/10 blur-[120px]"
-          style={{
-            left: useTransform(springX, [0, 1], ["30%", "70%"]),
-            top: useTransform(springY, [0, 1], ["60%", "40%"]),
-            x: "-50%", y: "-50%",
-          }}
-        />
-        <FloatingOrb size={80} className="bg-primary/5 blur-3xl top-[15%] left-[10%]" delay={0} />
-        <FloatingOrb size={120} className="bg-secondary/5 blur-3xl bottom-[25%] right-[15%]" delay={2} />
-        <FloatingOrb size={60} className="bg-primary/5 blur-3xl top-[40%] right-[30%]" delay={4} />
+      <motion.div aria-hidden="true" className="absolute inset-0">
+        <div className="absolute inset-0 grid-bg opacity-40" />
+        <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[150px]" />
+        <div className="absolute bottom-1/3 left-1/4 w-[400px] h-[400px] rounded-full bg-primary/3 blur-[120px]" />
       </motion.div>
-
-      {particles.map((p, i) => (
-        <Particle key={i} {...p} />
-      ))}
 
       <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent z-10" />
 
       <motion.div
         style={{ y: contentY, opacity }}
-        className="relative z-20 mx-auto max-w-5xl px-6 text-center"
+        className="relative z-20 mx-auto max-w-6xl px-6 w-full"
       >
-        <motion.div variants={containerVariants} initial="hidden" animate="visible">
-          <motion.div variants={itemVariants} className="mb-6 flex justify-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary"
-            >
-              <motion.span
-                animate={{ rotate: [0, 15, 0, -15, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-              </motion.span>
-              <span>AI-Powered Startup OS — Now in Beta</span>
-            </motion.div>
-          </motion.div>
-
-          <motion.h1
-            variants={itemVariants}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-none tracking-tight"
-          >
-            <span className="text-foreground">Build Your</span>
-            <br />
-            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient-shift">
-              Startup OS
+        <div className="terminal-window scanlines relative">
+          <div className="terminal-window-titlebar">
+            <div className="flex items-center gap-1.5">
+              <div className="terminal-dot terminal-dot-red" />
+              <div className="terminal-dot terminal-dot-yellow" />
+              <div className="terminal-dot terminal-dot-green" />
+            </div>
+            <span className="font-mono text-xs text-muted-foreground ml-3">
+              startupos/configure.sh — zsh
             </span>
-          </motion.h1>
+          </div>
 
-          <motion.p
-            variants={itemVariants}
-            className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed"
-          >
-            The operating system for modern founders. Clarify your vision, align your team,
-            and execute with precision — all powered by AI that understands your startup.
-          </motion.p>
+          <div className="p-8 sm:p-12 md:p-16">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="max-w-3xl"
+            >
+              <motion.div variants={itemVariants} className="mb-4">
+                <div className="flex items-center gap-2 font-mono text-sm text-primary/60">
+                  <Terminal className="h-3.5 w-3.5" />
+                  <span>$ ./configure --founder-mode --os=startupos</span>
+                  <span className="w-2 h-4 bg-primary/60 animate-terminal-blink" />
+                </div>
+              </motion.div>
 
-          <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
-              <Button size="xl" className="glow-purple w-full sm:w-auto text-base group relative overflow-hidden" asChild>
-                <Link href="/interview">
-                  <span className="relative z-10 flex items-center gap-2">
-                    Start Building Free
-                    <motion.span className="inline-flex" animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
-                      <ArrowRight className="h-4 w-4" />
-                    </motion.span>
+              <motion.h1
+                variants={itemVariants}
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-none tracking-tight mt-6"
+              >
+                <span className="text-foreground">Build Your</span>
+                <br />
+                <span className="text-primary">
+                  Startup OS
+                </span>
+              </motion.h1>
+
+              <motion.p
+                variants={itemVariants}
+                className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed font-mono text-sm sm:text-base"
+              >
+                The operating system for modern founders. Clarify your vision, align your team,
+                and execute with precision — all powered by AI that understands your startup.
+              </motion.p>
+
+              <motion.div variants={itemVariants} className="mt-10 flex flex-col sm:flex-row items-start gap-4">
+                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <Button
+                    size="xl"
+                    className="glow-green-btn font-mono text-sm border border-primary/20 bg-primary/10 hover:bg-primary/20 text-primary"
+                    asChild
+                  >
+                    <Link href="/interview">
+                      <span className="flex items-center gap-2">
+                        <Terminal className="h-4 w-4" />
+                        ./start --free
+                        <motion.span className="inline-flex" animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}>
+                          <ArrowRight className="h-4 w-4" />
+                        </motion.span>
+                      </span>
+                    </Link>
+                  </Button>
+                </motion.div>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="mt-16 flex flex-wrap gap-3">
+                {stickers.map((s) => (
+                  <span key={s.text} className="sticker-badge">
+                    ◆ {s.text}
                   </span>
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-white/10 to-purple-400/0"
-                    animate={{ x: ["-100%", "200%"] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  />
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
+                ))}
+              </motion.div>
 
-          <motion.p
-            variants={itemVariants}
-            className="mt-16 text-xs text-muted-foreground/60"
-          >
-            From idea to blueprint in minutes — no MBA required
-          </motion.p>
-        </motion.div>
+              <motion.div variants={itemVariants} className="mt-8 space-y-1 font-mono text-xs text-muted-foreground/40">
+                {terminalLines.map((line) => (
+                  <motion.p
+                    key={line.text}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: line.delay, duration: 0.5 }}
+                  >
+                    {line.text.startsWith("✓") ? (
+                      <span className="text-primary">{line.text}</span>
+                    ) : (
+                      line.text
+                    )}
+                  </motion.p>
+                ))}
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex items-center gap-4 font-mono text-xs text-muted-foreground/40">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-subtle" />
+            system online
+          </span>
+          <span className="text-muted-foreground/20">|</span>
+          <span>From idea to blueprint in minutes — no MBA required</span>
+        </div>
       </motion.div>
 
       <div aria-hidden="true" className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
@@ -196,7 +173,7 @@ export function HeroSection() {
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             className="flex flex-col items-center gap-2 text-muted-foreground"
           >
-            <span className="text-xs">Scroll to explore</span>
+            <span className="text-xs font-mono">scroll</span>
             <div className="h-8 w-5 rounded-full border border-glass-border flex justify-center p-1">
               <motion.div
                 className="h-2 w-1 rounded-full bg-primary/60"
