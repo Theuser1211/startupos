@@ -102,7 +102,8 @@ const steps: Step[] = [
 
 const defaultData: InterviewData = {
   idea: "", stage: "ideation", industry: "saas",
-  targetCustomer: "b2b-small", businessModel: "subscription", problem: "cost",
+  targetCustomer: "b2b-small", businessModel: "subscription",
+  priceRange: "$10-50", problem: "cost",
 };
 
 function validateStep(step: Step, data: InterviewData): boolean {
@@ -145,6 +146,7 @@ export default function InterviewPage() {
   const [genProgress, setGenProgress] = useState(0);
   const [genError, setGenError] = useState<string | null>(null);
   const genTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startupIdRef = useRef<string | null>(null);
 
   const step = steps[currentStep];
 
@@ -202,10 +204,13 @@ export default function InterviewPage() {
       if (isAuthenticated()) {
         setIsGenerating(true);
 
-        const startup = await createStartup({
-          name: companyName,
-          industry: data.industry || "other",
-        });
+        if (!startupIdRef.current) {
+          const startup = await createStartup({
+            name: companyName,
+            industry: data.industry || "other",
+          });
+          startupIdRef.current = startup.id;
+        }
 
         const prompt = [
           `Startup Idea: ${data.idea}`,
@@ -217,7 +222,7 @@ export default function InterviewPage() {
           `Biggest Problem: ${data.problem === "other" ? data.problemOther : PROBLEM_LABELS[data.problem]}`,
         ].filter(Boolean).join("\n");
 
-        await generateBlueprint({ startupId: startup.id, prompt });
+        await generateBlueprint({ startupId: startupIdRef.current, prompt });
 
         setGenStage(blueprintStages.length - 1);
         setGenProgress(100);
@@ -232,7 +237,7 @@ export default function InterviewPage() {
         });
 
         setTimeout(() => {
-          router.push(`/workspace?id=${startup.id}`);
+          router.push(`/workspace?id=${startupIdRef.current}`);
         }, 1500);
         return;
       }
@@ -256,9 +261,55 @@ export default function InterviewPage() {
     }
   };
 
-  const handleRetryGeneration = () => {
+  const handleRetryGeneration = async () => {
     setGenError(null);
-    handleFinish();
+    if (startupIdRef.current) {
+      setIsGenerating(true);
+      try {
+        const prompt = [
+          `Startup Idea: ${data.idea}`,
+          `Stage: ${STAGE_LABELS[data.stage] || data.stage}`,
+          `Industry: ${data.industry === "other" ? data.industryOther : INDUSTRY_LABELS[data.industry]}`,
+          `Target Customer: ${CUSTOMER_LABELS[data.targetCustomer] || data.targetCustomer}`,
+          `Business Model: ${BUSINESS_MODEL_LABELS[data.businessModel] || data.businessModel}`,
+          data.priceRange ? `Price Range: ${PRICE_RANGE_LABELS[data.priceRange] || data.priceRange}` : "",
+          `Biggest Problem: ${data.problem === "other" ? data.problemOther : PROBLEM_LABELS[data.problem]}`,
+        ].filter(Boolean).join("\n");
+
+        await generateBlueprint({ startupId: startupIdRef.current, prompt });
+
+        setGenStage(blueprintStages.length - 1);
+        setGenProgress(100);
+        if (genTimerRef.current) clearInterval(genTimerRef.current);
+
+        fireCelebration();
+
+        toast({
+          variant: "success",
+          title: "Blueprint ready!",
+          message: "Your personalized startup blueprint has been generated.",
+        });
+
+        setTimeout(() => {
+          router.push(`/workspace?id=${startupIdRef.current}`);
+        }, 1500);
+      } catch (err) {
+        setIsGenerating(false);
+        if (genTimerRef.current) {
+          clearInterval(genTimerRef.current);
+          genTimerRef.current = null;
+        }
+        const msg = toFriendlyError(err instanceof Error ? err.message : "Please try again.");
+        setGenError(msg);
+        toast({
+          variant: "error",
+          title: "Generation failed",
+          message: msg,
+        });
+      }
+    } else {
+      handleFinish();
+    }
   };
 
   return (

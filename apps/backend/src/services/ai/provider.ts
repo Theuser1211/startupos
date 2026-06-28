@@ -48,7 +48,7 @@ export abstract class BaseAIProvider implements AIProvider {
     }, TIMEOUT_MS);
 
     try {
-      logger.info({ provider: this.name, url: endpoint, model }, "[AI] sending request");
+      logger.info({ provider: this.name, url: endpoint, model, maxTokens, temperature }, "[Blueprint] Sending request");
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -64,24 +64,26 @@ export abstract class BaseAIProvider implements AIProvider {
         signal: controller.signal,
       });
 
-      logger.info({ provider: this.name, status: response.status }, "[AI] response");
-
       if (!response.ok) {
         if (response.status === 429) {
           const retryAfter = response.headers.get("retry-after");
           const delay = retryAfter ? parseInt(retryAfter) * 1000 : 2000;
+          logger.warn({ provider: this.name, retryAfter: delay }, "[Blueprint] Rate limited, waiting");
           await new Promise((resolve) => setTimeout(resolve, delay));
           throw new AIProviderError(this.name, 429, `Rate limited (retry after ${delay}ms)`);
         }
         const errorBody = await response.text();
+        logger.error({ provider: this.name, status: response.status, errorBody: errorBody.substring(0, 500) }, "[Blueprint] Provider returned error");
         throw new AIProviderError(this.name, response.status, errorBody);
       }
 
       const data = await response.json();
       const content = data.choices?.[0]?.message?.content;
       if (!content) {
+        logger.error({ provider: this.name, responseKeys: Object.keys(data) }, "[Blueprint] Empty content in provider response");
         throw new AIProviderError(this.name, 0, "Empty response from AI provider");
       }
+      logger.info({ provider: this.name, responseLength: content.length, finishReason: data.choices?.[0]?.finish_reason }, "[Blueprint] Response received");
       return content;
     } catch (error) {
       logger.error({ provider: this.name, error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
@@ -102,9 +104,16 @@ export abstract class BaseAIProvider implements AIProvider {
       .replace(/^```|```$/g, "")
       .trim();
     if (!cleaned) {
+      logger.error({ provider: this.name }, "[Blueprint] Empty response after cleaning markdown fences");
       throw new AIProviderError(this.name, 0, "Empty response after cleaning");
     }
-    return JSON.parse(cleaned) as T;
+    try {
+      return JSON.parse(cleaned) as T;
+    } catch (error) {
+      const preview = cleaned.substring(0, 500);
+      logger.error({ provider: this.name, rawPreview: preview }, "[Blueprint] JSON parse failed");
+      throw new AIProviderError(this.name, 0, `JSON parse error: ${error instanceof Error ? error.message : "Unknown"} — preview: ${preview.substring(0, 200)}`);
+    }
   }
 
   protected validateBlueprint(raw: string): ValidatedBlueprint {
@@ -883,7 +892,7 @@ async function tryProvider<T>(
 ): Promise<{ result: T; providerName: string }> {
   const start = Date.now();
 
-  const entry = providerRegistry["entries"]?.get(providerId) as { model?: string } | undefined;
+  const entry = providerRegistry.getEntry(providerId);
   const modelName = entry?.model ?? "unknown";
 
   logger.info(
@@ -949,7 +958,7 @@ async function withFailover<T>(
     try {
       logger.info({ provider: "FreeLLMAPI", model: "gpt-4o-mini" }, "AI provider: attempting FreeLLMAPI");
       const { result } = await tryProvider("freellm", provider, action);
-      logger.info({ provider: "FreeLLMAPI" }, "AI provider: FreeLLMAPI succeeded");
+      logger.info({ provider: "FreeLLMAPI", model: "gpt-4o-mini" }, "[Blueprint] FreeLLMAPI succeeded");
       return result;
     } catch (error) {
       logger.error({ provider: "freellm", error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
@@ -979,7 +988,7 @@ async function withFailover<T>(
     try {
       logger.info({ provider: entry.provider, model: entry.model, id: entry.id, attempt: attemptCount, total: availableCount }, "AI provider: attempting");
       const { result } = await tryProvider(entry.id, provider, action);
-      logger.info({ provider: entry.provider, model: entry.model }, "AI provider: succeeded");
+      logger.info({ provider: entry.provider, model: entry.model, id: entry.id, attempt: attemptCount }, "[Blueprint] Provider succeeded");
       return result;
     } catch (error) {
       logger.error({ provider: entry.id, error, message: error instanceof Error ? error.message : String(error), stack: error instanceof Error ? error.stack : undefined }, "[AI] provider failed");
@@ -1013,14 +1022,30 @@ export async function generateBlueprintWithFallback(prompt: string): Promise<Blu
   const hasFreeLLM = !!env.FREELLM_API_KEY;
   logger.info(
     { promptLength: prompt.length, availableProviders: availableCount, hasFreeLLM },
-    "generateBlueprintWithFallback: starting",
+    "[Blueprint] generateBlueprintWithFallback: starting",
   );
   if (availableCount === 0 && !hasFreeLLM) {
     const error = "No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.";
     logger.error({ availableProviders: 0, hasFreeLLM: false }, error);
     throw new Error("No AI provider configured");
   }
-  return withFailover((p) => p.generateBlueprint(prompt), "");
+  const totalStart = Date.now();
+  try {
+    const result = await withFailover((p) => p.generateBlueprint(prompt), "generateBlueprint");
+    const totalDuration = Date.now() - totalStart;
+    logger.info(
+      { success: true, totalDurationMs: totalDuration, name: result.name, industry: result.industry },
+      "[Blueprint] generateBlueprintWithFallback: succeeded",
+    );
+    return result;
+  } catch (error) {
+    const totalDuration = Date.now() - totalStart;
+    logger.error(
+      { success: false, totalDurationMs: totalDuration, error: error instanceof Error ? error.message : String(error) },
+      "[Blueprint] generateBlueprintWithFallback: all providers failed",
+    );
+    throw error;
+  }
 }
 
 function buildFallbackWebsiteSpec(blueprint: BlueprintResult): WebsiteSpecResult {
