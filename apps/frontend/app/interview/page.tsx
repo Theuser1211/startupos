@@ -17,8 +17,9 @@ import { createStartup } from "@/lib/api/startups";
 import { isAuthenticated } from "@/lib/api/auth";
 import { generateBlueprint } from "@/lib/api/blueprints";
 import { useToast } from "@/components/ui/toast";
-import { toFriendlyError } from "@/lib/api/client";
+import { toFriendlyError, apiClient } from "@/lib/api/client";
 import { fireCelebration } from "@/lib/confetti";
+import { saveGuestStartup, generateId } from "@/lib/utils/guest";
 import {
   STAGE_LABELS, INDUSTRY_LABELS, CUSTOMER_LABELS,
   BUSINESS_MODEL_LABELS, PRICE_RANGE_LABELS, PROBLEM_LABELS,
@@ -201,6 +202,15 @@ export default function InterviewPage() {
         // localStorage unavailable, continue
       }
 
+      // Clear expired token so stale JWTs don't hijack the guest path
+      const currentToken = apiClient.getToken();
+      if (currentToken) {
+        const payload = apiClient.decodeJwtPayload(currentToken);
+        if (payload?.exp && typeof payload.exp === 'number' && payload.exp * 1000 < Date.now()) {
+          apiClient.clearToken();
+        }
+      }
+
       if (isAuthenticated()) {
         setIsGenerating(true);
 
@@ -242,7 +252,23 @@ export default function InterviewPage() {
         return;
       }
 
-      router.push("/workspace");
+      const guestId = generateId();
+      saveGuestStartup(guestId, data, companyName);
+
+      setGenStage(blueprintStages.length - 1);
+      setGenProgress(100);
+      fireCelebration();
+
+      toast({
+        variant: "success",
+        title: "Blueprint ready!",
+        message: "Your personalized startup blueprint has been generated locally.",
+      });
+
+      setTimeout(() => {
+        router.push(`/workspace?id=${guestId}`);
+      }, 1500);
+      return;
     } catch (err) {
       setIsGenerating(false);
       if (genTimerRef.current) {

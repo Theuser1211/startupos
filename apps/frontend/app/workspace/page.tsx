@@ -20,9 +20,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import type { StartupBlueprint } from "@/lib/types";
+import type { StartupBlueprint, Startup as StartupType } from "@/lib/types";
 import { normalizeBlueprint } from "@/lib/utils/blueprint";
-import { getStartupIdFromUrl, getPersistedStartupId, persistStartupId } from "@/lib/utils/startup-utils";
+import { getStartupIdFromUrl, getPersistedStartupId, persistStartupId, clearPersistedStartupId } from "@/lib/utils/startup-utils";
+import { apiClient, type ApiError } from "@/lib/api/client";
+import { isGuest, getGuestStartup, getGuestBlueprint, getGuestStartupId } from "@/lib/utils/guest";
 
 const tabComponents: Record<string, React.ComponentType<{ blueprint?: StartupBlueprint | null }>> = {
   overview: OverviewTab,
@@ -57,54 +59,61 @@ function WorkspaceContent() {
   const [paramsReady, setParamsReady] = useState(false);
   const [redirectAttempted, setRedirectAttempted] = useState(false);
 
+  const hasToken = !!apiClient.getToken();
+  const guestMode = isGuest() && !hasToken;
+  const guestRecoveryId = !startupIdParam && guestMode ? getGuestStartupId() : null;
+  const effectiveStartupId = startupIdParam || guestRecoveryId || null;
+
+  const [guestStartup, setGuestStartup] = useState<StartupType | null>(null);
+  const [guestBlueprintObj, setGuestBlueprintObj] = useState<StartupBlueprint | null>(null);
+  const [guestReady, setGuestReady] = useState(false);
+
   useEffect(() => {
+    console.log("[GuestRecovery]", {
+      tokenExists: hasToken,
+      guestMode,
+      startupIdFromURL: startupIdParam,
+      startupIdFromStorage: getGuestStartupId(),
+      chosenStartupId: effectiveStartupId,
+    });
     setParamsReady(true);
     console.log("[Workspace] Mounted | startupIdParam:", startupIdParam, "| fromURL:", startupIdFromUrl, "| fallback:", startupIdFromUrlFallback);
   }, []);
 
   useEffect(() => {
-    console.log("[Workspace] startupIdParam changed:", startupIdParam);
+    if (guestMode && effectiveStartupId) {
+      const gs = getGuestStartup(effectiveStartupId);
+      const gb = getGuestBlueprint(effectiveStartupId);
+      setGuestStartup(gs);
+      setGuestBlueprintObj(gb);
+    }
+    setGuestReady(true);
+  }, [effectiveStartupId, guestMode]);
+
+  useEffect(() => {
     if (startupIdParam) {
       persistStartupId(startupIdParam);
-      console.log("[Workspace] Persisted startupId to localStorage:", startupIdParam);
     }
   }, [startupIdParam]);
 
-  const { data: startup, isLoading: startupLoading, isError: startupError, error: startupQueryError, refetch: refetchStartup } = useStartup(startupIdParam);
-  const { data: blueprintData, isLoading: blueprintLoading, isError: blueprintError, error: blueprintQueryError, isFetching: blueprintFetching, refetch: refetchBlueprint } = useBlueprint(startupIdParam);
+  const { data: startup, isLoading: startupLoading, isError: startupError, error: startupQueryError, refetch: refetchStartup } = useStartup(guestMode ? null : effectiveStartupId);
+  const { data: blueprintData, isLoading: blueprintLoading, isError: blueprintError, error: blueprintQueryError, isFetching: blueprintFetching, refetch: refetchBlueprint } = useBlueprint(guestMode ? null : effectiveStartupId);
 
-  const rawBlueprint = blueprintData?.blueprint || (startup?.blueprint as { id?: string; content?: unknown } | undefined) || undefined;
-  const blueprint = normalizeBlueprint(rawBlueprint as Parameters<typeof normalizeBlueprint>[0]) || undefined;
-  const isLoading = startupLoading || blueprintLoading;
+  const rawBlueprint = guestMode ? null : (blueprintData?.blueprint || (startup?.blueprint as { id?: string; content?: unknown } | undefined) || undefined);
+  const apiBlueprint = guestMode ? null : (normalizeBlueprint(rawBlueprint as Parameters<typeof normalizeBlueprint>[0]) || undefined);
+  const blueprint = guestMode ? guestBlueprintObj : apiBlueprint;
+  const startupInfo = guestMode ? guestStartup : startup;
+  const isLoading = guestMode ? false : (startupLoading || blueprintLoading);
 
   console.log("[Workspace] State:", {
     startupIdParam,
-    startupId: startup?.id,
-    startupName: startup?.name,
-    blueprintDataId: blueprintData?.id,
-    hasStartupBlueprint: !!startup?.blueprint,
-    hasBlueprintData: !!blueprintData,
+    effectiveStartupId,
+    guestMode,
+    startupInfo: startupInfo?.id,
     hasNormalizedBlueprint: !!blueprint,
-    startupLoading,
-    blueprintLoading,
-    startupError,
-    blueprintError,
-    blueprintFetching,
     isLoading,
     paramsReady,
   });
-
-  useEffect(() => {
-    if (!startupIdParam && paramsReady && !redirectAttempted) {
-      const persistedId = getPersistedStartupId();
-      console.log("[Workspace] No startupId in URL | persistedId:", persistedId);
-      if (persistedId) {
-        setRedirectAttempted(true);
-        console.log("[Workspace] Redirecting to persisted startup:", persistedId);
-        window.location.href = `/workspace?id=${persistedId}`;
-      }
-    }
-  }, [startupIdParam, paramsReady, redirectAttempted]);
 
   const retryBlueprint = useCallback(() => {
     console.log("[Workspace] Manual blueprint retry triggered");
@@ -114,6 +123,15 @@ function WorkspaceContent() {
   if (authLoading) {
     return (
       <div className="flex min-h-screen bg-background items-center justify-center" role="status" aria-label="Checking authentication">
+        <Loader2 className="h-8 w-8 text-primary animate-spin" />
+      </div>
+    );
+  }
+
+  if (guestMode && !guestReady) {
+    console.log("[Workspace] Guest mode — waiting for local data");
+    return (
+      <div className="flex min-h-screen bg-background items-center justify-center" role="status" aria-label="Loading">
         <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     );
@@ -145,7 +163,8 @@ function WorkspaceContent() {
 
     if (startupError) {
       console.log("[Workspace] Startup fetch failed — showing error");
-      const is401 = (startupQueryError as { status?: number })?.status === 401;
+      const is401 = (startupQueryError as unknown as ApiError)?.status === 401;
+      const tokenExisted = (startupQueryError as unknown as ApiError)?.tokenExisted;
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
           <Card className={`max-w-md w-full border-border bg-card`}>
@@ -153,13 +172,17 @@ function WorkspaceContent() {
               <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-destructive"}`} />
               <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load startup"}</h2>
               <p className="text-sm text-muted-foreground">
-                {is401 ? "Your session has expired. Please sign in again." : "There was a problem fetching your startup data. Please try again."}
+                {is401 && !tokenExisted ? "Please sign up or sign in to access this startup." : is401 ? "Your session has expired. Please sign in again." : "There was a problem fetching your startup data. Please try again."}
               </p>
-              {!is401 && (
+              {is401 && !tokenExisted ? (
+                <Link href="/auth/sign-up">
+                  <Button variant="default"><LayoutDashboard className="h-4 w-4" /> Sign Up</Button>
+                </Link>
+              ) : !is401 ? (
                 <Button variant="outline" onClick={() => { refetchStartup(); }} className="gap-2">
                   <RefreshCw className="h-4 w-4" /> Retry
                 </Button>
-              )}
+              ) : null}
             </CardContent>
           </Card>
         </div>
@@ -168,7 +191,8 @@ function WorkspaceContent() {
 
     if (blueprintError) {
       console.log("[Workspace] Blueprint fetch failed - showing retry card");
-      const is401 = (blueprintQueryError as { status?: number })?.status === 401;
+      const is401 = (blueprintQueryError as unknown as ApiError)?.status === 401;
+      const tokenExisted = (blueprintQueryError as unknown as ApiError)?.tokenExisted;
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
           <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-warning/30 bg-surface-amber"}`}>
@@ -176,9 +200,13 @@ function WorkspaceContent() {
               <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-warning"}`} />
               <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
               <p className="text-sm text-muted-foreground">
-                {is401 ? "Your session has expired. Please sign in again." : "We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation."}
+                {is401 && !tokenExisted ? "Please sign up or sign in to access this blueprint." : is401 ? "Your session has expired. Please sign in again." : "We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation."}
               </p>
-              {is401 ? null : (
+              {is401 && !tokenExisted ? (
+                <Link href="/auth/sign-up">
+                  <Button variant="default"><LayoutDashboard className="h-4 w-4" /> Sign Up</Button>
+                </Link>
+              ) : is401 ? null : (
                 <div className="flex gap-3 mt-2">
                   <Button variant="outline" onClick={retryBlueprint} className="gap-2">
                     <RefreshCw className="h-4 w-4" /> Retry
@@ -227,15 +255,8 @@ function WorkspaceContent() {
     );
   }
 
-  if (noBlueprint && !startupIdParam && paramsReady) {
-    const persistedId = getPersistedStartupId();
-    console.log("[Workspace] No startupId and no blueprint | paramsReady:", paramsReady, "| persistedId:", persistedId);
-
-    if (persistedId && !redirectAttempted) {
-      console.log("[Workspace] Delayed redirect to persisted startup:", persistedId);
-    }
-
-    console.log("[Workspace] Showing empty state");
+  if (noBlueprint && !effectiveStartupId && paramsReady) {
+    console.log("[Workspace] No effective startupId | paramsReady:", paramsReady);
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">
@@ -245,12 +266,20 @@ function WorkspaceContent() {
           <h2 className="text-lg font-bold font-mono">$ startup --not-selected</h2>
           <p className="text-sm text-muted-foreground">Select a startup from your list or create a new one to get started.</p>
           <div className="flex gap-3 justify-center">
-            <Link href="/blueprints">
-              <Button variant="outline">My Startups</Button>
-            </Link>
-            <Link href="/interview">
-              <Button variant="default"><LayoutDashboard className="h-4 w-4" /> New Interview</Button>
-            </Link>
+            {guestMode ? (
+              <Link href="/interview">
+                <Button variant="default"><LayoutDashboard className="h-4 w-4" /> New Interview</Button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/blueprints">
+                  <Button variant="outline">My Startups</Button>
+                </Link>
+                <Link href="/interview">
+                  <Button variant="default"><LayoutDashboard className="h-4 w-4" /> New Interview</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -264,8 +293,8 @@ function WorkspaceContent() {
       <Sidebar
         activeTab={activeTab}
         onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
-        founderName={startup?.name || blueprint?.startupName || ""}
-        startupId={startupIdParam || undefined}
+        founderName={startupInfo?.name || blueprint?.startupName || ""}
+        startupId={effectiveStartupId || undefined}
         blueprint={blueprint}
       />
 
@@ -308,9 +337,11 @@ function WorkspaceContent() {
 
       <main className="flex-1 min-h-screen lg:pl-64">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 lg:pt-8 pb-16">
-          {blueprint && !user && (
-            <div className="flex items-center justify-end gap-2 mb-4">
-              <Link href="/auth/sign-up" className="text-xs text-muted-foreground hover:text-primary transition-colors">Sign up to save this blueprint →</Link>
+          {blueprint && !hasToken && (
+            <div className="flex items-center justify-between gap-2 mb-4 px-3 py-2 rounded-lg bg-amber-500/5 border border-amber-500/20">
+              <p className="text-xs text-muted-foreground font-mono">$ session --guest  ·  blueprint saved locally</p>
+              <Link href="/auth/sign-up" className="text-xs text-primary hover:text-primary/80 font-mono shrink-0">
+                Sign up to save →</Link>
             </div>
           )}
 

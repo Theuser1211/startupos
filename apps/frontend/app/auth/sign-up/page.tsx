@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Loader2, Check } from "lucide-react";
 import { useAuth } from "@/lib/contexts/auth-context";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignUpPage() {
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { signUp } = useAuth();
+  const redirectTo = searchParams.get("redirect") || "/interview";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,7 +69,7 @@ export default function SignUpPage() {
           <p className="text-xs text-muted-foreground mb-6 font-mono">
             $ welcome --onboard
           </p>
-          <Button onClick={() => router.push("/interview")} className="font-mono text-xs border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary">
+          <Button onClick={() => router.push(redirectTo)} className="font-mono text-xs border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary">
             start building
           </Button>
         </motion.div>
@@ -134,5 +136,21 @@ export default function SignUpPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+function SignUpFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <Loader2 className="h-8 w-8 text-primary animate-spin" />
+    </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<SignUpFallback />}>
+      <SignUpForm />
+    </Suspense>
   );
 }

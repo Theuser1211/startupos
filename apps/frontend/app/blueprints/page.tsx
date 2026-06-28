@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useStartups } from "@/lib/hooks/use-startup";
-import { toFriendlyError } from "@/lib/api/client";
+import { toFriendlyError, apiClient, type ApiError } from "@/lib/api/client";
 import { Sparkles, Plus, ExternalLink, Calendar, Loader2, AlertTriangle, LogOut, Settings, ChevronDown } from "lucide-react";
 import Link from "next/link";
 
@@ -57,7 +57,20 @@ export default function BlueprintsPage() {
           </Button>
         </div>
 
-        {isLoading && (
+        {!apiClient.getToken() ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center max-w-sm">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+                <Sparkles className="h-7 w-7 text-primary" />
+              </div>
+              <h2 className="text-lg font-semibold mb-2 font-mono">Sign in to save startups</h2>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">Create a free account to save and manage your startup blueprints.</p>
+              <Button className="font-mono text-xs" asChild>
+                <Link href="/auth/sign-up">$ sign_up --begin</Link>
+              </Button>
+            </div>
+          </div>
+        ) : isLoading && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center space-y-4">
               <p className="font-mono text-sm text-primary animate-pulse">$ loading startups...</p>
@@ -68,20 +81,20 @@ export default function BlueprintsPage() {
         {error && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
-              {(error as { status?: number }).status === 401 ? (
+              {(error as unknown as ApiError).status === 401 ? (
                 <>
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <AlertTriangle className="h-6 w-6 text-amber-400" />
                   </div>
                   <p className="text-sm text-foreground font-medium mb-1">Authentication required</p>
-                  <p className="text-xs text-muted-foreground mb-4">Your session has expired. Please sign in to continue.</p>
+                  <p className="text-xs text-muted-foreground mb-4">{(error as unknown as ApiError).tokenExisted ? "Your session has expired. Please sign in to continue." : "Please sign up or sign in to continue."}</p>
                 </>
               ) : (
                 <>
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
                     <AlertTriangle className="h-6 w-6 text-red-400" />
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">{toFriendlyError(error instanceof Error ? error.message : "Something went wrong")}</p>
+                  <p className="text-sm text-muted-foreground mb-4">{toFriendlyError(error instanceof Error ? error.message : "Something went wrong", (error as unknown as ApiError).tokenExisted)}</p>
                   <Button variant="outline" size="sm" onClick={() => refetch()}>Try again</Button>
                 </>
               )}

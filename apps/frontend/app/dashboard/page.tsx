@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useDashboard } from "@/lib/hooks/use-dashboard";
-import { toFriendlyError } from "@/lib/api/client";
+import { toFriendlyError, apiClient, type ApiError } from "@/lib/api/client";
 import { FortuneCookie } from "@/components/dashboard/fortune-cookie";
 import { DeathPredictor } from "@/components/dashboard/death-predictor";
 import {
@@ -300,7 +300,18 @@ function DashboardContent() {
           <ArrowLeft className="h-3.5 w-3.5" /> ../startups
         </Link>
 
-        {isLoading && (
+        {!apiClient.getToken() ? (
+          <div className="terminal-panel">
+            <div className="terminal-panel-body flex flex-col items-center justify-center py-16 text-center">
+              <span className="text-2xl mb-3">🫗</span>
+              <p className="text-sm text-muted-foreground font-mono">Sign in to save and manage startups.</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">Create a free account to access your dashboard.</p>
+              <Button size="sm" className="mt-6 font-mono" asChild>
+                <Link href="/auth/sign-up">$ sign_up --begin</Link>
+              </Button>
+            </div>
+          </div>
+        ) : isLoading && (
           <div className="flex flex-col items-center justify-center py-20 font-mono">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse-subtle" />
@@ -311,19 +322,24 @@ function DashboardContent() {
         )}
 
         {error && (
-          <div className={`terminal-panel border ${(error as { status?: number }).status === 401 ? "border-amber-500/20" : "border-red-500/20"}`}>
+          <div className={`terminal-panel border ${(error as unknown as ApiError).status === 401 ? "border-amber-500/20" : "border-red-500/20"}`}>
             <div className="flex items-center gap-3 p-5">
-              <span className={`status-dot ${(error as { status?: number }).status === 401 ? "status-dot-warn" : "status-dot-error"} mt-0.5`} />
+              <span className={`status-dot ${(error as unknown as ApiError).status === 401 ? "status-dot-warn" : "status-dot-error"} mt-0.5`} />
               <div className="flex-1">
-                {(error as { status?: number }).status === 401 ? (
-                  <>
-                    <div className="flex items-center gap-2 font-mono text-xs">
-                      <span className="text-warning">$ auth --check</span>
-                      <span className="text-muted-foreground">[SESSION EXPIRED]</span>
-                    </div>
-                    <p className="text-sm font-medium text-warning mt-2">Authentication required</p>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono">Your session has expired. Please sign in again.</p>
-                  </>
+                {(error as unknown as ApiError).status === 401 ? (
+                  (() => {
+                    const tokenExisted = (error as unknown as ApiError).tokenExisted;
+                    return (
+                      <>
+                        <div className="flex items-center gap-2 font-mono text-xs">
+                          <span className="text-warning">$ auth --check</span>
+                          <span className="text-muted-foreground">{tokenExisted ? "[SESSION EXPIRED]" : "[SIGN IN REQUIRED]"}</span>
+                        </div>
+                        <p className="text-sm font-medium text-warning mt-2">Authentication required</p>
+                        <p className="text-xs text-muted-foreground mt-1 font-mono">{tokenExisted ? "Your session has expired. Please sign in again." : "Please sign up or sign in to continue."}</p>
+                      </>
+                    );
+                  })()
                 ) : (
                   <>
                     <div className="flex items-center gap-2 font-mono text-xs">
@@ -331,11 +347,11 @@ function DashboardContent() {
                       <span className="text-muted-foreground">[ERROR]</span>
                     </div>
                     <p className="text-sm font-medium text-destructive mt-2">Failed to load dashboard</p>
-                    <p className="text-xs text-muted-foreground mt-1 font-mono">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono">{toFriendlyError((error as unknown as ApiError).error || "An error occurred", (error as unknown as ApiError).tokenExisted)}</p>
                   </>
                 )}
               </div>
-              {(error as { status?: number }).status !== 401 && (
+              {(error as unknown as ApiError).status !== 401 && (
                 <Button size="sm" variant="outline" onClick={() => refetch()} className="font-mono text-xs">Retry</Button>
               )}
             </div>

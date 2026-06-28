@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useBrief } from "@/lib/hooks/use-brief";
-import { toFriendlyError } from "@/lib/api/client";
+import { toFriendlyError, apiClient, type ApiError } from "@/lib/api/client";
 import {
   Loader2, AlertTriangle, ArrowLeft, Sparkles,
   CheckCircle2, Target, Crosshair, TrendingUp, Clock,
@@ -138,30 +138,41 @@ function BriefContent() {
           </div>
         </div>
 
-        {isLoading && (
+        {!apiClient.getToken() ? (
+          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <Zap className="h-10 w-10 text-primary mb-3" />
+              <p className="text-sm font-mono text-muted-foreground">Sign in to view daily briefs.</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">Create a free account to access your daily brief.</p>
+              <Button size="sm" className="mt-4 font-mono" asChild>
+                <Link href="/auth/sign-up">$ sign_up --begin</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : isLoading && (
           <div className="flex items-center justify-center py-20">
             <p className="font-mono text-sm text-primary animate-pulse">$ loading daily brief...</p>
           </div>
         )}
 
         {error && (
-          <Card className={`terminal-card ${(error as { status?: number }).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
+          <Card className={`terminal-card ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="flex items-center gap-3 p-6">
-              <AlertTriangle className={`h-5 w-5 ${(error as { status?: number }).status === 401 ? "text-amber-400" : "text-red-400"}`} />
+              <AlertTriangle className={`h-5 w-5 ${(error as unknown as ApiError).status === 401 ? "text-amber-400" : "text-red-400"}`} />
               <div className="flex-1">
-                {(error as { status?: number }).status === 401 ? (
+                {(error as unknown as ApiError).status === 401 ? (
                   <>
                     <p className="text-sm font-medium text-amber-400">Authentication required</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Your session has expired. Please sign in again.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{(error as unknown as ApiError).tokenExisted ? "Your session has expired. Please sign in again." : "Please sign up or sign in to continue."}</p>
                   </>
                 ) : (
                   <>
                     <p className="text-sm font-medium text-red-400">Failed to load brief</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as unknown as ApiError).error || "An error occurred", (error as unknown as ApiError).tokenExisted)}</p>
                   </>
                 )}
               </div>
-              {(error as { status?: number }).status !== 401 && (
+              {(error as unknown as ApiError).status !== 401 && (
                 <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
               )}
             </CardContent>

@@ -43,10 +43,18 @@ const friendlyMessages: [string, string][] = [
   ["failed to fetch", "Unable to connect to the server. Please check your internet connection."],
 ];
 
-export function toFriendlyError(raw: string): string {
+export function toFriendlyError(raw: string, tokenExisted?: boolean): string {
   const lower = raw.toLowerCase();
   for (const [pattern, friendly] of friendlyMessages) {
-    if (lower.includes(pattern)) return friendly;
+    if (lower.includes(pattern)) {
+      if (pattern === "unauthorized") {
+        if (tokenExisted !== undefined ? tokenExisted : !!getToken()) {
+          return "Your session has expired. Please sign in again.";
+        }
+        return "Please sign up or sign in to continue.";
+      }
+      return friendly;
+    }
   }
   return raw;
 }
@@ -61,9 +69,10 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
   }
 }
 
-interface ApiError {
+export interface ApiError {
   error: string;
   status: number;
+  tokenExisted?: boolean;
 }
 
 async function refreshAndGetToken(): Promise<string | null> {
@@ -151,6 +160,7 @@ async function request<T = unknown>(
     const err: ApiError = {
       error: body.message || body.error || `Request failed with status ${res.status}`,
       status: res.status,
+      tokenExisted: !!token,
     };
     throw err;
   }
