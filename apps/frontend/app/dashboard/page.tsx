@@ -99,7 +99,7 @@ function AnimatedCounter({ value, duration = 800 }: { value: number; duration?: 
 function getScoreColor(score: number): string {
   if (score >= 75) return "text-success";
   if (score >= 50) return "text-warning";
-  if (score >= 25) return "text-orange-400";
+  if (score >= 25) return "text-warning";
   return "text-destructive";
 }
 
@@ -270,7 +270,7 @@ function DashboardContent() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-6">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo-square.png" alt="StartupOS" width={1254} height={1254} className="h-5 w-5" />
             <span className="text-xs font-bold font-mono">
@@ -281,11 +281,11 @@ function DashboardContent() {
             {user && (
               <div className="flex items-center gap-2">
                 <Link href="/blueprints">
-                  <Button variant="ghost" size="sm" className="text-[11px] font-mono h-7">My Startups</Button>
+                  <Button variant="ghost" size="sm" className="text-xs font-mono">My Startups</Button>
                 </Link>
                 <button
                   onClick={handleSignOut}
-                  className="text-[11px] font-mono text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
                 >
                   sign out
                 </button>
@@ -296,8 +296,8 @@ function DashboardContent() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-6">
-        <Link href="/blueprints" className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground mb-5 transition-colors font-mono">
-          <ArrowLeft className="h-3.5 w-3.5" /> ../startups
+        <Link href="/blueprints" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mb-6 transition-colors font-mono">
+          <ArrowLeft className="h-4 w-4" /> ../startups
         </Link>
 
         {!apiClient.getToken() ? (
@@ -368,7 +368,7 @@ function DashboardContent() {
               <span className="text-2xl mb-3">🫗</span>
               <p className="text-sm text-muted-foreground font-mono">No startup selected.</p>
               <p className="text-xs text-muted-foreground/60 mt-2">Select a startup to analyze.</p>
-              <Button size="sm" className="mt-6 font-mono font-mono" asChild>
+              <Button size="sm" className="mt-6 font-mono" asChild>
                 <Link href="/blueprints">$ view_startups --list</Link>
               </Button>
             </div>

@@ -66,7 +66,7 @@ export function RoadmapTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                   const config = statusConfig[item.status];
                   const Icon = config.icon;
                   return (
-                    <Card key={ii} className="terminal-card hover:border-primary/20 transition-all duration-300">
+                    <Card key={ii} className=" hover:border-primary/20 transition-all duration-300">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-3">
                           <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${config.color}`} />

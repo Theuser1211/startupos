@@ -90,7 +90,7 @@ export default function AboutPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-2xl border border-border bg-card p-8 hover:border-primary/30 transition-colors"
+                  className="rounded-xl border border-border bg-card p-8 hover:border-primary/30 transition-colors"
                 >
                   <div className="flex items-center gap-4 mb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">

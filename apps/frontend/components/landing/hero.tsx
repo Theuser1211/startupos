@@ -106,7 +106,7 @@ export function HeroSection() {
               <motion.div variants={itemVariants} className="mt-8 flex flex-col sm:flex-row items-start gap-3">
                 <Button
                   size="lg"
-                  className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary h-10"
+                  className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary"
                   asChild
                 >
                   <Link href="/interview">
@@ -125,7 +125,7 @@ export function HeroSection() {
                 ))}
               </motion.div>
 
-              <motion.div variants={itemVariants} className="mt-5 space-y-0.5 font-mono text-[11px] text-muted-foreground/40">
+              <motion.div variants={itemVariants} className="mt-5 space-y-0.5 font-mono text-[11px] text-muted-foreground/60">
                 {terminalLines.map((line) => (
                   <motion.p
                     key={line.text}

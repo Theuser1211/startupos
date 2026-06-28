@@ -48,7 +48,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
 
       <div className="grid gap-6 lg:grid-cols-2">
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full hover:border-primary/20 transition-all duration-300">
+          <Card className=" h-full hover:border-primary/20 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-primary" />
@@ -73,7 +73,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full hover:border-primary/20 transition-all duration-300">
+          <Card className=" h-full hover:border-primary/20 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Mic className="h-4 w-4 text-primary" />
@@ -92,7 +92,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
       </div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Heart className="h-4 w-4 text-primary" />
@@ -104,7 +104,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
               {colors.map((color) => (
                 <div key={color.name} className="space-y-2">
                   <div
-                    className="h-20 rounded border border-primary/10"
+                    className="h-20 rounded-lg border border-primary/10"
                     style={{ backgroundColor: color.hex }}
                   />
                   <div>
@@ -119,7 +119,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Palette className="h-4 w-4 text-primary" />

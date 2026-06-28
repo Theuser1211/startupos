@@ -57,11 +57,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-border flex flex-col md:flex-row items-center justify-between gap-3">
-          <p className="font-mono text-[10px] text-muted-foreground/30">
+        <div className="mt-6 pt-4 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="font-mono text-[10px] text-muted-foreground/50">
             &copy; {year} StartupOS. All rights reserved.
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground/20">
+          <p className="font-mono text-[10px] text-muted-foreground/50">
             built with late nights and terminal
           </p>
         </div>

@@ -63,11 +63,5 @@ export function logout(): void {
 }
 
 export function isAuthenticated(): boolean {
-  const token = apiClient.getToken();
-  if (!token) return false;
-  const payload = apiClient.decodeJwtPayload(token);
-  if (payload?.exp && typeof payload.exp === 'number' && payload.exp * 1000 < Date.now()) {
-    return false;
-  }
-  return true;
+  return !!apiClient.getToken();
 }

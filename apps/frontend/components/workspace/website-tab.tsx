@@ -149,7 +149,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       {genPhase === "idle" && !website && (
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card text-center p-8">
+          <Card className=" text-center p-8">
             <CardContent>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded bg-primary/10 border border-primary/20">
                 <Globe className="h-8 w-8 text-primary" />
@@ -172,7 +172,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       {genPhase === "generating" && (
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card border-primary/20 bg-[#0d0d10] text-center p-8">
+          <Card className=" border-primary/20 bg-[#0d0d10] text-center p-8">
             <CardContent>
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded bg-emerald-500/10 border border-emerald-500/20">
                 <Sparkles className="h-8 w-8 text-emerald-400" />
@@ -190,7 +190,7 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       {genPhase === "failed" && (
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card border-red-500/20 bg-[#0d0d10] text-center p-8">
+          <Card className=" border-red-500/20 bg-[#0d0d10] text-center p-8">
             <CardContent>
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded bg-red-500/10 border border-red-500/20">
                 <X className="h-6 w-6 text-red-400" />
@@ -249,7 +249,7 @@ function WebsitePreview({
   return (
     <>
       <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-3">
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-4 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded bg-emerald-500/10 border border-emerald-500/20 mx-auto mb-2">
               <Check className="h-5 w-5 text-emerald-400" />
@@ -257,7 +257,7 @@ function WebsitePreview({
             <p className="text-sm font-mono font-medium text-emerald-400">{">"} Generated</p>
           </CardContent>
         </Card>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-4 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded bg-primary/10 border border-primary/20 mx-auto mb-2">
               <Shield className="h-5 w-5 text-primary" />
@@ -265,7 +265,7 @@ function WebsitePreview({
             <p className="text-sm font-mono font-medium">{sections?.length || 0} sections</p>
           </CardContent>
         </Card>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-4 text-center">
             <div className="flex h-10 w-10 items-center justify-center rounded bg-cyan-500/10 border border-cyan-500/20 mx-auto mb-2">
               <Search className="h-5 w-5 text-cyan-400" />
@@ -303,7 +303,7 @@ function WebsitePreview({
       )}
 
       <motion.div variants={itemVariants} className="flex gap-3">
-        <Button size="lg" className="font-mono flex-1 font-mono" onClick={onDeploy} disabled={deploying || !!deployedUrl}>
+        <Button size="lg" className="font-mono flex-1" onClick={onDeploy} disabled={deploying || !!deployedUrl}>
           {deploying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Rocket className="h-4 w-4" />}
           {deployedUrl ? "$ deployed" : "$ deploy --vercel"}
         </Button>

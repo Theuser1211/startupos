@@ -141,7 +141,7 @@ export function OnboardingChecklist({
                       <ArrowRight className="h-3 w-3" />
                     </Link>
                   ) : (
-                    <span className={`text-xs ${isDone ? "text-white/60 line-through" : "text-muted-foreground"}`}>
+                    <span className={`text-xs ${isDone ? "text-white/60 line-through cursor-default" : "text-muted-foreground"}`}>
                       {item.label}
                     </span>
                   )}

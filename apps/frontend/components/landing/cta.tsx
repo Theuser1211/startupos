@@ -54,7 +54,7 @@ export function CTASection() {
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 size="lg"
-                className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary h-10"
+                className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary"
                 asChild
               >
                 <Link href="/interview">
@@ -65,7 +65,7 @@ export function CTASection() {
               </Button>
             </div>
 
-            <p className="mt-6 font-mono text-[11px] text-muted-foreground/40">
+            <p className="mt-6 font-mono text-[11px] text-muted-foreground/60">
               <span className="text-primary/60">$</span> Free tier includes full workspace access. No credit card required.
             </p>
           </div>

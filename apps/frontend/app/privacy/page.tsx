@@ -53,7 +53,7 @@ export default function PrivacyPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-2xl border border-border bg-card p-8"
+                  className="rounded-xl border border-border bg-card p-8"
                 >
                   <div className="flex items-center gap-4 mb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -70,7 +70,7 @@ export default function PrivacyPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
-              className="mt-12 rounded-2xl border border-border bg-card p-8 text-center"
+              className="mt-12 rounded-xl border border-border bg-card p-8 text-center"
             >
               <p className="text-sm text-muted-foreground">
                 Have questions about privacy?{" "}

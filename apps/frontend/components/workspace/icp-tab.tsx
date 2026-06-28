@@ -47,7 +47,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> Persona Overview</CardTitle>
           </CardHeader>
@@ -73,7 +73,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full border-emerald-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+          <Card className=" h-full border-emerald-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -94,7 +94,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full border-red-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+          <Card className=" h-full border-red-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Frown className="h-4 w-4 text-red-400" />
@@ -115,7 +115,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full border-amber-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+          <Card className=" h-full border-amber-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <UserCheck className="h-4 w-4 text-amber-400" />
@@ -137,7 +137,7 @@ export function ICPTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
       </div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card border-primary/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+        <Card className=" border-primary/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Target className="h-4 w-4 text-primary" />

@@ -112,7 +112,7 @@ function DimensionCard({ dimKey, score, description }: { dimKey: string; score: 
     : "text-red-400 border-red-500/20 bg-red-500/5";
 
   return (
-    <Card className={`terminal-card border ${color} hover:shadow-lg transition-all duration-300`}>
+    <Card className={` border ${color} hover:shadow-lg transition-all duration-300`}>
       <CardContent className="p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className={`flex h-8 w-8 items-center justify-center rounded ${
@@ -165,7 +165,7 @@ function ImprovementCard({ dimension, action, gain, risk, loss }: {
   const Icon = meta.icon;
 
   return (
-    <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+    <Card className=" hover:border-primary/20 transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex items-center gap-3 mb-3">
           <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 border border-primary/20">
@@ -287,7 +287,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-10">
       <motion.div variants={itemVariants} className="relative">
         <div className={`absolute inset-0 rounded-3xl ${config.bg} opacity-30 blur-3xl`} />
-        <Card className={`terminal-card relative overflow-hidden border-2 ${config.border} transition-all duration-500 hover:shadow-2xl ${config.glow}`}>
+        <Card className={` relative overflow-hidden border-2 ${config.border} transition-all duration-500 hover:shadow-2xl ${config.glow}`}>
           <div className={`h-1 w-full bg-gradient-to-r ${config.gradient}`} />
           <CardContent className="p-8 sm:p-12">
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
@@ -343,12 +343,12 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       <motion.div variants={itemVariants}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+          <Card className=" hover:border-primary/20 transition-all duration-300">
             <CardContent className="p-5 flex justify-center">
               <ScoreGauge value={verdict.compositeScore} label="Composite Score" icon={Scale} />
             </CardContent>
           </Card>
-          <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+          <Card className=" hover:border-primary/20 transition-all duration-300">
             <CardContent className="p-5 flex justify-center">
               <ScoreGauge value={verdict.confidence} label={`Confidence • ${verdict.confidenceLabel}`} icon={Award} />
             </CardContent>
@@ -393,7 +393,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       {verdict.fatalRisks.length > 0 && (
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card border-red-500/20 bg-[#0d0d10] overflow-hidden">
+          <Card className=" border-red-500/20 bg-[#0d0d10] overflow-hidden">
             <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-500" />
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-5">
@@ -412,7 +412,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       )}
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-5">
               <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20"><Award className="h-4 w-4 text-primary" /></div>

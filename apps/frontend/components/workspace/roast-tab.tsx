@@ -52,7 +52,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card relative overflow-hidden border-red-500/20 bg-[#0d0d10]">
+        <Card className=" relative overflow-hidden border-red-500/20 bg-[#0d0d10]">
           <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-500" />
           <div className="terminal-panel-header flex items-center gap-2 px-4 py-1.5 border-b border-red-500/10 bg-[#0d0d10]">
             <div className="flex gap-1.5">
@@ -130,7 +130,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
 
       <div className="grid gap-6 lg:grid-cols-2">
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full border-red-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+          <Card className=" h-full border-red-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
             <CardContent className="p-5">
               <h3 className="text-sm font-mono font-semibold text-red-400 mb-3"><span className="text-red-400 mr-1">!</span> Risks</h3>
               <ul className="space-y-2">
@@ -146,7 +146,7 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="terminal-card h-full border-emerald-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
+          <Card className=" h-full border-emerald-500/20 bg-[#0d0d10] hover:shadow-lg transition-all duration-300">
             <CardContent className="p-5">
               <h3 className="text-sm font-mono font-semibold text-emerald-400 mb-3"><span className="text-emerald-400 mr-1">$</span> Recommendations</h3>
               <ul className="space-y-2">

@@ -30,7 +30,7 @@ const itemVariants = {
 function getScoreColor(score: number): string {
   if (score >= 75) return "text-primary";
   if (score >= 50) return "text-warning";
-  if (score >= 25) return "text-orange-400";
+  if (score >= 25) return "text-warning";
   return "text-destructive";
 }
 
@@ -139,7 +139,7 @@ function BriefContent() {
         </div>
 
         {!apiClient.getToken() ? (
-          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+          <Card className=" border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Zap className="h-10 w-10 text-primary mb-3" />
               <p className="text-sm font-mono text-muted-foreground">Sign in to view daily briefs.</p>
@@ -156,7 +156,7 @@ function BriefContent() {
         )}
 
         {error && (
-          <Card className={`terminal-card ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
+          <Card className={` ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="flex items-center gap-3 p-6">
               <AlertTriangle className={`h-5 w-5 ${(error as unknown as ApiError).status === 401 ? "text-amber-400" : "text-red-400"}`} />
               <div className="flex-1">
@@ -180,7 +180,7 @@ function BriefContent() {
         )}
 
         {!startupId && !isLoading && !error && (
-          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+          <Card className=" border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Zap className="h-10 w-10 text-primary mb-3" />
               <p className="text-sm font-mono text-muted-foreground">No startup selected.</p>
@@ -194,7 +194,7 @@ function BriefContent() {
         {brief && (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             <motion.div variants={itemVariants}>
-              <Card className="terminal-card overflow-hidden">
+              <Card className=" overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-5">
                     <div className="relative">
@@ -209,7 +209,7 @@ function BriefContent() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <Sparkles className="h-4 w-4 text-primary" />
                         <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Daily Brief</h2>
-                        <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${getScoreColor(brief.healthScore).replace("text-", "bg-").replace("400", "500/10") + " " + getScoreColor(brief.healthScore)}`}>
+                        <span className={`text-xs font-medium px-1.5 py-0.5 rounded ${getScoreColor(brief.healthScore)}`}>
                           {getScoreLabel(brief.healthScore)}
                         </span>
                       </div>
@@ -222,7 +222,7 @@ function BriefContent() {
 
             <div className="grid gap-6 lg:grid-cols-2">
               <motion.div variants={itemVariants}>
-                <Card className="terminal-card h-full">
+                <Card className=" h-full">
                   <CardHeader className="terminal-panel-header pb-3">
                     <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -253,7 +253,7 @@ function BriefContent() {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <Card className="terminal-card h-full">
+                <Card className=" h-full">
                   <CardHeader className="terminal-panel-header pb-3">
                     <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                       <Target className="h-4 w-4 text-amber-400" />
@@ -285,7 +285,7 @@ function BriefContent() {
             </div>
 
             <motion.div variants={itemVariants}>
-              <Card className="terminal-card">
+              <Card className="">
                 <CardHeader className="terminal-panel-header pb-3">
                   <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                     <Crosshair className="h-4 w-4 text-blue-400" />
@@ -321,7 +321,7 @@ function BriefContent() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="terminal-card">
+              <Card className="">
                 <CardHeader className="terminal-panel-header pb-3">
                   <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-primary" />

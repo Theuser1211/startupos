@@ -140,10 +140,10 @@ export function FeaturesSection() {
                         {feature.description}
                       </p>
                       <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-muted-foreground/40">
+                        <span className="font-mono text-[10px] text-muted-foreground/60">
                           $ {" "}{feature.title.toLowerCase().replace(/\s+/g, "-")} --help
                         </span>
-                        <span className="text-primary/30 text-[10px] font-mono">
+                        <span className="text-primary/50 text-[10px] font-mono">
                           ✓ online
                         </span>
                       </div>

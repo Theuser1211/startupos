@@ -522,7 +522,7 @@ export default function InterviewPage() {
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-40">
-        <div className="mx-auto flex h-10 max-w-5xl items-center justify-center px-6">
+        <div className="mx-auto flex h-10 max-w-2xl items-center justify-center px-6">
           <p className="text-[10px] text-muted-foreground font-mono">StartupOS Beta · Your data stays private</p>
         </div>
       </div>

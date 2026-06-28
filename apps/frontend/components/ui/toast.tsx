@@ -82,7 +82,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 exit={{ opacity: 0, x: 80 }}
                 transition={{ duration: 0.2 }}
                 className={cn(
-                  "pointer-events-auto relative w-80 rounded-lg border border-border shadow-lg border-l-2",
+                  "pointer-events-auto relative w-full max-w-sm max-w-[calc(100vw-2rem)] rounded-lg border border-border shadow-lg border-l-2",
                   config.border,
                   config.bg,
                   "bg-[#0d0d10]/95",

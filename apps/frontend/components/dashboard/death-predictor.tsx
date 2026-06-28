@@ -86,7 +86,7 @@ function computeRisk(dashboard: DashboardData): RiskResult {
     barColor = "bg-warning";
   } else if (risk <= 75) {
     label = "High Risk";
-    color = "text-orange-400";
+    color = "text-warning";
     borderColor = "border-orange-400/20";
     barColor = "bg-orange-400";
   } else {
@@ -119,7 +119,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
   const result = useMemo(() => computeRisk(dashboard), [dashboard]);
 
   return (
-    <div className="terminal-panel h-full font-mono text-sm glow-red">
+    <div className="terminal-panel h-full font-mono text-sm shadow-[0_0_15px_rgba(239,68,68,0.3)]">
       <div className="terminal-panel-header">
         <span className="w-2 h-2 rounded-full bg-destructive/60 animate-pulse-subtle" />
         <span className="tracking-wide text-destructive">startup risk --assess</span>
@@ -145,7 +145,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
         </motion.div>
         <div>
           <div className="flex items-center gap-2">
-            <span className={`terminal-badge ${result.color}`}>{result.label}</span>
+            <span className={`sticker-badge ${result.color}`}>{result.label}</span>
             {result.risk > 50 && <AlertTriangle className="h-3.5 w-3.5 text-warning" />}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -187,7 +187,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
             {result.factors.slice(0, 4).map((factor, i) => (
               <motion.div
                 key={factor.label}
-                className="flex items-center justify-between rounded-md border border-primary/5 bg-surface px-3 py-1.5 terminal-row"
+                className="flex items-center justify-between rounded-md border border-primary/5 bg-accent px-3 py-1.5 terminal-row"
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.08 }}
@@ -216,7 +216,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
             {result.recommendations.slice(0, 3).map((rec, i) => (
               <motion.div
                 key={rec}
-                className="flex items-start gap-2 rounded-md border border-primary/5 bg-surface px-3 py-1.5 terminal-row"
+                className="flex items-start gap-2 rounded-md border border-primary/5 bg-primary/10 px-3 py-1.5 terminal-row"
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + i * 0.08 }}

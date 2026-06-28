@@ -60,13 +60,13 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
       {founderName && (
         <div className="px-5 py-4 border-b border-border">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg border border-primary/30 bg-surface-green flex items-center justify-center text-xs font-bold text-primary font-mono">
+            <div className="h-8 w-8 rounded-lg border border-primary/30 bg-primary/10 flex items-center justify-center text-xs font-bold text-primary font-mono">
               {founderName.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{founderName}</p>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
-                <span className="status-dot" />
+                <span className="status-dot status-dot-live" />
                 {stage ? `$ stage: ${stage}` : "$ founder"}
               </div>
             </div>

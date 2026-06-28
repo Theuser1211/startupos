@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -52,7 +52,7 @@ export default function BlueprintsPage() {
               {startups?.length || 0} startup{(startups?.length || 0) !== 1 ? "s" : ""} saved
             </p>
           </div>
-          <Button size="sm" className="text-xs font-mono border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary h-8" asChild>
+          <Button size="sm" className="text-xs font-mono border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary" asChild>
             <Link href="/interview"><Plus className="h-4 w-4" /> New Startup</Link>
           </Button>
         </div>
@@ -60,7 +60,7 @@ export default function BlueprintsPage() {
         {!apiClient.getToken() ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
                 <Sparkles className="h-7 w-7 text-primary" />
               </div>
               <h2 className="text-lg font-semibold mb-2 font-mono">Sign in to save startups</h2>
@@ -105,7 +105,7 @@ export default function BlueprintsPage() {
         {!isLoading && !error && (!startups || startups.length === 0) && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
                 <Sparkles className="h-7 w-7 text-primary" />
               </div>
               <h2 className="text-lg font-semibold mb-2 font-mono">No startups yet</h2>
@@ -195,21 +195,29 @@ function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () =>
         <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
-      {open && (
-        <div className="absolute right-0 top-full mt-1 w-48 rounded border border-border bg-card shadow-xl z-50 overflow-hidden">
-          <div className="px-3 py-2 border-b border-border">
-            <p className="text-xs font-medium truncate font-mono">{email}</p>
-            <p className="text-[10px] text-muted-foreground font-mono">$ whoami</p>
-          </div>
-          <div className="p-1">
-            <button onClick={() => { setOpen(false); onSignOut(); }}
-              className="flex w-full items-center gap-2 rounded px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors font-mono"
-            >
-              <LogOut className="h-3.5 w-3.5" /> sign out
-            </button>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-full mt-1 w-48 rounded border border-border bg-card shadow-xl z-50 overflow-hidden"
+          >
+            <div className="px-3 py-2 border-b border-border">
+              <p className="text-xs font-medium truncate font-mono">{email}</p>
+              <p className="text-[10px] text-muted-foreground font-mono">$ whoami</p>
+            </div>
+            <div className="p-1">
+              <button onClick={() => { setOpen(false); onSignOut(); }}
+                className="flex w-full items-center gap-2 rounded px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-colors font-mono"
+              >
+                <LogOut className="h-3.5 w-3.5" /> sign out
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

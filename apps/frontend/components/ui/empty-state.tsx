@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { type LucideIcon } from "lucide-react";
+import { type LucideIcon, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 interface EmptyStateProps {
@@ -70,7 +70,7 @@ export function EmptyState({
         {actionLabel && actionHref && (
           <Button asChild>
             <Link href={actionHref}>
-              {">"}
+              <ArrowRight className="h-4 w-4" />
               {actionLabel}
             </Link>
           </Button>

@@ -74,7 +74,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="terminal-card hover:border-primary/20 transition-all duration-300">
+            <Card key={stat.label} className=" hover:border-primary/20 transition-all duration-300">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg border border-primary/10`}>
@@ -130,7 +130,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
+        <Card className=" hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <CardTitle className="text-lg mono-label"><span className="text-primary mr-2">$</span> Company Snapshot</CardTitle>
           </CardHeader>

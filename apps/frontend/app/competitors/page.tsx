@@ -111,11 +111,11 @@ function CompetitorsContent() {
               <Crosshair className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold font-mono">$ competitors --track</h1>
+              <h1 className="text-lg font-bold">$ competitors --track</h1>
               <p className="text-xs text-muted-foreground font-mono">Monitor competitors and detect changes</p>
             </div>
           </div>
-          <Button size="sm" className="font-mono text-xs font-mono" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
+          <Button size="sm" className="font-mono text-xs" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
             <Plus className="h-4 w-4" /> Add Competitor
           </Button>
         </div>
@@ -139,7 +139,7 @@ function CompetitorsContent() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <label className="mono-label text-xs">Name *</label>
-                      <Input className="terminal-input"
+                      <Input
                         placeholder="e.g. Acme Corp"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -147,7 +147,7 @@ function CompetitorsContent() {
                     </div>
                     <div className="space-y-1.5">
                       <label className="mono-label text-xs">Website *</label>
-                      <Input className="terminal-input"
+                      <Input
                         placeholder="e.g. https://acme.com"
                         value={formData.website}
                         onChange={(e) => setFormData({ ...formData, website: e.target.value })}
@@ -156,7 +156,7 @@ function CompetitorsContent() {
                   </div>
                   <div className="space-y-1.5">
                     <label className="mono-label text-xs">Description</label>
-                    <Textarea className="terminal-input"
+                    <Textarea
                       placeholder="What does this competitor do?"
                       rows={2}
                       value={formData.description}
@@ -177,7 +177,7 @@ function CompetitorsContent() {
         </AnimatePresence>
 
         {!apiClient.getToken() ? (
-          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+          <Card className=" border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Crosshair className="h-10 w-10 text-primary mb-3" />
               <p className="text-sm font-mono text-muted-foreground">Sign in to track competitors.</p>
@@ -194,7 +194,7 @@ function CompetitorsContent() {
         )}
 
         {error && (
-          <Card className={`terminal-card ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
+          <Card className={` ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="flex items-center gap-3 p-6">
               <AlertTriangle className={`h-5 w-5 ${(error as unknown as ApiError).status === 401 ? "text-amber-400" : "text-red-400"}`} />
               <div className="flex-1">
@@ -218,7 +218,7 @@ function CompetitorsContent() {
         )}
 
         {!startupId && !isLoading && !error && (
-          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+          <Card className=" border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Crosshair className="h-10 w-10 text-primary mb-3" />
               <p className="text-sm font-mono text-muted-foreground">Select a startup to view competitor intelligence</p>
@@ -233,12 +233,12 @@ function CompetitorsContent() {
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             {competitors.length === 0 ? (
               <motion.div variants={itemVariants}>
-                <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
+                <Card className=" border-[rgba(34,197,94,0.12)]">
                   <CardContent className="flex flex-col items-center py-16 text-center">
                     <Search className="h-10 w-10 text-primary mb-3" />
                     <p className="text-sm font-mono">No competitors tracked yet</p>
                     <p className="text-xs font-mono text-muted-foreground mt-1 max-w-sm">No competitors tracked yet. Add your first competitor.</p>
-                    <Button size="sm" className="mt-4 font-mono text-xs font-mono" onClick={() => setShowAddForm(true)}>
+                    <Button size="sm" className="mt-4 font-mono text-xs" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-4 w-4" /> Add Your First Competitor
                     </Button>
                   </CardContent>
@@ -248,7 +248,7 @@ function CompetitorsContent() {
               competitors.map((competitor, i) => (
                 <motion.div key={competitor.id} variants={itemVariants}>
                   <Card
-                    className="terminal-card cursor-pointer hover:border-primary/40 transition-all duration-200"
+                    className=" cursor-pointer hover:border-primary/40 transition-all duration-200"
                     onClick={() => setExpandedId(expandedId === competitor.id ? null : competitor.id)}
                   >
                     <CardContent className="p-5">
@@ -259,9 +259,9 @@ function CompetitorsContent() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
-                              <h3 className="font-semibold">{competitor.name}</h3>
+                              <h3 className="font-semibold truncate">{competitor.name}</h3>
                               {competitor.changes.length > 0 && (
-                                <Badge className="terminal-badge text-[10px] px-1.5 py-0.5 text-amber-400 border-amber-500/30 bg-amber-500/10">
+                                <Badge className="sticker-badge text-[10px] px-1.5 py-0.5 text-amber-400 border-amber-500/30 bg-amber-500/10">
                                   {competitor.changes.length} change{competitor.changes.length !== 1 ? "s" : ""}
                                 </Badge>
                               )}
@@ -274,7 +274,7 @@ function CompetitorsContent() {
                               onClick={(e) => e.stopPropagation()}
                             >
                               <Globe className="h-3 w-3" />
-                              {competitor.website.replace(/https?:\/\//, "")}
+                              <span className="truncate max-w-[200px] inline-block align-middle">{competitor.website.replace(/https?:\/\//, "")}</span>
                               <ExternalLink className="h-2.5 w-2.5" />
                             </a>
                             {competitor.description && (

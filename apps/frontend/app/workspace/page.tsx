@@ -195,7 +195,7 @@ function WorkspaceContent() {
       const tokenExisted = (blueprintQueryError as unknown as ApiError)?.tokenExisted;
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
-          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-warning/30 bg-surface-amber"}`}>
+          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-warning/30 bg-amber-500/5"}`}>
             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
               <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-warning"}`} />
               <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
@@ -240,7 +240,7 @@ function WorkspaceContent() {
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
           <h2 className="text-lg font-bold font-mono">$ blueprint --not-found</h2>
@@ -260,7 +260,7 @@ function WorkspaceContent() {
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
           <h2 className="text-lg font-bold font-mono">$ startup --not-selected</h2>

@@ -167,7 +167,7 @@ export function FortuneCookie() {
   }, [loadFortune, newFortune]);
 
   return (
-    <div className="terminal-panel h-full font-mono text-sm glow-green">
+    <div className="terminal-panel h-full font-mono text-sm shadow-[0_0_15px_rgba(34,197,94,0.3)]">
       <div className="terminal-panel-header">
         <span className="w-2 h-2 rounded-full bg-primary/60 animate-pulse-subtle" />
         <span className="tracking-wide text-primary">startup fortune</span>
@@ -188,7 +188,7 @@ export function FortuneCookie() {
         </AnimatePresence>
         <button
           onClick={newFortune}
-          className="text-[10px] text-primary border border-primary/20 rounded px-2.5 py-1 hover:border-primary/40 transition-all font-mono"
+          className="text-[10px] text-primary border border-primary/20 rounded-lg px-2.5 py-1 hover:border-primary/40 transition-all font-mono"
         >
           $ roll_fortune
         </button>

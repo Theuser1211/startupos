@@ -65,7 +65,7 @@ export default function ContactPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="rounded-2xl border border-border bg-card p-8 hover:border-primary/30 transition-colors group"
+                  className="rounded-xl border border-border bg-card p-8 hover:border-primary/30 transition-colors group"
                 >
                   <div className="flex items-center gap-4 mb-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
@@ -88,7 +88,7 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="rounded-2xl border border-border bg-card p-8 text-center"
+              className="rounded-xl border border-border bg-card p-8 text-center"
             >
               <h2 className="text-xl font-semibold mb-2">Building something amazing?</h2>
               <p className="text-sm text-muted-foreground mb-6">
