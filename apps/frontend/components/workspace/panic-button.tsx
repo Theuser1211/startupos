@@ -112,12 +112,12 @@ export function PanicButton({ blueprint }: PanicButtonProps) {
     <>
       <motion.button
         onClick={handleOpen}
-        className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300"
+        className="flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-mono font-medium transition-all duration-200 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <span className="text-base shrink-0">😭</span>
-        <span className="truncate">I&apos;m Stuck</span>
+        <span className="text-xs shrink-0 text-red-400">[!]</span>
+        <span className="truncate">$ panic --stuck</span>
       </motion.button>
 
       <AnimatePresence>
@@ -136,70 +136,60 @@ export function PanicButton({ blueprint }: PanicButtonProps) {
               onClick={() => setOpen(false)}
             />
             <motion.div
-              className="relative w-full max-w-md rounded-2xl border border-glass-border bg-card shadow-2xl overflow-hidden"
+              className="relative w-full max-w-md border border-primary/20 bg-[#0d0d10] shadow-2xl overflow-hidden terminal-window"
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
-              <div className="flex items-center justify-between p-6 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
-                    <span className="text-lg">😭</span>
+              <div className="terminal-panel-header flex items-center justify-between p-4 border-b border-[rgba(34,197,94,0.12)]">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-amber-500" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
                   </div>
-                  <div>
-                    <h2 className="text-lg font-display font-bold">Panic Button</h2>
-                    <p className="text-xs text-muted-foreground">Let&apos;s get you unstuck</p>
-                  </div>
+                  <span className="text-[10px] text-muted-foreground font-mono ml-2">$ panic --modal</span>
                 </div>
                 <button
                   onClick={() => setOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                  className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors font-mono text-xs"
                   aria-label="Close"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-3 w-3" />
                 </button>
               </div>
 
-              <div className="px-6 pb-6 space-y-4">
-                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
+              <div className="px-6 py-4 space-y-4">
+                <div className="p-4 bg-[#0d0d10] border border-[rgba(34,197,94,0.12)] rounded">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/10">
-                      <Lightbulb className="h-3.5 w-3.5 text-blue-400" />
-                    </div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">Do this now</span>
+                    <span className="text-xs font-mono text-primary">$ action</span>
                   </div>
-                  <p className="text-sm">{action}</p>
+                  <p className="text-sm font-mono">{action}</p>
                 </div>
 
-                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <div className="p-4 bg-[#0d0d10] border border-emerald-500/20 rounded">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/10">
-                      <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-                    </div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">Remember this</span>
+                    <span className="text-xs font-mono text-emerald-400">$ motivation</span>
                   </div>
-                  <p className="text-sm italic">&ldquo;{motivation}&rdquo;</p>
+                  <p className="text-sm font-mono italic text-emerald-400/80">&ldquo;{motivation}&rdquo;</p>
                 </div>
 
-                <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                <div className="p-4 bg-[#0d0d10] border border-amber-500/20 rounded">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/10">
-                      <Flame className="h-3.5 w-3.5 text-amber-400" />
-                    </div>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-amber-400">Tough love</span>
+                    <span className="text-xs font-mono text-amber-400">$ roast</span>
                   </div>
-                  <p className="text-sm">{roast}</p>
+                  <p className="text-sm font-mono text-amber-300/80">{roast}</p>
                 </div>
 
                 <motion.button
                   onClick={generate}
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-primary/10 border border-primary/20 text-primary py-2.5 text-sm font-medium hover:bg-primary/20 transition-all"
+                  className="flex items-center justify-center gap-2 w-full rounded border border-primary/20 bg-[#0d0d10] text-primary py-2.5 text-sm font-mono hover:bg-primary/5 transition-all"
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <RefreshCw className="h-4 w-4" />
-                  Give me another
+                  $  next_panic
                 </motion.button>
               </div>
             </motion.div>

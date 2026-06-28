@@ -119,13 +119,15 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
   const result = useMemo(() => computeRisk(dashboard), [dashboard]);
 
   return (
-    <div className="terminal-card p-5 h-full font-mono text-sm space-y-4">
-      <div className="flex items-center gap-2 text-xs text-destructive/60 mb-1">
+    <div className="terminal-panel h-full font-mono text-sm glow-red">
+      <div className="terminal-panel-header">
         <span className="w-2 h-2 rounded-full bg-destructive/60 animate-pulse-subtle" />
-        <span className="tracking-wide">startup risk --assess</span>
+        <span className="tracking-wide text-destructive">startup risk --assess</span>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="terminal-panel-body space-y-4">
+
+        <div className="flex items-center gap-4">
         <motion.div
           className={`flex h-16 w-16 items-center justify-center rounded-lg border ${result.borderColor} ${result.color.replace("text-", "bg-").replace("success", "success/10").replace("warning", "warning/10").replace("destructive", "destructive/10").replace("orange-400", "orange-400/10")}`}
           initial={{ scale: 0.8, opacity: 0 }}
@@ -143,7 +145,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
         </motion.div>
         <div>
           <div className="flex items-center gap-2">
-            <span className={`text-sm font-semibold ${result.color}`}>{result.label}</span>
+            <span className={`terminal-badge ${result.color}`}>{result.label}</span>
             {result.risk > 50 && <AlertTriangle className="h-3.5 w-3.5 text-warning" />}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -185,7 +187,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
             {result.factors.slice(0, 4).map((factor, i) => (
               <motion.div
                 key={factor.label}
-                className="flex items-center justify-between rounded-md border border-border bg-surface px-3 py-1.5"
+                className="flex items-center justify-between rounded-md border border-primary/5 bg-surface px-3 py-1.5 terminal-row"
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.5 + i * 0.08 }}
@@ -195,7 +197,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
                   <span className="text-muted-foreground">{factor.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] tracking-wider text-muted-foreground/60">
+                  <span className={`text-[10px] tracking-wider ${result.color}`}>
                     {asciiBar(100 - factor.contribution, 100, 6)}
                   </span>
                   <span className={`text-xs font-mono ${result.color}`}>-{factor.contribution}%</span>
@@ -215,7 +217,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
             {result.recommendations.slice(0, 3).map((rec, i) => (
               <motion.div
                 key={rec}
-                className="flex items-start gap-2 rounded-md border border-border bg-surface px-3 py-1.5"
+                className="flex items-start gap-2 rounded-md border border-primary/5 bg-surface px-3 py-1.5 terminal-row"
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + i * 0.08 }}
@@ -227,6 +229,7 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

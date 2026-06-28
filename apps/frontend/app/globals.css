@@ -295,3 +295,141 @@ body {
 .glow-green-btn:hover {
   box-shadow: 0 0 32px rgba(34, 197, 94, 0.2);
 }
+
+/* Terminal panel wrapper */
+.terminal-panel {
+  background: #0d0d10;
+  border: 1px solid rgba(34, 197, 94, 0.1);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.terminal-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.015);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-muted-foreground);
+}
+.terminal-panel-body {
+  padding: 16px;
+}
+
+/* Terminal input fields */
+.terminal-input {
+  background: #0d0d10 !important;
+  border: 1px solid rgba(34, 197, 94, 0.15) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--color-foreground) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.8125rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+.terminal-input:focus {
+  border-color: rgba(34, 197, 94, 0.4) !important;
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15) !important;
+  outline: none !important;
+}
+.terminal-input::placeholder {
+  color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Terminal progress bar */
+.terminal-progress-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 2px;
+  height: 4px;
+  overflow: hidden;
+}
+.terminal-progress-fill {
+  background: var(--color-primary);
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+/* Terminal badge style */
+.terminal-badge {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  border: 1px solid rgba(34, 197, 94, 0.15);
+  background: rgba(34, 197, 94, 0.05);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* Terminal list item */
+.terminal-list-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+.terminal-list-item:hover {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* Terminal row hover */
+.terminal-row {
+  transition: all 0.15s ease;
+}
+.terminal-row:hover {
+  background: rgba(34, 197, 94, 0.015);
+  border-color: rgba(34, 197, 94, 0.08);
+}
+
+/* Sticker hover */
+.sticker-hover {
+  transition: all 0.2s ease;
+}
+.sticker-hover:hover {
+  transform: rotate(-2deg) scale(1.03);
+}
+
+/* Terminal divider line */
+.terminal-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.04);
+  margin: 16px 0;
+}
+
+/* Monospace label */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted-foreground);
+}
+
+/* Green glow focus ring */
+.focus-glow:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 1px var(--color-background), 0 0 0 3px rgba(34, 197, 94, 0.25) !important;
+}
+
+/* Terminal status dot */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot-live { background: var(--color-primary); box-shadow: 0 0 6px rgba(34, 197, 94, 0.5); }
+.status-dot-warn { background: var(--color-warning); box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
+.status-dot-error { background: var(--color-destructive); box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+
+/* Terminal cursor */
+.terminal-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--color-primary);
+  animation: terminal-blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}

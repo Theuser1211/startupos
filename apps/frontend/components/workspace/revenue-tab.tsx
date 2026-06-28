@@ -36,68 +36,68 @@ export function RevenueTab({ blueprint }: { blueprint?: StartupBlueprint | null 
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-3 mb-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
-            <DollarSign className="h-5 w-5 text-white" />
+          <div className="flex h-10 w-10 items-center justify-center rounded bg-emerald-500/10 border border-emerald-500/20">
+            <DollarSign className="h-5 w-5 text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-display font-bold">Revenue Model</h1>
-            <p className="text-sm text-muted-foreground">{revenue.model}</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold"><span className="text-emerald-400 font-mono text-xl">$</span> Revenue Model</h1>
+            <p className="text-sm text-muted-foreground font-mono text-xs">{revenue.model}</p>
           </div>
         </div>
       </motion.div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <motion.div variants={itemVariants}>
-          <Card className="h-full hover:border-primary/20 transition-all duration-300">
+          <Card className="terminal-card h-full hover:border-primary/20 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <PiggyBank className="h-4 w-4 text-primary" />
-                <CardTitle className="text-sm">Pricing</CardTitle>
+                <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> Pricing</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-bold mb-1">{revenue.pricing}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{revenue.justification}</p>
+              <p className="text-lg font-bold font-mono mb-1">{revenue.pricing}</p>
+              <p className="text-xs font-mono text-muted-foreground leading-relaxed">{revenue.justification}</p>
             </CardContent>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="h-full hover:border-primary/20 transition-all duration-300">
+          <Card className="terminal-card h-full hover:border-primary/20 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-primary" />
-                <CardTitle className="text-sm">EOY Target</CardTitle>
+                <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> EOY Target</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-lg font-bold">${eoyTarget.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Projected annual recurring revenue</p>
+              <p className="text-lg font-bold font-mono text-emerald-400">${eoyTarget.toLocaleString()}</p>
+              <p className="text-xs font-mono text-muted-foreground">Projected annual recurring revenue</p>
             </CardContent>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <Card className="h-full hover:border-primary/20 transition-all duration-300">
+          <Card className="terminal-card h-full hover:border-primary/20 transition-all duration-300">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                <CardTitle className="text-sm">Funding</CardTitle>
+                <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> Funding</CardTitle>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-sm font-medium">{revenue.funding}</p>
+              <p className="text-sm font-mono font-medium">{revenue.funding}</p>
             </CardContent>
           </Card>
         </motion.div>
       </div>
 
       <motion.div variants={itemVariants}>
-        <Card className="hover:border-primary/20 transition-all duration-300">
+        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <div className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-primary" />
-              <CardTitle className="text-sm">Revenue Projections</CardTitle>
+              <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> Revenue Projections</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -116,30 +116,30 @@ export function RevenueTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                       initial={{ height: 0 }}
                       animate={{ height: `${height}%` }}
                       transition={{ duration: 0.6, delay: i * 0.05, ease: "easeOut" }}
-                      className={`w-full rounded-lg transition-all duration-300 relative ${
+                      className={`w-full rounded transition-all duration-300 relative ${
                         proj.actual !== null
-                          ? "bg-gradient-to-t from-primary to-secondary"
-                          : "bg-gradient-to-t from-primary/30 to-secondary/30"
-                      } ${isHovered ? "scale-105 shadow-lg shadow-primary/30" : ""}`}
+                          ? "bg-emerald-500/80"
+                          : "bg-emerald-500/20"
+                      } ${isHovered ? "scale-105 shadow-lg shadow-emerald-500/30" : ""}`}
                     >
                       {isHovered && (
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-card border border-glass-border rounded-lg px-2 py-1 text-xs font-medium whitespace-nowrap z-10">
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0d0d10] border border-primary/20 rounded px-2 py-1 text-xs font-mono font-medium whitespace-nowrap z-10">
                           ${proj.projected.toLocaleString()}
                         </div>
                       )}
                     </motion.div>
-                    <span className="text-[10px] text-muted-foreground mt-1">{proj.month}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground mt-1">{proj.month}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
+            <div className="flex items-center gap-4 mt-4 text-xs font-mono text-muted-foreground">
               <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded bg-gradient-to-t from-primary to-secondary" />
+                <div className="h-3 w-3 rounded bg-emerald-500/80" />
                 <span>Projected</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-3 w-3 rounded bg-gradient-to-t from-primary/30 to-secondary/30" />
+                <div className="h-3 w-3 rounded bg-emerald-500/20" />
                 <span>Future project</span>
               </div>
             </div>
@@ -148,15 +148,15 @@ export function RevenueTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="hover:border-primary/20 transition-all duration-300">
+        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
           <CardHeader>
             <div className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-primary" />
-              <CardTitle className="text-sm">Analysis</CardTitle>
+              <CardTitle className="text-sm mono-label"><span className="text-primary mr-1">$</span> Analysis</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground leading-relaxed">{revenue.analysis}</p>
+            <p className="text-sm font-mono text-muted-foreground leading-relaxed">{revenue.analysis}</p>
           </CardContent>
         </Card>
       </motion.div>

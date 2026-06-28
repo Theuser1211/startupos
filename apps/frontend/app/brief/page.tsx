@@ -95,7 +95,7 @@ function BriefContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="glass-strong border-b border-glass-border">
+      <header className="bg-[#0d0d10] border-b border-[rgba(34,197,94,0.12)]">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
@@ -117,7 +117,7 @@ function BriefContent() {
         <div className="flex items-center justify-between mb-6">
           <Link
             href={startupId ? `/dashboard?id=${startupId}` : "/blueprints"}
-            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-primary transition-colors"
           >
             <ArrowLeft className="h-4 w-4" /> Back
           </Link>
@@ -131,7 +131,7 @@ function BriefContent() {
                 })}
               </span>
             )}
-            <Button size="sm" variant="ghost" className="h-7 text-xs gap-1" onClick={handleRefresh} disabled={isFetching}>
+            <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 font-mono" onClick={handleRefresh} disabled={isFetching}>
               <RefreshCw className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`} />
               Refresh
             </Button>
@@ -140,12 +140,12 @@ function BriefContent() {
 
         {isLoading && (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 text-primary animate-spin" />
+            <p className="font-mono text-sm text-primary animate-pulse">$ loading daily brief...</p>
           </div>
         )}
 
         {error && (
-          <Card className="border-red-500/30 bg-red-500/5">
+          <Card className="terminal-card border-red-500/30 bg-red-500/5">
             <CardContent className="flex items-center gap-3 p-6">
               <AlertTriangle className="h-5 w-5 text-red-400" />
               <div className="flex-1">
@@ -158,10 +158,10 @@ function BriefContent() {
         )}
 
         {!startupId && !isLoading && !error && (
-          <Card className="border-glass-border bg-glass-bg">
+          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
-              <Zap className="h-10 w-10 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground">Select a startup to view your daily brief</p>
+              <Zap className="h-10 w-10 text-primary mb-3" />
+              <p className="text-sm font-mono text-muted-foreground">No startup selected.</p>
               <Button size="sm" className="mt-4" asChild>
                 <Link href="/blueprints">View My Startups</Link>
               </Button>
@@ -172,8 +172,7 @@ function BriefContent() {
         {brief && (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
             <motion.div variants={itemVariants}>
-              <Card className="border-glass-border bg-glass-bg overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-500" />
+              <Card className="terminal-card overflow-hidden">
                 <CardContent className="p-6">
                   <div className="flex items-start gap-5">
                     <div className="relative">
@@ -201,10 +200,10 @@ function BriefContent() {
 
             <div className="grid gap-6 lg:grid-cols-2">
               <motion.div variants={itemVariants}>
-                <Card className="border-glass-border bg-glass-bg h-full">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                <Card className="terminal-card h-full">
+                  <CardHeader className="terminal-panel-header pb-3">
+                    <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
                       Wins
                     </CardTitle>
                   </CardHeader>
@@ -232,9 +231,9 @@ function BriefContent() {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <Card className="border-glass-border bg-glass-bg h-full">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Card className="terminal-card h-full">
+                  <CardHeader className="terminal-panel-header pb-3">
+                    <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                       <Target className="h-4 w-4 text-amber-400" />
                       Priorities
                     </CardTitle>
@@ -264,9 +263,9 @@ function BriefContent() {
             </div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-glass-border bg-glass-bg">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Card className="terminal-card">
+                <CardHeader className="terminal-panel-header pb-3">
+                  <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
                     <Crosshair className="h-4 w-4 text-blue-400" />
                     Competitor Updates
                   </CardTitle>
@@ -300,10 +299,10 @@ function BriefContent() {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Card className="border-glass-border bg-glass-bg">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <TrendingUp className="h-4 w-4 text-purple-400" />
+              <Card className="terminal-card">
+                <CardHeader className="terminal-panel-header pb-3">
+                  <CardTitle className="text-sm font-mono font-semibold flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
                     Health Score Trend
                   </CardTitle>
                 </CardHeader>

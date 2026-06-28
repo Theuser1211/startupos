@@ -31,7 +31,7 @@ export default function BlueprintsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="glass-strong border-b border-glass-border">
+      <header className="bg-[#0d0d10] border-b border-[rgba(34,197,94,0.12)]">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
@@ -52,7 +52,7 @@ export default function BlueprintsPage() {
               {startups?.length || 0} startup{(startups?.length || 0) !== 1 ? "s" : ""} saved
             </p>
           </div>
-          <Button size="sm" className="glow-purple" asChild>
+          <Button size="sm" className="glow-green-btn text-xs font-mono" asChild>
             <Link href="/interview"><Plus className="h-4 w-4" /> New Startup</Link>
           </Button>
         </div>
@@ -60,8 +60,7 @@ export default function BlueprintsPage() {
         {isLoading && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center space-y-4">
-              <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
-              <p className="text-sm text-muted-foreground">Loading your startups...</p>
+              <p className="font-mono text-sm text-primary animate-pulse">$ loading startups...</p>
             </div>
           </div>
         )}
@@ -81,12 +80,12 @@ export default function BlueprintsPage() {
         {!isLoading && !error && (!startups || startups.length === 0) && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500/20 to-indigo-600/20 border border-purple-500/10">
-                <Sparkles className="h-7 w-7 text-purple-400" />
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+                <Sparkles className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="text-lg font-semibold mb-2">No startups yet</h2>
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">Complete the founder interview to generate your first startup blueprint.</p>
-              <Button className="glow-purple" asChild>
+              <h2 className="text-lg font-semibold mb-2 font-mono">No startups yet</h2>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">No startups yet. Complete the founder interview to create your first blueprint.</p>
+              <Button className="glow-green-btn text-xs font-mono" asChild>
                 <Link href="/interview"><Plus className="h-4 w-4" /> Start Interview</Link>
               </Button>
             </div>
@@ -101,11 +100,11 @@ export default function BlueprintsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="group relative rounded-2xl border border-glass-border bg-glass-bg backdrop-blur-xl p-5 hover:border-primary/30 transition-all duration-300"
+                className="terminal-card group relative p-5 hover:border-primary/40 transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/20 to-indigo-600/20">
-                    <Sparkles className="h-4 w-4 text-purple-400" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                    <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                 </div>
 
@@ -164,14 +163,14 @@ function ProfileDropdown({ email, onSignOut }: { email: string; onSignOut: () =>
       <button onClick={() => setOpen(!open)} aria-label="User menu" aria-expanded={open}
         className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
       >
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 text-[10px] font-bold text-white">{initial}</div>
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/80 text-[10px] font-bold text-white">{initial}</div>
         <span className="hidden sm:inline max-w-[140px] truncate">{email}</span>
         <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-          className="absolute right-0 top-full mt-1 w-52 rounded-xl border border-glass-border bg-background/95 backdrop-blur-xl shadow-xl z-50 overflow-hidden"
+          className="absolute right-0 top-full mt-1 w-52 rounded-xl border border-[rgba(34,197,94,0.12)] bg-[#0d0d10] shadow-xl z-50 overflow-hidden"
         >
           <div className="px-3 py-2.5 border-b border-glass-border">
             <p className="text-xs font-medium truncate">{email}</p>

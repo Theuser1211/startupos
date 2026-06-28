@@ -126,7 +126,7 @@ function extractCompany(idea: string): string {
 function ReviewLine({ label, value }: { label: string; value?: string }) {
   if (!value) return null;
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-start gap-2 font-mono text-xs">
       <span className="text-muted-foreground shrink-0 w-16">{label}:</span>
       <span className="text-foreground">{value}</span>
     </div>
@@ -264,22 +264,22 @@ export default function InterviewPage() {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
       <div className="absolute inset-0 grid-bg" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-purple-600/10 blur-[120px]" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px]" />
 
-      <div className="fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">
+      <div className="fixed top-0 left-0 right-0 z-40 bg-[#0d0d10] border-b border-[rgba(34,197,94,0.12)]">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
-            <Badge variant="outline" className="text-xs">Step {currentStep + 1} of {steps.length}</Badge>
+            <Badge variant="outline" className="text-xs font-mono">Step {currentStep + 1} of {steps.length}</Badge>
           </div>
         </div>
       </div>
 
       <div className="fixed top-14 left-0 right-0 h-0.5 bg-white/5 z-40">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary to-secondary"
+          className="h-full bg-primary"
           initial={{ width: "0%" }}
           animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
@@ -289,7 +289,7 @@ export default function InterviewPage() {
       <div className="fixed top-[62px] left-0 right-0 z-30 flex justify-center pt-2">
         <div className="flex items-center gap-1.5">
           {steps.slice(0, -1).map((s, i) => (
-            <div key={s.id} className={`h-1.5 w-6 rounded-full transition-all duration-300 ${i <= currentStep ? "bg-primary/60" : "bg-white/10"}`} />
+            <div key={s.id} className={`h-1.5 w-6 rounded-full transition-all duration-300 ${i <= currentStep ? "bg-primary" : "bg-[rgba(34,197,94,0.12)]"}`} />
           ))}
         </div>
       </div>
@@ -312,9 +312,10 @@ export default function InterviewPage() {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
                   >
-                    <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-purple-400 shadow-xl shadow-purple-500/30">
-                      <Sparkles className="h-8 w-8 text-white" />
+                    <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+                      <Sparkles className="h-8 w-8 text-primary" />
                     </div>
+                    <p className="font-mono text-sm text-primary mb-4 animate-pulse">$ generating blueprint...</p>
                     <h2 className="text-2xl font-display font-bold mb-8">Generating Your Blueprint</h2>
                     <StagedProgress stages={blueprintStages} currentStage={genStage} progress={genProgress} />
                   </motion.div>
@@ -373,7 +374,7 @@ export default function InterviewPage() {
                       <span className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-400" /> Startup Roast</span>
                     </div>
 
-                    <Button size="xl" className="glow-purple px-12 text-base" onClick={handleFinish} disabled={isSaving}>
+                    <Button size="xl" className="glow-green-btn px-12 text-base font-mono" onClick={handleFinish} disabled={isSaving}>
                       {isSaving ? "Saving..." : "Enter Workspace"}
                       {!isSaving && <ArrowRight className="h-4 w-4 ml-1" />}
                     </Button>
@@ -394,7 +395,7 @@ export default function InterviewPage() {
               ) : (
                 <div className="py-8">
                   <div className="mb-2">
-                    <span className="text-xs font-medium text-primary uppercase tracking-wider">Question {currentStep + 1} of {steps.length - 1}</span>
+                    <span className="mono-label text-xs text-primary uppercase tracking-wider">Question {currentStep + 1} of {steps.length - 1}</span>
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-display font-bold mb-2">{step.title}</h2>
                   <p className="text-muted-foreground mb-10 leading-relaxed">{step.description}</p>
@@ -411,9 +412,9 @@ export default function InterviewPage() {
 
                       return (
                         <div key={field.id}>
-                          <label htmlFor={field.id} className="block text-sm font-medium text-foreground mb-2">{field.label}</label>
+                          <label htmlFor={field.id} className="mono-label block text-sm mb-2">{field.label}</label>
                           {field.type === "textarea" ? (
-                            <Textarea id={field.id} placeholder={field.placeholder} value={currentValue} onChange={(e) => updateField(fieldId, e.target.value)} className="min-h-[100px]" />
+                            <Textarea id={field.id} placeholder={field.placeholder} value={currentValue} onChange={(e) => updateField(fieldId, e.target.value)} className="terminal-input min-h-[100px]" />
                           ) : field.type === "select" || field.type === "conditional-price" ? (
                             <Select value={currentValue} onValueChange={(value: string) => updateField(fieldId, value)}>
                               <SelectTrigger id={field.id}><SelectValue placeholder="Select an option..." /></SelectTrigger>
@@ -424,7 +425,7 @@ export default function InterviewPage() {
                               </SelectContent>
                             </Select>
                           ) : (
-                            <Input id={field.id} type="text" placeholder={field.placeholder} value={currentValue} onChange={(e) => updateField(fieldId, e.target.value)} />
+                            <Input id={field.id} type="text" placeholder={field.placeholder} value={currentValue} onChange={(e) => updateField(fieldId, e.target.value)} className="terminal-input" />
                           )}
                         </div>
                       );
@@ -432,10 +433,10 @@ export default function InterviewPage() {
                   </div>
 
                   <div className="mt-10 flex items-center justify-between">
-                    <Button variant="ghost" onClick={prevStep} disabled={currentStep === 0} className="gap-2">
+                    <Button variant="ghost" onClick={prevStep} disabled={currentStep === 0} className="gap-2 font-mono text-xs">
                       <ArrowLeft className="h-4 w-4" /> Back
                     </Button>
-                    <Button onClick={nextStep} disabled={!validateStep(step, data)} className="gap-2 glow-purple">
+                    <Button onClick={nextStep} disabled={!validateStep(step, data)} className="gap-2 glow-green-btn font-mono text-xs">
                       Continue <ArrowRight className="h-4 w-4" />
                     </Button>
                   </div>

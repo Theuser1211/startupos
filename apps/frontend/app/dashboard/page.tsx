@@ -162,7 +162,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
 
 function TerminalHealthCard({ dashboard: d }: { dashboard: DashboardData }) {
   return (
-    <div className="terminal-card p-5 h-full font-mono text-sm space-y-3">
+    <div className="terminal-card p-5 h-full font-mono text-sm space-y-3 glow-green">
       <div className="flex items-center gap-2 text-xs text-primary/60 mb-3">
         <span className="w-2 h-2 rounded-full bg-primary/60 animate-pulse-subtle" />
         <span className="tracking-wide">startup analyze --health</span>
@@ -225,7 +225,7 @@ function StartupBadges({ dashboard }: { dashboard: DashboardData }) {
       {configs.map((c) => (
         <span
           key={c!.key}
-          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${c!.color}`}
+          className={`sticker-badge sticker-hover ${c!.color}`}
         >
           <span>{c!.emoji}</span>
           {c!.label}
@@ -256,15 +256,21 @@ function DashboardContent() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-primary animate-spin" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center font-mono">
+        <div className="terminal-panel px-6 py-4">
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse-subtle" />
+            <span className="text-primary text-xs">$ loading session<span className="animate-terminal-blink">_</span></span>
+          </div>
+          <p className="text-[10px] text-muted-foreground mt-2">authenticating...</p>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-primary/10 bg-card scanlines">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo-square.png" alt="StartupOS" width={1254} height={1254} className="h-6 w-6" />
@@ -296,34 +302,47 @@ function DashboardContent() {
         </Link>
 
         {isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 text-primary animate-spin" />
+          <div className="flex flex-col items-center justify-center py-20 font-mono">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse-subtle" />
+              <span className="text-primary text-xs">$ loading dashboard<span className="animate-terminal-blink">_</span></span>
+            </div>
+            <p className="text-[10px] text-muted-foreground mt-3">fetching metrics & activity...</p>
           </div>
         )}
 
         {error && (
-          <Card className="border-destructive/30 bg-surface-red">
-            <CardContent className="flex items-center gap-3 p-6">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
+          <div className="terminal-panel border border-red-500/20">
+            <div className="flex items-center gap-3 p-5">
+              <span className="status-dot status-dot-error mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-destructive">Failed to load dashboard</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                <div className="flex items-center gap-2 font-mono text-xs">
+                  <span className="text-destructive">$ dashboard --fetch</span>
+                  <span className="text-muted-foreground">[ERROR]</span>
+                </div>
+                <p className="text-sm font-medium text-destructive mt-2">Failed to load dashboard</p>
+                <p className="text-xs text-muted-foreground mt-1 font-mono">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
               </div>
-              <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
-            </CardContent>
-          </Card>
+              <Button size="sm" variant="outline" onClick={() => refetch()} className="font-mono text-xs">Retry</Button>
+            </div>
+          </div>
         )}
 
         {!startupId && !isLoading && !error && (
-          <Card className="border-border bg-card">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <Activity className="h-10 w-10 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground">Select a startup to view its dashboard</p>
-              <Button size="sm" className="mt-4" asChild>
-                <Link href="/blueprints">View My Startups</Link>
+          <div className="terminal-panel">
+            <div className="terminal-panel-header">
+              <span className="w-2 h-2 rounded-full bg-primary/60" />
+              <span className="text-primary/80">$ dashboard --select</span>
+            </div>
+            <div className="terminal-panel-body flex flex-col items-center justify-center py-16 text-center">
+              <span className="text-2xl mb-3">🫗</span>
+              <p className="text-sm text-muted-foreground font-mono">No startup selected.</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">Select a startup to analyze.</p>
+              <Button size="sm" className="mt-6 font-mono glow-green-btn" asChild>
+                <Link href="/blueprints">$ view_startups --list</Link>
               </Button>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {dashboard && (
@@ -347,7 +366,7 @@ function DashboardContent() {
 
             <div className="grid gap-6 lg:grid-cols-3">
               <motion.div variants={itemVariants} className="lg:col-span-1">
-                <Card className="border-border bg-card h-full hover:border-primary/20 transition-all duration-200 hover:shadow-lg group">
+                <Card className="terminal-card h-full hover:border-primary/30 transition-all duration-200 group">
                   <CardContent className="flex flex-col items-center justify-center p-8">
                     <div className="relative mb-4">
                       <ScoreRing score={dashboard.healthScore} size={160} />
@@ -379,30 +398,25 @@ function DashboardContent() {
 
             <div className="grid gap-6 lg:grid-cols-2">
               <motion.div variants={itemVariants}>
-                <Card className="border-border bg-card h-full hover:border-primary/20 transition-all duration-200 group">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2 font-mono">
-                      <Activity className="h-4 w-4 text-muted-foreground" />
-                      <span>Recent Activity</span>
-                      <span className="text-[10px] text-muted-foreground font-normal ml-auto opacity-0 group-hover:opacity-100 transition-opacity">git log --oneline</span>
-                    </CardTitle>
+                <Card className="terminal-panel h-full">
+                  <CardHeader className="terminal-panel-header">
+                    <Activity className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs text-primary font-mono">$ git log --oneline</span>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="terminal-panel-body">
                     {dashboard.recentEvents.length === 0 ? (
                       <div className="flex flex-col items-center py-8 text-center">
-                        <Activity className="h-8 w-8 text-muted-foreground/40 mb-2" />
-                        <p className="text-sm text-muted-foreground">No activity detected</p>
-                        <p className="text-xs text-muted-foreground/60 mt-1 font-mono">No customer interviews. Leave the cave.</p>
+                        <span className="text-2xl mb-2">🕳️</span>
+                        <p className="text-sm text-muted-foreground font-mono">Looks quiet here.</p>
+                        <p className="text-xs text-muted-foreground/60 mt-1 italic">Start building.</p>
                       </div>
                     ) : (
                       <div className="space-y-0">
                         {dashboard.recentEvents.slice(0, 10).map((event, i) => (
-                          <div key={event.id} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0 group/event">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 mt-0.5 shrink-0 group-hover/event:bg-primary/20 transition-colors">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-primary fill-primary/30" />
-                            </div>
+                          <div key={event.id} className="flex items-start gap-3 py-2.5 border-t border-primary/5 first:border-t-0 group/event terminal-row">
+                            <span className="status-dot status-dot-live mt-2" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm">{EVENT_LABELS[event.type] || event.type}</p>
+                              <p className="text-sm font-mono">{EVENT_LABELS[event.type] || event.type}</p>
                               <p className="text-[11px] text-muted-foreground mt-0.5 font-mono">
                                 {new Date(event.createdAt).toLocaleDateString("en-US", {
                                   month: "short", day: "numeric",
@@ -419,19 +433,16 @@ function DashboardContent() {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <Card className="border-border bg-card h-full hover:border-primary/20 transition-all duration-200 group">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold flex items-center gap-2 font-mono">
-                      <Target className="h-4 w-4 text-muted-foreground" />
-                      <span>Next Actions</span>
-                      <span className="text-[10px] text-muted-foreground font-normal ml-auto opacity-0 group-hover:opacity-100 transition-opacity">priority sorted</span>
-                    </CardTitle>
+                <Card className="terminal-panel h-full">
+                  <CardHeader className="terminal-panel-header">
+                    <Target className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-xs text-primary font-mono">$ next_actions --priority</span>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="terminal-panel-body">
                     {dashboard.topActions.length === 0 ? (
                       <div className="flex flex-col items-center py-8 text-center">
-                        <CheckCircle2 className="h-8 w-8 text-success/60 mb-2" />
-                        <p className="text-sm text-muted-foreground">All caught up!</p>
+                        <span className="status-dot status-dot-live h-4 w-4 mb-2" />
+                        <p className="text-sm text-muted-foreground font-mono">All caught up!</p>
                         <p className="text-xs text-muted-foreground/60 mt-1 italic">Your startup is still alive. Keep shipping.</p>
                       </div>
                     ) : (
@@ -443,7 +454,7 @@ function DashboardContent() {
                             whileHover={{ x: 2 }}
                           >
                             <div className="flex items-start gap-3">
-                              <Badge className={`mt-0.5 text-[10px] px-1.5 py-0.5 border font-mono ${PRIORITY_COLORS[action.priority] || ""}`}>
+                              <Badge className={`terminal-badge ${PRIORITY_COLORS[action.priority] || ""}`}>
                                 {action.priority}
                               </Badge>
                               <div className="flex-1 min-w-0">
@@ -495,8 +506,11 @@ function DashboardContent() {
 export default function DashboardPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-primary animate-spin" />
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center font-mono">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse-subtle" />
+          <span className="text-primary text-xs">$ loading<span className="animate-terminal-blink">_</span></span>
+        </div>
       </div>
     }>
       <DashboardContent />

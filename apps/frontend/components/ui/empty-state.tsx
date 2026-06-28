@@ -38,7 +38,7 @@ export function EmptyState({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-        className={`mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} shadow-xl shadow-primary/20`}
+        className={`mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-primary/20 bg-primary/10`}
       >
         <Icon className="h-7 w-7 text-white" />
       </motion.div>
@@ -56,7 +56,7 @@ export function EmptyState({
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.4 }}
-        className="text-sm text-muted-foreground max-w-md leading-relaxed mb-8"
+        className="text-sm font-mono text-muted-foreground/70 max-w-md leading-relaxed mb-8"
       >
         {description}
       </motion.p>
@@ -68,7 +68,7 @@ export function EmptyState({
         className="flex flex-col sm:flex-row items-center gap-3"
       >
         {actionLabel && actionHref && (
-          <Button asChild className="glow-purple group">
+          <Button asChild className="glow-green-btn group">
             <Link href={actionHref}>
               <Sparkles className="h-4 w-4" />
               {actionLabel}

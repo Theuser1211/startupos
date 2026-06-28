@@ -82,7 +82,7 @@ function CompetitorsContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="glass-strong border-b border-glass-border">
+      <header className="bg-[#0d0d10] border-b border-[rgba(34,197,94,0.12)]">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
           <Link href="/">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
@@ -101,21 +101,21 @@ function CompetitorsContent() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <Link href={startupId ? `/dashboard?id=${startupId}` : "/blueprints"} className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
+        <Link href={startupId ? `/dashboard?id=${startupId}` : "/blueprints"} className="inline-flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-primary mb-6 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back
         </Link>
 
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/20">
-              <Crosshair className="h-5 w-5 text-emerald-400" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+              <Crosshair className="h-5 w-5 text-primary" />
             </div>
             <div>
               <h1 className="text-2xl font-display font-bold">Competitor Intelligence</h1>
               <p className="text-sm text-muted-foreground">Track competitors and detect changes over time</p>
             </div>
           </div>
-          <Button size="sm" className="glow-purple" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
+          <Button size="sm" className="glow-green-btn text-xs font-mono" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
             <Plus className="h-4 w-4" /> Add Competitor
           </Button>
         </div>
@@ -128,26 +128,26 @@ function CompetitorsContent() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden mb-6"
             >
-              <Card className="border-glass-border bg-glass-bg">
+              <Card className="terminal-panel border-[rgba(34,197,94,0.12)]">
                 <CardContent className="p-5 space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold">Add Competitor</h3>
+                    <h3 className="text-sm font-mono font-semibold text-primary">Add Competitor</h3>
                     <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
                       <X className="h-4 w-4" />
                     </button>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">Name *</label>
-                      <Input
+                      <label className="mono-label text-xs">Name *</label>
+                      <Input className="terminal-input"
                         placeholder="e.g. Acme Corp"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">Website *</label>
-                      <Input
+                      <label className="mono-label text-xs">Website *</label>
+                      <Input className="terminal-input"
                         placeholder="e.g. https://acme.com"
                         value={formData.website}
                         onChange={(e) => setFormData({ ...formData, website: e.target.value })}
@@ -155,8 +155,8 @@ function CompetitorsContent() {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-muted-foreground">Description</label>
-                    <Textarea
+                    <label className="mono-label text-xs">Description</label>
+                    <Textarea className="terminal-input"
                       placeholder="What does this competitor do?"
                       rows={2}
                       value={formData.description}
@@ -165,8 +165,8 @@ function CompetitorsContent() {
                   </div>
                   {formError && <p className="text-xs text-red-400">{formError}</p>}
                   <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => setShowAddForm(false)}>Cancel</Button>
-                    <Button size="sm" onClick={handleAddCompetitor} disabled={addCompetitorMut.isPending}>
+                    <Button size="sm" variant="ghost" className="font-mono text-xs" onClick={() => setShowAddForm(false)}>Cancel</Button>
+                    <Button size="sm" className="font-mono text-xs" onClick={handleAddCompetitor} disabled={addCompetitorMut.isPending}>
                       {addCompetitorMut.isPending ? "Adding..." : "Add Competitor"}
                     </Button>
                   </div>
@@ -178,12 +178,12 @@ function CompetitorsContent() {
 
         {isLoading && (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 text-primary animate-spin" />
+            <p className="font-mono text-sm text-primary animate-pulse">$ loading competitors...</p>
           </div>
         )}
 
         {error && (
-          <Card className="border-red-500/30 bg-red-500/5">
+          <Card className="terminal-card border-red-500/30 bg-red-500/5">
             <CardContent className="flex items-center gap-3 p-6">
               <AlertTriangle className="h-5 w-5 text-red-400" />
               <div className="flex-1">
@@ -196,10 +196,10 @@ function CompetitorsContent() {
         )}
 
         {!startupId && !isLoading && !error && (
-          <Card className="border-glass-border bg-glass-bg">
+          <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
             <CardContent className="flex flex-col items-center justify-center py-16">
-              <Crosshair className="h-10 w-10 text-muted-foreground mb-3" />
-              <p className="text-sm text-muted-foreground">Select a startup to view competitor intelligence</p>
+              <Crosshair className="h-10 w-10 text-primary mb-3" />
+              <p className="text-sm font-mono text-muted-foreground">Select a startup to view competitor intelligence</p>
               <Button size="sm" className="mt-4" asChild>
                 <Link href="/blueprints">View My Startups</Link>
               </Button>
@@ -211,12 +211,12 @@ function CompetitorsContent() {
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             {competitors.length === 0 ? (
               <motion.div variants={itemVariants}>
-                <Card className="border-glass-border bg-glass-bg">
+                <Card className="terminal-card border-[rgba(34,197,94,0.12)]">
                   <CardContent className="flex flex-col items-center py-16 text-center">
-                    <Search className="h-10 w-10 text-muted-foreground/40 mb-3" />
-                    <p className="text-sm font-medium">No competitors tracked yet</p>
-                    <p className="text-xs text-muted-foreground mt-1 max-w-sm">Add your first competitor to start tracking changes and get intelligence insights.</p>
-                    <Button size="sm" className="mt-4" onClick={() => setShowAddForm(true)}>
+                    <Search className="h-10 w-10 text-primary mb-3" />
+                    <p className="text-sm font-mono">No competitors tracked yet</p>
+                    <p className="text-xs font-mono text-muted-foreground mt-1 max-w-sm">No competitors tracked yet. Add your first competitor.</p>
+                    <Button size="sm" className="mt-4 font-mono text-xs glow-green-btn" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-4 w-4" /> Add Your First Competitor
                     </Button>
                   </CardContent>
@@ -226,20 +226,20 @@ function CompetitorsContent() {
               competitors.map((competitor, i) => (
                 <motion.div key={competitor.id} variants={itemVariants}>
                   <Card
-                    className="border-glass-border bg-glass-bg cursor-pointer hover:border-primary/30 transition-all duration-200"
+                    className="terminal-card cursor-pointer hover:border-primary/40 transition-all duration-200"
                     onClick={() => setExpandedId(expandedId === competitor.id ? null : competitor.id)}
                   >
                     <CardContent className="p-5">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3 flex-1 min-w-0">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/20 shrink-0">
-                            <Building2 className="h-5 w-5 text-emerald-400" />
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shrink-0">
+                            <Building2 className="h-5 w-5 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <h3 className="font-semibold">{competitor.name}</h3>
                               {competitor.changes.length > 0 && (
-                                <Badge className="text-[10px] px-1.5 py-0.5 text-amber-400 border-amber-500/30 bg-amber-500/10">
+                                <Badge className="terminal-badge text-[10px] px-1.5 py-0.5 text-amber-400 border-amber-500/30 bg-amber-500/10">
                                   {competitor.changes.length} change{competitor.changes.length !== 1 ? "s" : ""}
                                 </Badge>
                               )}
@@ -298,7 +298,7 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
       exit={{ opacity: 0, height: 0 }}
       className="overflow-hidden"
     >
-      <div className="mt-4 pt-4 border-t border-glass-border">
+      <div className="terminal-panel mt-4 pt-4 border-t border-[rgba(34,197,94,0.12)]">
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-5 w-5 text-primary animate-spin" />
@@ -315,8 +315,8 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
                 <div className="space-y-0">
                   {history.snapshots.map((snapshot, i) => (
                     <div key={snapshot.id} className="flex items-start gap-3 py-2.5 border-t border-glass-border first:border-t-0">
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/10 mt-0.5 shrink-0">
-                        <FileText className="h-3 w-3 text-emerald-400" />
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 mt-0.5 shrink-0">
+                          <FileText className="h-3 w-3 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm">{snapshot.title}</p>
@@ -363,7 +363,7 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
                               <span className="line-through text-red-400/70">{change.oldValue}</span>
                             )}
                             {change.newValue && (
-                              <span className="text-emerald-400">{change.newValue}</span>
+                              <span className="text-primary">{change.newValue}</span>
                             )}
                           </div>
                           <p className="text-[11px] text-muted-foreground mt-0.5">

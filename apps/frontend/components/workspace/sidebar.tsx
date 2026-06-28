@@ -52,8 +52,8 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
           className="h-7 w-7 shrink-0"
           priority
         />
-        <span className="text-sm font-bold tracking-tight">
-          Startup<span className="text-primary">OS</span>
+        <span className="text-sm font-bold tracking-tight font-mono">
+          <span className="text-primary">$</span> startupos
         </span>
       </div>
 
@@ -66,8 +66,8 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{founderName}</p>
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-success inline-block" />
-                {stage ? `stage: ${stage}` : "founder"}
+                <span className="status-dot" />
+                {stage ? `$ stage: ${stage}` : "$ founder"}
               </div>
             </div>
           </div>
@@ -81,9 +81,9 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
       )}
 
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        <div className="px-3 pb-2 text-[10px] text-muted-foreground font-mono uppercase tracking-wider flex items-center gap-1.5">
+        <div className="px-3 pb-2 text-[10px] text-muted-foreground font-mono uppercase tracking-wider flex items-center gap-1.5 mono-label">
           <Command className="h-3 w-3" />
-          workspace
+          $ workspace
         </div>
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -127,19 +127,19 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
       </div>
 
       <div className="px-3 py-3 border-t border-border space-y-0.5">
-        <div className="px-3 pb-1.5 text-[10px] text-muted-foreground font-mono uppercase tracking-wider">nav</div>
+        <div className="px-3 pb-1.5 text-[10px] text-muted-foreground font-mono uppercase tracking-wider mono-label">$ nav</div>
         {startupId && (
           <>
             <Link
               href={`/dashboard?id=${startupId}`}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
+              className="terminal-list-item flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
             >
               <TrendingUp className="h-3.5 w-3.5" />
               Dashboard
             </Link>
             <Link
               href={`/competitors?startupId=${startupId}`}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
+              className="terminal-list-item flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
             >
               <Crosshair className="h-3.5 w-3.5" />
               Competitors
@@ -148,18 +148,24 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
         )}
         <Link
           href="/blueprints"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
+          className="terminal-list-item flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
         >
           <FolderOpen className="h-3.5 w-3.5" />
           My Startups
         </Link>
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
+          className="terminal-list-item flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:text-foreground hover:bg-surface transition-all"
         >
           <Command className="h-3.5 w-3.5" />
           Home
         </Link>
+      </div>
+      <div className="ascii-divider" />
+      <div className="px-3 py-2 flex gap-1.5 flex-wrap">
+        <span className="sticker-badge">v1.0</span>
+        <span className="sticker-badge">startupos</span>
+        <span className="sticker-badge sticker-hover">~$ _</span>
       </div>
     </aside>
   );

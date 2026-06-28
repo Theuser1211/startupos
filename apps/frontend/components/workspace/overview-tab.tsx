@@ -45,7 +45,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
   const { startupName, companySnapshot, stats, insights } = blueprint;
 
   const statCards = [
-    { label: "Brand Score", value: `${stats.brandScore}`, icon: Star, color: "from-purple-500 to-indigo-600", change: "+8" },
+    { label: "Brand Score", value: `${stats.brandScore}`, icon: Star, color: "from-green-500 to-emerald-600", change: "+8" },
     { label: "Market Fit", value: stats.marketFit, icon: Target, color: "from-blue-500 to-cyan-600", change: "+2" },
     { label: "Readiness", value: `${stats.readiness}%`, icon: Shield, color: "from-emerald-500 to-teal-600", change: "+12%" },
     { label: "Growth Score", value: `${stats.growthScore}`, icon: TrendingUp, color: "from-amber-500 to-orange-600", change: "+5" },
@@ -60,12 +60,13 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
     >
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-3 mb-2">
+          <span className="text-primary font-mono text-lg">$</span>
           <h1 className="text-2xl sm:text-3xl font-display font-bold">
-            Welcome back{startupName ? `, ${startupName.split(" ")[0]}` : ""} 👋
+            Welcome back{startupName ? `, ${startupName.split(" ")[0]}` : ""}
           </h1>
         </div>
-        <p className="text-muted-foreground mt-1">
-          Here&apos;s your {startupName || "startup"} dashboard overview.
+        <p className="text-muted-foreground mt-1 font-mono text-xs">
+          $ cat ~/startup/{startupName || "dashboard"}/overview
         </p>
       </motion.div>
 
@@ -73,10 +74,10 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} className="hover:border-primary/20 transition-all duration-300">
+            <Card key={stat.label} className="terminal-card hover:border-primary/20 transition-all duration-300">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}>
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg border border-primary/10`}>
                     <Icon className="h-5 w-5 text-white" />
                   </div>
                   <Badge variant="success" className="text-[10px] px-1.5 py-0">
@@ -94,7 +95,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <h2 className="text-lg font-semibold mb-4">AI Insights</h2>
+        <h2 className="text-lg font-semibold mb-4 mono-label"><span className="text-primary mr-2">$</span> AI Insights</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {insights.map((insight) => {
             const Icon = iconMap[insight.type] || Lightbulb;
@@ -102,13 +103,13 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
               positive: "border-emerald-500/20 bg-emerald-500/5",
               opportunity: "border-blue-500/20 bg-blue-500/5",
               warning: "border-amber-500/20 bg-amber-500/5",
-              action: "border-purple-500/20 bg-purple-500/5",
+              action: "border-emerald-500/20 bg-emerald-500/5",
             };
             const iconColors: Record<string, string> = {
               positive: "text-emerald-400",
               opportunity: "text-blue-400",
               warning: "text-amber-400",
-              action: "text-purple-400",
+              action: "text-emerald-400",
             };
             return (
               <div
@@ -129,9 +130,9 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="hover:border-primary/20 transition-all duration-300">
+        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
           <CardHeader>
-            <CardTitle className="text-lg">Company Snapshot</CardTitle>
+            <CardTitle className="text-lg mono-label"><span className="text-primary mr-2">$</span> Company Snapshot</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -144,8 +145,8 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
                 { label: "Founded", value: companySnapshot.foundedDate },
               ].map((item) => (
                 <div key={item.label}>
-                  <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                  <p className="text-sm font-medium">{item.value}</p>
+                  <p className="mono-label text-xs text-muted-foreground mb-1">{item.label}</p>
+                  <p className="text-sm font-medium font-mono">{item.value}</p>
                 </div>
               ))}
             </div>

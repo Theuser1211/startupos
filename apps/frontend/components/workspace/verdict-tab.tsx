@@ -112,18 +112,18 @@ function DimensionCard({ dimKey, score, description }: { dimKey: string; score: 
     : "text-red-400 border-red-500/20 bg-red-500/5";
 
   return (
-    <Card className={`border ${color} hover:shadow-lg transition-all duration-300`}>
+    <Card className={`terminal-card border ${color} hover:shadow-lg transition-all duration-300`}>
       <CardContent className="p-4">
         <div className="flex items-center gap-3 mb-3">
-          <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+          <div className={`flex h-8 w-8 items-center justify-center rounded ${
             score >= 70 ? "bg-emerald-500/10" : score >= 50 ? "bg-amber-500/10" : "bg-red-500/10"
           }`}>
             <Icon className={`h-4 w-4 ${score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"}`} />
           </div>
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">{meta.label}</span>
-              <span className={`text-sm font-bold tabular-nums ${score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"}`}>{score}</span>
+              <span className="text-sm font-mono font-semibold">{meta.label}</span>
+              <span className={`text-sm font-bold font-mono tabular-nums ${score >= 70 ? "text-emerald-400" : score >= 50 ? "text-amber-400" : "text-red-400"}`}>{score}</span>
             </div>
             <div className="h-1 rounded-full bg-white/5 mt-2 overflow-hidden">
               <motion.div
@@ -144,7 +144,7 @@ function DimensionCard({ dimKey, score, description }: { dimKey: string; score: 
 function ConfidenceFactor({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-muted-foreground w-40 shrink-0">{label}</span>
+      <span className="mono-label text-xs text-muted-foreground w-40 shrink-0">{label}</span>
       <div className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
         <motion.div
           className={`h-full rounded-full ${value >= 80 ? "bg-emerald-500" : value >= 55 ? "bg-amber-500" : "bg-red-500"}`}
@@ -165,23 +165,23 @@ function ImprovementCard({ dimension, action, gain, risk, loss }: {
   const Icon = meta.icon;
 
   return (
-    <Card className="border-glass-border hover:border-primary/20 transition-all duration-300">
+    <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
       <CardContent className="p-4">
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 border border-primary/20">
             <Icon className="h-3.5 w-3.5 text-primary" />
           </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{meta.label}</span>
+          <span className="mono-label text-xs text-muted-foreground">{meta.label}</span>
         </div>
         <div className="flex items-start gap-2 mb-2">
           <TrendingUp className="h-4 w-4 text-emerald-400 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <p className="text-xs text-foreground/80">{action}</p>
-            <span className="text-[11px] text-emerald-400/80 font-medium">+{gain} pts</span>
+            <p className="text-xs font-mono text-foreground/80">{action}</p>
+            <span className="text-[11px] text-emerald-400/80 font-mono">+{gain} pts</span>
           </div>
         </div>
         {risk && loss && (
-          <div className="flex items-start gap-2 pt-2 border-t border-glass-border">
+          <div className="flex items-start gap-2 pt-2 border-t border-primary/10">
             <TrendingDown className="h-4 w-4 text-red-400 mt-0.5 shrink-0" />
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{risk}</p>
@@ -245,19 +245,19 @@ function PivotCard({ pivot }: { pivot: string }) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.8, duration: 0.5, type: "spring", stiffness: 200, damping: 20 }}
-      className="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-500/10 to-indigo-500/5 p-6"
+      className="relative overflow-hidden rounded border border-primary/20 bg-[#0d0d10] p-6"
     >
-      <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] bg-purple-500/10 -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute top-0 right-0 w-48 h-48 rounded-full blur-[80px] bg-primary/5 -translate-y-1/2 translate-x-1/2" />
       <div className="relative z-10">
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/20">
-            <Lightbulb className="h-4 w-4 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20">
+            <Lightbulb className="h-4 w-4 text-primary" />
           </div>
-          <h3 className="text-sm font-semibold text-purple-300">Suggested Pivot</h3>
+          <span className="text-xs font-mono text-primary">$ pivot</span>
         </div>
         <div className="flex items-start gap-3">
-          <MoveRight className="h-5 w-5 text-purple-400 mt-0.5 shrink-0" />
-          <p className="text-sm text-muted-foreground leading-relaxed">{pivot}</p>
+          <MoveRight className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+          <p className="text-sm font-mono text-muted-foreground leading-relaxed">{pivot}</p>
         </div>
       </div>
     </motion.div>
@@ -287,8 +287,8 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
     <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-10">
       <motion.div variants={itemVariants} className="relative">
         <div className={`absolute inset-0 rounded-3xl ${config.bg} opacity-30 blur-3xl`} />
-        <Card className={`relative overflow-hidden border-2 ${config.border} transition-all duration-500 hover:shadow-2xl ${config.glow}`}>
-          <div className={`h-2 w-full bg-gradient-to-r ${config.gradient}`} />
+        <Card className={`terminal-card relative overflow-hidden border-2 ${config.border} transition-all duration-500 hover:shadow-2xl ${config.glow}`}>
+          <div className={`h-1 w-full bg-gradient-to-r ${config.gradient}`} />
           <CardContent className="p-8 sm:p-12">
             <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12">
               <motion.div
@@ -317,7 +317,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                     <span className="text-xs text-muted-foreground font-mono">Composite Score: {verdict.compositeScore}/100</span>
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0">Confidence: {verdict.confidenceLabel} ({verdict.confidence}%)</Badge>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4">StartupOS Verdict</h1>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-4"><span className="text-primary font-mono text-2xl">$</span> StartupOS Verdict</h1>
                   <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">{config.description}</p>
                   <p className="text-sm text-foreground/80 mt-4 max-w-2xl leading-relaxed italic border-l-2 border-primary/30 pl-4">
                     &ldquo;{verdict.summary}&rdquo;
@@ -331,8 +331,8 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><BarChart3 className="h-4 w-4 text-primary" /></div>
-          <h2 className="text-lg font-display font-bold">7-Dimension Assessment</h2>
+          <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20"><BarChart3 className="h-4 w-4 text-primary" /></div>
+          <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> 7-Dimension Assessment</h2>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {dimEntries.map(([key, dim]) => (
@@ -343,12 +343,12 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       <motion.div variants={itemVariants}>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="hover:border-primary/20 transition-all duration-300">
+          <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
             <CardContent className="p-5 flex justify-center">
               <ScoreGauge value={verdict.compositeScore} label="Composite Score" icon={Scale} />
             </CardContent>
           </Card>
-          <Card className="hover:border-primary/20 transition-all duration-300">
+          <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
             <CardContent className="p-5 flex justify-center">
               <ScoreGauge value={verdict.confidence} label={`Confidence • ${verdict.confidenceLabel}`} icon={Award} />
             </CardContent>
@@ -370,7 +370,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-emerald-400" />
-            <h2 className="text-lg font-display font-bold text-emerald-400">Top Strengths</h2>
+            <h2 className="text-lg font-display font-bold text-emerald-400 mono-label"><span className="text-emerald-400 mr-2">$</span> Top Strengths</h2>
           </div>
           <div className="space-y-3">
             {verdict.strengths.length > 0 ? verdict.strengths.map((s, i) => (
@@ -381,7 +381,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <div>
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="h-5 w-5 text-red-400" />
-            <h2 className="text-lg font-display font-bold text-red-400">Top Weaknesses</h2>
+            <h2 className="text-lg font-display font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Top Weaknesses</h2>
           </div>
           <div className="space-y-3">
             {verdict.weaknesses.length > 0 ? verdict.weaknesses.map((w, i) => (
@@ -393,12 +393,12 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       {verdict.fatalRisks.length > 0 && (
         <motion.div variants={itemVariants}>
-          <Card className="border-red-500/20 bg-red-500/[0.02] overflow-hidden">
+          <Card className="terminal-card border-red-500/20 bg-[#0d0d10] overflow-hidden">
             <div className="h-1 w-full bg-gradient-to-r from-red-500 to-rose-500" />
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-red-500/20"><Crosshair className="h-4 w-4 text-red-400" /></div>
-                <h2 className="text-lg font-display font-bold text-red-400">Fatal Risks</h2>
+                <div className="flex h-8 w-8 items-center justify-center rounded bg-red-500/20 border border-red-500/30"><Crosshair className="h-4 w-4 text-red-400" /></div>
+                <h2 className="text-lg font-display font-bold text-red-400 mono-label"><span className="text-red-400 mr-2">!</span> Fatal Risks</h2>
                 <Badge variant="destructive" className="text-[10px] px-1.5 py-0">{verdict.fatalRisks.length} identified</Badge>
               </div>
               <div className="space-y-3">{verdict.fatalRisks.map((risk, i) => (<FatalRiskItem key={i} text={risk} index={i} />))}</div>
@@ -412,11 +412,11 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       )}
 
       <motion.div variants={itemVariants}>
-        <Card className="hover:border-primary/20 transition-all duration-300">
+        <Card className="terminal-card hover:border-primary/20 transition-all duration-300">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Award className="h-4 w-4 text-primary" /></div>
-              <h2 className="text-lg font-display font-bold">Confidence Breakdown</h2>
+              <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 border border-primary/20"><Award className="h-4 w-4 text-primary" /></div>
+              <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> Confidence Breakdown</h2>
               <Badge variant="outline" className="text-[10px] px-1.5 py-0">{verdict.confidenceLabel}</Badge>
             </div>
             <div className="space-y-3">
@@ -431,8 +431,8 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
 
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-2 mb-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/10"><Lightbulb className="h-4 w-4 text-purple-400" /></div>
-          <h2 className="text-lg font-display font-bold">Improvement Paths</h2>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Lightbulb className="h-4 w-4 text-primary" /></div>
+          <h2 className="text-lg font-display font-bold mono-label"><span className="text-primary mr-2">$</span> Improvement Paths</h2>
           <span className="text-xs text-muted-foreground font-mono">What would change your verdict</span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -448,11 +448,11 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/20">
-                <Sparkles className="h-5 w-5 text-white" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded bg-primary/10 border border-primary/20">
+                <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold mb-1">How this verdict works</h3>
+                <h3 className="text-sm font-mono font-semibold mb-1"><span className="text-primary">$</span> How this verdict works</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong>, <strong>Timing</strong>, <strong>Competition</strong>, <strong>Defensibility</strong>, <strong>Founder-Fit</strong>, <strong>Distribution</strong>, and <strong>Revenue</strong>. Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each).
                 </p>
@@ -463,14 +463,14 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <Card className="border-primary/20 bg-primary/5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
+        <Card className="border-primary/20 bg-[#0d0d10] transition-all duration-300 hover:shadow-lg hover:shadow-primary/10">
           <CardContent className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 shadow-lg shadow-purple-500/20">
-                <Sparkles className="h-6 w-6 text-white" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-primary/10 border border-primary/20">
+                <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold mb-1">What happens next?</h3>
+                <h3 className="text-sm font-mono font-semibold mb-1"><span className="text-primary">$</span> What happens next?</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   This verdict is an independent assessment based on your interview data and industry benchmarks. Use the improvement paths above to identify the highest-impact actions.
                 </p>

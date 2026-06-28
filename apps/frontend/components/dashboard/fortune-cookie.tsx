@@ -167,13 +167,13 @@ export function FortuneCookie() {
   }, [loadFortune, newFortune]);
 
   return (
-    <div className="terminal-card p-5 h-full font-mono text-sm space-y-4">
-      <div className="flex items-center gap-2 text-xs text-primary/60">
-        <span className="w-2 h-2 rounded-full bg-primary/60" />
-        <span className="tracking-wide">startup fortune</span>
+    <div className="terminal-panel h-full font-mono text-sm glow-green">
+      <div className="terminal-panel-header">
+        <span className="w-2 h-2 rounded-full bg-primary/60 animate-pulse-subtle" />
+        <span className="tracking-wide text-primary">startup fortune</span>
       </div>
 
-      <div className="flex flex-col items-center text-center py-2">
+      <div className="terminal-panel-body flex flex-col items-center text-center space-y-4">
         <motion.div
           className="text-2xl mb-3"
           animate={{ rotate: [0, -5, 5, -5, 0] }}
@@ -184,7 +184,7 @@ export function FortuneCookie() {
         <AnimatePresence mode="wait">
           <motion.p
             key={key}
-            className="text-sm leading-relaxed text-foreground/90 italic"
+            className="text-sm leading-relaxed text-foreground/90 font-mono"
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
@@ -195,11 +195,11 @@ export function FortuneCookie() {
         </AnimatePresence>
         <motion.button
           onClick={newFortune}
-          className="mt-4 text-[11px] text-muted-foreground hover:text-primary border border-border rounded-md px-3 py-1.5 hover:border-primary/30 transition-all bg-surface hover:bg-surface-hover"
+          className="mt-2 text-[11px] text-primary border border-primary/20 rounded-md px-3 py-1.5 hover:border-primary/40 transition-all bg-surface hover:bg-surface-hover glow-green-btn font-mono"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
         >
-          ~ $ roll_fortune
+          $ roll_fortune
         </motion.button>
       </div>
     </div>

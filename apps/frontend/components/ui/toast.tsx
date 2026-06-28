@@ -82,17 +82,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 exit={{ opacity: 0, x: 80, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                 className={cn(
-                  "pointer-events-auto relative w-80 rounded-xl border backdrop-blur-xl shadow-xl shadow-black/20",
+                  "pointer-events-auto relative w-80 rounded-xl border border-primary/10 shadow-xl shadow-black/20",
                   config.border,
                   config.bg,
-                  "bg-card/90",
+                  "bg-[#0d0d10]/95",
                 )}
                 role="alert"
               >
                 <div className="flex items-start gap-3 p-4">
                   <Icon className={cn("h-5 w-5 mt-0.5 shrink-0", iconColors[t.variant])} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground">{t.title}</p>
+                    <p className="text-sm font-mono text-foreground">{t.title}</p>
                     {t.message && (
                       <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{t.message}</p>
                     )}
