@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +16,12 @@ const footerLinks = [
 const emojiBadges = ["🚀", "⚡", "🛠️", "🔥", "💡"];
 
 export function Footer() {
+  const [year, setYear] = useState(2026);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -114,7 +121,7 @@ export function Footer() {
           className="mt-8 pt-6 border-t border-glass-border flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <p className="font-mono text-[10px] text-muted-foreground/30">
-            &copy; {new Date().getFullYear()} StartupOS. All rights reserved.
+            &copy; {year} StartupOS. All rights reserved.
           </p>
           <p className="font-mono text-[10px] text-muted-foreground/20">
             built with late nights and terminal

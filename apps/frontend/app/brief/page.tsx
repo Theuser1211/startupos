@@ -145,14 +145,25 @@ function BriefContent() {
         )}
 
         {error && (
-          <Card className="terminal-card border-red-500/30 bg-red-500/5">
+          <Card className={`terminal-card ${(error as { status?: number }).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="flex items-center gap-3 p-6">
-              <AlertTriangle className="h-5 w-5 text-red-400" />
+              <AlertTriangle className={`h-5 w-5 ${(error as { status?: number }).status === 401 ? "text-amber-400" : "text-red-400"}`} />
               <div className="flex-1">
-                <p className="text-sm font-medium text-red-400">Failed to load brief</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                {(error as { status?: number }).status === 401 ? (
+                  <>
+                    <p className="text-sm font-medium text-amber-400">Authentication required</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Your session has expired. Please sign in again.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium text-red-400">Failed to load brief</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                  </>
+                )}
               </div>
-              <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
+              {(error as { status?: number }).status !== 401 && (
+                <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
+              )}
             </CardContent>
           </Card>
         )}

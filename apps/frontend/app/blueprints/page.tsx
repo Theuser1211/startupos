@@ -68,11 +68,23 @@ export default function BlueprintsPage() {
         {error && (
           <div className="flex items-center justify-center py-20">
             <div className="text-center max-w-sm">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
-                <AlertTriangle className="h-6 w-6 text-red-400" />
-              </div>
-              <p className="text-sm text-muted-foreground mb-4">{toFriendlyError(error instanceof Error ? error.message : "Something went wrong")}</p>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>Try again</Button>
+              {(error as { status?: number }).status === 401 ? (
+                <>
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <AlertTriangle className="h-6 w-6 text-amber-400" />
+                  </div>
+                  <p className="text-sm text-foreground font-medium mb-1">Authentication required</p>
+                  <p className="text-xs text-muted-foreground mb-4">Your session has expired. Please sign in to continue.</p>
+                </>
+              ) : (
+                <>
+                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/10 border border-red-500/20">
+                    <AlertTriangle className="h-6 w-6 text-red-400" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">{toFriendlyError(error instanceof Error ? error.message : "Something went wrong")}</p>
+                  <Button variant="outline" size="sm" onClick={() => refetch()}>Try again</Button>
+                </>
+              )}
             </div>
           </div>
         )}

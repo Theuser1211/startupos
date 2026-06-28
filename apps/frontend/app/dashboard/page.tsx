@@ -312,18 +312,33 @@ function DashboardContent() {
         )}
 
         {error && (
-          <div className="terminal-panel border border-red-500/20">
+          <div className={`terminal-panel border ${(error as { status?: number }).status === 401 ? "border-amber-500/20" : "border-red-500/20"}`}>
             <div className="flex items-center gap-3 p-5">
-              <span className="status-dot status-dot-error mt-0.5" />
+              <span className={`status-dot ${(error as { status?: number }).status === 401 ? "status-dot-warn" : "status-dot-error"} mt-0.5`} />
               <div className="flex-1">
-                <div className="flex items-center gap-2 font-mono text-xs">
-                  <span className="text-destructive">$ dashboard --fetch</span>
-                  <span className="text-muted-foreground">[ERROR]</span>
-                </div>
-                <p className="text-sm font-medium text-destructive mt-2">Failed to load dashboard</p>
-                <p className="text-xs text-muted-foreground mt-1 font-mono">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                {(error as { status?: number }).status === 401 ? (
+                  <>
+                    <div className="flex items-center gap-2 font-mono text-xs">
+                      <span className="text-warning">$ auth --check</span>
+                      <span className="text-muted-foreground">[SESSION EXPIRED]</span>
+                    </div>
+                    <p className="text-sm font-medium text-warning mt-2">Authentication required</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono">Your session has expired. Please sign in again.</p>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 font-mono text-xs">
+                      <span className="text-destructive">$ dashboard --fetch</span>
+                      <span className="text-muted-foreground">[ERROR]</span>
+                    </div>
+                    <p className="text-sm font-medium text-destructive mt-2">Failed to load dashboard</p>
+                    <p className="text-xs text-muted-foreground mt-1 font-mono">{toFriendlyError((error as { error?: string })?.error || "An error occurred")}</p>
+                  </>
+                )}
               </div>
-              <Button size="sm" variant="outline" onClick={() => refetch()} className="font-mono text-xs">Retry</Button>
+              {(error as { status?: number }).status !== 401 && (
+                <Button size="sm" variant="outline" onClick={() => refetch()} className="font-mono text-xs">Retry</Button>
+              )}
             </div>
           </div>
         )}

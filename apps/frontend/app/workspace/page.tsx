@@ -70,8 +70,8 @@ function WorkspaceContent() {
     }
   }, [startupIdParam]);
 
-  const { data: startup, isLoading: startupLoading, isError: startupError, refetch: refetchStartup } = useStartup(startupIdParam);
-  const { data: blueprintData, isLoading: blueprintLoading, isError: blueprintError, isFetching: blueprintFetching, refetch: refetchBlueprint } = useBlueprint(startupIdParam);
+  const { data: startup, isLoading: startupLoading, isError: startupError, error: startupQueryError, refetch: refetchStartup } = useStartup(startupIdParam);
+  const { data: blueprintData, isLoading: blueprintLoading, isError: blueprintError, error: blueprintQueryError, isFetching: blueprintFetching, refetch: refetchBlueprint } = useBlueprint(startupIdParam);
 
   const rawBlueprint = blueprintData?.blueprint || (startup?.blueprint as { id?: string; content?: unknown } | undefined) || undefined;
   const blueprint = normalizeBlueprint(rawBlueprint as Parameters<typeof normalizeBlueprint>[0]) || undefined;
@@ -141,29 +141,55 @@ function WorkspaceContent() {
   const noBlueprint = !blueprint;
 
   if (noBlueprint && startupIdParam) {
-    console.log("[Workspace] Has startupId but no blueprint | blueprintError:", blueprintError, "| blueprintFetching:", blueprintFetching);
+    console.log("[Workspace] Has startupId but no blueprint | startupError:", startupError, "| blueprintError:", blueprintError, "| blueprintFetching:", blueprintFetching);
+
+    if (startupError) {
+      console.log("[Workspace] Startup fetch failed — showing error");
+      const is401 = (startupQueryError as { status?: number })?.status === 401;
+      return (
+        <div className="flex min-h-screen bg-background items-center justify-center p-8">
+          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
+            <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
+              <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-destructive"}`} />
+              <h2 className="text-lg font-display font-bold">{is401 ? "Authentication required" : "Could not load startup"}</h2>
+              <p className="text-sm text-muted-foreground">
+                {is401 ? "Your session has expired. Please sign in again." : "There was a problem fetching your startup data. Please try again."}
+              </p>
+              {!is401 && (
+                <Button variant="outline" onClick={() => { refetchStartup(); }} className="gap-2">
+                  <RefreshCw className="h-4 w-4" /> Retry
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
 
     if (blueprintError) {
       console.log("[Workspace] Blueprint fetch failed - showing retry card");
+      const is401 = (blueprintQueryError as { status?: number })?.status === 401;
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
-          <Card className="max-w-md w-full border-warning/30 bg-surface-amber">
+          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30 bg-amber-500/5" : "border-warning/30 bg-surface-amber"}`}>
             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
-              <AlertTriangle className="h-10 w-10 text-warning" />
-              <h2 className="text-lg font-display font-bold">Could not load blueprint</h2>
+              <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-warning"}`} />
+              <h2 className="text-lg font-display font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
               <p className="text-sm text-muted-foreground">
-                We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation.
+                {is401 ? "Your session has expired. Please sign in again." : "We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation."}
               </p>
-              <div className="flex gap-3 mt-2">
-                <Button variant="outline" onClick={retryBlueprint} className="gap-2">
-                  <RefreshCw className="h-4 w-4" /> Retry
-                </Button>
-                {startupIdParam && (
-                  <Button variant="ghost" onClick={() => { refetchStartup(); retryBlueprint(); }} className="gap-2">
-                    <RefreshCw className="h-4 w-4" /> Fetch from startup
+              {is401 ? null : (
+                <div className="flex gap-3 mt-2">
+                  <Button variant="outline" onClick={retryBlueprint} className="gap-2">
+                    <RefreshCw className="h-4 w-4" /> Retry
                   </Button>
-                )}
-              </div>
+                  {startupIdParam && (
+                    <Button variant="ghost" onClick={() => { refetchStartup(); retryBlueprint(); }} className="gap-2">
+                      <RefreshCw className="h-4 w-4" /> Fetch from startup
+                    </Button>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

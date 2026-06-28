@@ -14,6 +14,7 @@ import {
   logout as apiLogout,
   getCurrentUser,
 } from "@/lib/api/auth";
+import { apiClient, setUnauthorizedHandler, clearUnauthorizedHandler } from "@/lib/api/client";
 import type { AuthUser } from "@/lib/types";
 
 interface AuthContextValue {
@@ -40,6 +41,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const currentUser = getCurrentUser();
     setUser(currentUser);
     setIsLoading(false);
+
+    setUnauthorizedHandler(() => {
+      apiClient.clearToken();
+      setUser(null);
+    });
+
+    return () => {
+      clearUnauthorizedHandler();
+    };
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {

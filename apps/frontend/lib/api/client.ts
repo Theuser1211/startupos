@@ -6,6 +6,16 @@ const BASE_URL =
 
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
+let unauthorizedHandler: (() => void) | null = null;
+let isAuthRedirecting = false;
+
+export function setUnauthorizedHandler(fn: () => void) {
+  unauthorizedHandler = fn;
+}
+
+export function clearUnauthorizedHandler() {
+  unauthorizedHandler = null;
+}
 
 const TOKEN_KEY = "startupos-token";
 
@@ -123,6 +133,13 @@ async function request<T = unknown>(
           if (retryRes.status === 204) return undefined as T;
           return retryRes.json();
         }
+      }
+      // Refresh failed — clear auth state and redirect
+      unauthorizedHandler?.();
+      if (!isAuthRedirecting && typeof window !== "undefined") {
+        isAuthRedirecting = true;
+        const currentPath = window.location.pathname + window.location.search;
+        window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
       }
     }
     let body: { error?: string; message?: string } = {};

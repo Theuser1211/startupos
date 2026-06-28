@@ -11,6 +11,16 @@ const queryClient = new QueryClient({
       staleTime: 30_000,
       retry: 2,
       refetchOnWindowFocus: false,
+      throwOnError: false,
+    },
+    mutations: {
+      onError: (error) => {
+        // Secondary guard: if a mutation gets a 401 and
+        // the redirect hasn't happened yet, surface it
+        if ((error as { status?: number })?.status === 401) {
+          console.warn("[401] Mutation rejected — session expired");
+        }
+      },
     },
   },
 });

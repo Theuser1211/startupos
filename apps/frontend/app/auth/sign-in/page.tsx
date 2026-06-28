@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/auth-context";
+import { useToast } from "@/components/ui/toast";
 import Link from "next/link";
 
 function SignInForm() {
@@ -15,6 +16,17 @@ function SignInForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/workspace";
   const { signIn } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (searchParams.get("expired") === "1") {
+      toast({
+        variant: "warning",
+        title: "Session expired",
+        message: "Your session expired. Please sign in again.",
+      });
+    }
+  }, [searchParams, toast]);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
