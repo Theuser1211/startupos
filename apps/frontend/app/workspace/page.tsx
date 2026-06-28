@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "@/components/workspace/sidebar";
@@ -15,12 +15,21 @@ import { RoastTab } from "@/components/workspace/roast-tab";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useStartup, useBlueprint } from "@/lib/hooks/use-startup";
-import { Menu, X, AlertTriangle, LayoutDashboard } from "lucide-react";
+import { Menu, X, AlertTriangle, LayoutDashboard, RefreshCw, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import type { StartupBlueprint } from "@/lib/types";
 import { normalizeBlueprint } from "@/lib/utils/blueprint";
+
+const STARTUP_ID_KEY = "startupos-current-startup-id";
+
+function getStartupIdFromUrl(): string | null {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  return params.get("id");
+}
 
 const tabComponents: Record<string, React.ComponentType<{ blueprint?: StartupBlueprint | null }>> = {
   overview: OverviewTab,
@@ -46,18 +55,71 @@ const mobileTabs = [
 
 function WorkspaceContent() {
   const searchParams = useSearchParams();
-  const startupIdParam = searchParams.get("id");
+  const startupIdFromUrl = searchParams.get("id");
+  const startupIdFromUrlFallback = getStartupIdFromUrl();
+  const startupIdParam = startupIdFromUrl || startupIdFromUrlFallback;
   const [activeTab, setActiveTab] = useState("overview");
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { user } = useAuth();
+  const [paramsReady, setParamsReady] = useState(false);
+  const [redirectAttempted, setRedirectAttempted] = useState(false);
 
-  const { data: startup, isLoading: startupLoading } = useStartup(startupIdParam);
-  const { data: blueprintData, isLoading: blueprintLoading } = useBlueprint(startupIdParam);
-  const rawBlueprint = blueprintData?.blueprint || (startup?.blueprint as { id?: string; content?: unknown } | undefined);
+  useEffect(() => {
+    setParamsReady(true);
+    console.log("[Workspace] Mounted | startupIdParam:", startupIdParam, "| fromURL:", startupIdFromUrl, "| fallback:", startupIdFromUrlFallback);
+  }, []);
+
+  useEffect(() => {
+    console.log("[Workspace] startupIdParam changed:", startupIdParam);
+    if (startupIdParam) {
+      localStorage.setItem(STARTUP_ID_KEY, startupIdParam);
+      console.log("[Workspace] Persisted startupId to localStorage:", startupIdParam);
+    }
+  }, [startupIdParam]);
+
+  const { data: startup, isLoading: startupLoading, isError: startupError, refetch: refetchStartup } = useStartup(startupIdParam);
+  const { data: blueprintData, isLoading: blueprintLoading, isError: blueprintError, isFetching: blueprintFetching, refetch: refetchBlueprint } = useBlueprint(startupIdParam);
+
+  const rawBlueprint = blueprintData?.blueprint || (startup?.blueprint as { id?: string; content?: unknown } | undefined) || undefined;
   const blueprint = normalizeBlueprint(rawBlueprint as Parameters<typeof normalizeBlueprint>[0]) || undefined;
   const isLoading = startupLoading || blueprintLoading;
 
+  console.log("[Workspace] State:", {
+    startupIdParam,
+    startupId: startup?.id,
+    startupName: startup?.name,
+    blueprintDataId: blueprintData?.id,
+    hasStartupBlueprint: !!startup?.blueprint,
+    hasBlueprintData: !!blueprintData,
+    hasNormalizedBlueprint: !!blueprint,
+    startupLoading,
+    blueprintLoading,
+    startupError,
+    blueprintError,
+    blueprintFetching,
+    isLoading,
+    paramsReady,
+  });
+
+  useEffect(() => {
+    if (!startupIdParam && paramsReady && !redirectAttempted) {
+      const persistedId = localStorage.getItem(STARTUP_ID_KEY);
+      console.log("[Workspace] No startupId in URL | persistedId:", persistedId);
+      if (persistedId) {
+        setRedirectAttempted(true);
+        console.log("[Workspace] Redirecting to persisted startup:", persistedId);
+        window.location.href = `/workspace?id=${persistedId}`;
+      }
+    }
+  }, [startupIdParam, paramsReady, redirectAttempted]);
+
+  const retryBlueprint = useCallback(() => {
+    console.log("[Workspace] Manual blueprint retry triggered");
+    refetchBlueprint();
+  }, [refetchBlueprint]);
+
   if (isLoading) {
+    console.log("[Workspace] Rendering loading state");
     return (
       <div className="flex min-h-screen bg-background items-center justify-center">
         <div className="text-center space-y-4" role="status" aria-label="Loading">
@@ -69,26 +131,100 @@ function WorkspaceContent() {
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             />
           </div>
-          <p className="text-sm text-muted-foreground">Loading your startup...</p>
+          <p className="text-sm text-muted-foreground font-mono">loading workspace...</p>
         </div>
       </div>
     );
   }
 
-  const noBlueprint = !blueprint && !startupLoading;
+  const noBlueprint = !blueprint;
 
-  if (noBlueprint && !startupIdParam) {
+  if (noBlueprint && startupIdParam) {
+    console.log("[Workspace] Has startupId but no blueprint | blueprintError:", blueprintError, "| blueprintFetching:", blueprintFetching);
+
+    if (blueprintError) {
+      console.log("[Workspace] Blueprint fetch failed - showing retry card");
+      return (
+        <div className="flex min-h-screen bg-background items-center justify-center p-8">
+          <Card className="max-w-md w-full border-warning/30 bg-surface-amber">
+            <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
+              <AlertTriangle className="h-10 w-10 text-warning" />
+              <h2 className="text-lg font-display font-bold">Could not load blueprint</h2>
+              <p className="text-sm text-muted-foreground">
+                We found your startup but had trouble loading the blueprint data. This can happen after a fresh generation.
+              </p>
+              <div className="flex gap-3 mt-2">
+                <Button variant="outline" onClick={retryBlueprint} className="gap-2">
+                  <RefreshCw className="h-4 w-4" /> Retry
+                </Button>
+                {startupIdParam && (
+                  <Button variant="ghost" onClick={() => { refetchStartup(); retryBlueprint(); }} className="gap-2">
+                    <RefreshCw className="h-4 w-4" /> Fetch from startup
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
+    if (blueprintFetching) {
+      console.log("[Workspace] Blueprint still refetching - showing retry loading");
+      return (
+        <div className="flex min-h-screen bg-background items-center justify-center">
+          <div className="text-center space-y-4">
+            <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
+            <p className="text-sm text-muted-foreground font-mono">retying blueprint fetch...</p>
+          </div>
+        </div>
+      );
+    }
+
+    console.log("[Workspace] No blueprint found for this startup - showing create prompt");
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
           </div>
-          <h2 className="text-xl font-display font-bold">No blueprint yet</h2>
-          <p className="text-sm text-muted-foreground">Complete the founder interview to generate your blueprint.</p>
+          <h2 className="text-xl font-display font-bold">No blueprint found</h2>
+          <p className="text-sm text-muted-foreground">
+            This startup doesn&apos;t have a blueprint yet. Complete the founder interview to generate one.
+          </p>
           <Link href="/interview">
             <Button variant="default"><LayoutDashboard className="h-4 w-4" /> Complete Interview</Button>
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (noBlueprint && !startupIdParam && paramsReady) {
+    const persistedId = typeof window !== "undefined" ? localStorage.getItem(STARTUP_ID_KEY) : null;
+    console.log("[Workspace] No startupId and no blueprint | paramsReady:", paramsReady, "| persistedId:", persistedId);
+
+    if (persistedId && !redirectAttempted) {
+      console.log("[Workspace] Delayed redirect to persisted startup:", persistedId);
+    }
+
+    console.log("[Workspace] Showing empty state");
+    return (
+      <div className="flex min-h-screen bg-background items-center justify-center p-8">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/20">
+            <AlertTriangle className="h-8 w-8 text-amber-400" />
+          </div>
+          <h2 className="text-xl font-display font-bold">No startup selected</h2>
+          <p className="text-sm text-muted-foreground">Select a startup from your list or create a new one to get started.</p>
+          <div className="flex gap-3 justify-center">
+            <Link href="/blueprints">
+              <Button variant="outline">My Startups</Button>
+            </Link>
+            <Link href="/interview">
+              <Button variant="default"><LayoutDashboard className="h-4 w-4" /> New Interview</Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -98,17 +234,17 @@ function WorkspaceContent() {
 
   return (
     <div className="flex min-h-screen bg-background">
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
-          founderName={startup?.name || blueprint?.startupName || ""}
-          startupId={startupIdParam || undefined}
-          blueprint={blueprint}
-        />
+      <Sidebar
+        activeTab={activeTab}
+        onTabChange={(tab) => { setActiveTab(tab); setMobileNavOpen(false); }}
+        founderName={startup?.name || blueprint?.startupName || ""}
+        startupId={startupIdParam || undefined}
+        blueprint={blueprint}
+      />
 
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 glass-strong border-b border-glass-border">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 border-b border-border bg-card">
         <div className="flex items-center justify-between h-14 px-4">
-          <button onClick={() => setMobileNavOpen(!mobileNavOpen)} aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileNavOpen} className="flex h-8 w-8 items-center justify-center rounded-lg border border-glass-border text-muted-foreground hover:text-foreground transition-colors">
+          <button onClick={() => setMobileNavOpen(!mobileNavOpen)} aria-label={mobileNavOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={mobileNavOpen} className="flex h-8 w-8 items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-foreground transition-colors">
             {mobileNavOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
           <Image src="/logo-square.png" alt="StartupOS" width={1254} height={1254} className="h-6 w-6" />
@@ -116,7 +252,7 @@ function WorkspaceContent() {
         </div>
         <AnimatePresence>
           {mobileNavOpen && (
-            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="border-t border-glass-border overflow-hidden">
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="border-t border-border overflow-hidden">
               <div className="grid grid-cols-2 gap-1 p-3">
                 {mobileTabs.map((tab) => (
                   <button key={tab.id} onClick={() => { setActiveTab(tab.id); setMobileNavOpen(false); }} role="tab" aria-selected={activeTab === tab.id}
@@ -131,7 +267,7 @@ function WorkspaceContent() {
         </AnimatePresence>
       </div>
 
-      <div className="lg:hidden fixed top-14 left-0 right-0 z-30 glass border-b border-glass-border overflow-x-auto">
+      <div className="lg:hidden fixed top-14 left-0 right-0 z-30 border-b border-border bg-card overflow-x-auto">
         <div className="flex gap-1 p-2">
           {mobileTabs.map((tab) => (
             <button key={tab.id} onClick={() => { setActiveTab(tab.id); setMobileNavOpen(false); }} role="tab" aria-selected={activeTab === tab.id}
@@ -184,7 +320,7 @@ function LoadingFallback() {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
           />
         </div>
-        <p className="text-sm text-muted-foreground">Loading workspace...</p>
+        <p className="text-sm text-muted-foreground font-mono">loading workspace...</p>
       </div>
     </div>
   );

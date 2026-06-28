@@ -242,6 +242,15 @@ function DashboardContent() {
   const { data: dashboard, isLoading, error, refetch } = useDashboard(startupId);
   const [showAllActions, setShowAllActions] = useState(false);
 
+  console.log("[Dashboard] startupId from URL:", startupId, "| dashboard data:", dashboard?.startup?.id);
+
+  useEffect(() => {
+    if (startupId) {
+      localStorage.setItem("startupos-current-startup-id", startupId);
+      console.log("[Dashboard] Persisted startupId:", startupId);
+    }
+  }, [startupId]);
+
   const handleSignOut = async () => { await signOut(); router.push("/"); };
 
   if (authLoading) {
