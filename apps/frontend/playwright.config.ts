@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: ".",
-  testMatch: "playwright-audit.spec.ts",
+  testMatch: ["playwright-audit.spec.ts", "qa-website-generation.spec.ts"],
   timeout: 120000,
   retries: 1,
   use: {

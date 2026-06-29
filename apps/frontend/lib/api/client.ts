@@ -124,49 +124,66 @@ async function request<T = unknown>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-  if (!res.ok) {
-    if (res.status === 401 && token && path !== "/auth/refresh") {
-      const newToken = await refreshAndGetToken();
-      if (newToken) {
-        headers["Authorization"] = `Bearer ${newToken}`;
-        const retryRes = await fetch(`${BASE_URL}${path}`, {
-          ...options,
-          headers,
-        });
-        if (retryRes.ok) {
-          if (retryRes.status === 204) return undefined as T;
-          return retryRes.json();
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      if (res.status === 401 && token && path !== "/auth/refresh") {
+        const newToken = await refreshAndGetToken();
+        if (newToken) {
+          headers["Authorization"] = `Bearer ${newToken}`;
+          const retryRes = await fetch(`${BASE_URL}${path}`, {
+            ...options,
+            headers,
+          });
+          if (retryRes.ok) {
+            if (retryRes.status === 204) return undefined as T;
+            return retryRes.json();
+          }
+        }
+        // Refresh failed — clear auth state and redirect
+        unauthorizedHandler?.();
+        if (!isAuthRedirecting && typeof window !== "undefined") {
+          isAuthRedirecting = true;
+          const currentPath = window.location.pathname + window.location.search;
+          window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
         }
       }
-      // Refresh failed — clear auth state and redirect
-      unauthorizedHandler?.();
-      if (!isAuthRedirecting && typeof window !== "undefined") {
-        isAuthRedirecting = true;
-        const currentPath = window.location.pathname + window.location.search;
-        window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
+      let body: { error?: string; message?: string } = {};
+      try {
+        body = await res.json();
+      } catch {
+        // ignore parse errors
       }
+      const err: ApiError = {
+        error: body.message || body.error || `Request failed with status ${res.status}`,
+        status: res.status,
+        tokenExisted: !!token,
+      };
+      throw err;
     }
-    let body: { error?: string; message?: string } = {};
-    try {
-      body = await res.json();
-    } catch {
-      // ignore parse errors
-    }
-    const err: ApiError = {
-      error: body.message || body.error || `Request failed with status ${res.status}`,
-      status: res.status,
-      tokenExisted: !!token,
-    };
-    throw err;
-  }
 
-  if (res.status === 204) return undefined as T;
-  return res.json();
+    if (res.status === 204) return undefined as T;
+    return res.json();
+  } catch (err: unknown) {
+    if (err && typeof err === "object" && "name" in err && (err as { name: string }).name === "AbortError") {
+      const timeoutErr: ApiError = {
+        error: "Request timed out. Please try again.",
+        status: 0,
+      };
+      throw timeoutErr;
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 async function get<T = unknown>(path: string): Promise<T> {
