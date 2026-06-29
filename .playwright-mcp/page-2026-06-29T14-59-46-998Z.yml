@@ -1,0 +1,22 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - generic [ref=e10]: startupos — 404
+    - generic [ref=e11]:
+      - img [ref=e12]
+      - 'heading "$ ls: no such file or directory" [level=2] [ref=e14]'
+      - paragraph [ref=e15]: The page you're looking for doesn't exist. It may have been moved or deleted.
+      - generic [ref=e16]:
+        - button "Go Back" [ref=e17]:
+          - img
+          - text: Go Back
+        - link "Home" [ref=e18] [cursor=pointer]:
+          - /url: /
+          - button "Home" [ref=e19]:
+            - img
+            - text: Home
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e25] [cursor=pointer]:
+    - img [ref=e26]
+  - alert [ref=e29]

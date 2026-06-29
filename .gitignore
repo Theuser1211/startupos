@@ -11,3 +11,7 @@ coverage/
 test-results/
 playwright-report/
 qa-screenshots/
+test-evidence/
+apps/test-evidence/
+*.log
+server.err

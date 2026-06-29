@@ -1,171 +1,84 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import {
-  Brain, Target, Rocket, BarChart3, Lightbulb, Shield, Terminal, LucideIcon,
-} from "lucide-react";
+import { MessageSquare, Target, Route, BarChart3, Palette, Flame } from "lucide-react";
 
 interface Feature {
-  icon: LucideIcon;
+  icon: typeof MessageSquare;
   title: string;
   description: string;
+  note: string;
 }
 
 const features: Feature[] = [
   {
-    icon: Brain,
-    title: "AI Founder Coach",
-    description: "Talk through your idea with an AI that actually understands startups. Not a chatbot. A sparring partner.",
+    icon: MessageSquare,
+    title: "Founder Interview",
+    description: "Walks you through 18 questions about your idea. Market, users, business model, competitors. The stuff you'd normally skip.",
+    note: "still less painful than spreadsheets",
   },
   {
     icon: Target,
     title: "ICP Builder",
-    description: "Figure out who your customer actually is. Not who you think they are. There's a difference.",
+    description: "Figure out who your customer actually is. Age, job title, what keeps them up at night. Not who you think they are.",
+    note: "spoiler: it's not everyone",
   },
   {
-    icon: Rocket,
+    icon: Route,
     title: "Smart Roadmap",
-    description: "A roadmap that updates itself. Because the one you made in Notion three months ago is already wrong.",
+    description: "Generates a roadmap from your answers. Updates when you change your mind. Because Notion docs rot.",
+    note: "probably overengineered",
   },
   {
     icon: BarChart3,
     title: "Revenue Modeling",
-    description: "Unit economics that make sense. Scenario planning without the spreadsheet headaches.",
+    description: "Unit economics. Pricing tiers. Break-even. Spreadsheets are great, but I wanted something lazier.",
+    note: "does not guarantee profit",
   },
   {
-    icon: Lightbulb,
-    title: "Brand Strategy",
-    description: "Brand guidelines generated from your actual positioning. Not generic 'be authentic' advice.",
+    icon: Palette,
+    title: "Brand Generator",
+    description: "Creates brand guidelines from your positioning. Colors, fonts, voice. Makes your landing page look less like a template.",
+    note: "yes, another AI app",
   },
   {
-    icon: Shield,
+    icon: Flame,
     title: "Startup Roast",
-    description: "Brutally honest feedback. The kind your mom won't give you. Your startup needs this.",
+    description: "Brutally honest feedback on your idea. No padding. No sugar-coating. Your mom won't say these things.",
+    note: "reader discretion advised",
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
 export function FeaturesSection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0, 0.5, 0]);
-
   return (
-    <section id="features" ref={sectionRef} className="relative py-24 px-6 overflow-hidden">
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-0"
-        style={{ opacity: bgOpacity }}
-      />
+    <section id="features" className="py-16 px-6 border-t border-border">
+      <div className="mx-auto max-w-2xl">
+        <p className="text-xs text-muted-foreground font-mono mb-4">
+          // features.md
+        </p>
+        <h2 className="text-lg font-semibold mb-8">What it does</h2>
 
-      <div className="relative mx-auto max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-12"
-        >
-          <div className="flex items-center gap-2 font-mono text-xs text-primary/60 mb-3">
-            <Terminal className="h-3.5 w-3.5" />
-            <span>$ ls features/</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            The Complete{" "}
-            <span className="text-primary">
-              Founder Toolkit
-            </span>
-          </h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-3 text-sm text-muted-foreground max-w-2xl font-mono"
-          >
-            Every tool you need to build a real company — no MBA required, no VC pitch needed.
-          </motion.p>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr"
-        >
-          {features.map((feature, index) => {
+        <div className="grid gap-4 sm:grid-cols-2">
+          {features.map((feature) => {
             const Icon = feature.icon;
-            const isWide = index === 2;
             return (
-              <motion.div
+              <div
                 key={feature.title}
-                variants={itemVariants}
-                className={isWide ? "lg:col-span-2" : ""}
+                className="border border-border rounded p-4 hover:border-muted-foreground/30 transition-colors"
               >
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="h-full"
-                >
-                  <div className="terminal-window h-full group transition-all duration-300 hover:border-primary/25">
-                    <div className="p-4 h-full flex flex-col">
-                      <div className="flex items-center gap-2.5 mb-3">
-                        <div className="flex items-center justify-center w-8 h-8 rounded bg-primary/10 text-primary">
-                          <Icon className="h-4 w-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-mono text-xs font-medium text-foreground group-hover:text-primary transition-colors truncate">
-                            {feature.title}
-                          </h3>
-                        </div>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed font-mono flex-1">
-                        {feature.description}
-                      </p>
-                      <div className="mt-3 pt-2 border-t border-border/50 flex items-center justify-between">
-                        <span className="font-mono text-[10px] text-muted-foreground/60">
-                          $ {" "}{feature.title.toLowerCase().replace(/\s+/g, "-")} --help
-                        </span>
-                        <span className="text-primary/50 text-[10px] font-mono">
-                          ✓ online
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon className="h-4 w-4 text-primary shrink-0" />
+                  <h3 className="text-sm font-medium">{feature.title}</h3>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                  {feature.description}
+                </p>
+                <p className="text-[10px] font-mono text-muted-foreground/50 italic">
+                  // {feature.note}
+                </p>
+              </div>
             );
           })}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          className="mt-16"
-        >
-          <div className="ascii-divider">
-            <span>6 modules loaded. 0 excuses remaining.</span>
-          </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

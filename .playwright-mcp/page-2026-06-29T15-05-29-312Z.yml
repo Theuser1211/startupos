@@ -1,0 +1,143 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "StartupOS" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]: StartupOS
+        - navigation [ref=e8]:
+          - link "Features" [ref=e9] [cursor=pointer]:
+            - /url: "#features"
+          - link "Sign in" [ref=e10] [cursor=pointer]:
+            - /url: /auth/sign-in
+          - link "Try it" [ref=e11] [cursor=pointer]:
+            - /url: /interview
+    - main [ref=e12]:
+      - generic [ref=e14]:
+        - img "StartupOS workspace screenshot" [ref=e16]
+        - paragraph [ref=e17]: // hello.txt
+        - heading "I built this because every project I started died after 3 days." [level=1] [ref=e18]
+        - paragraph [ref=e19]: So I made a tool that forces me to think through an idea before wasting a week building it. Works on my machine.
+        - generic [ref=e20]:
+          - link "Try it" [ref=e21] [cursor=pointer]:
+            - /url: /interview
+          - link "GitHub" [ref=e22] [cursor=pointer]:
+            - /url: https://github.com/startupos
+      - generic [ref=e24]:
+        - paragraph [ref=e25]: // README.md
+        - heading "Why I built this" [level=2] [ref=e26]
+        - generic [ref=e27]:
+          - paragraph [ref=e28]: I keep starting projects and abandoning them after 72 hours. Usually because I jump into building without thinking things through first.
+          - paragraph [ref=e29]: So I made a tool that walks me through a structured interview before I write a single line of code. It asks about the market, the users, the business model — all the stuff I usually skip because I'm too excited to build.
+          - paragraph [ref=e30]: It's not a replacement for talking to customers. It's a replacement for my own impulsiveness.
+        - generic [ref=e31]:
+          - generic [ref=e32]: $ cat TODO.txt
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - generic [ref=e35]: "[x]"
+              - generic [ref=e36]: Founder interview (works on my machine)
+            - generic [ref=e37]:
+              - generic [ref=e38]: "[x]"
+              - generic [ref=e39]: Blueprint generation (kinda slow but works)
+            - generic [ref=e40]:
+              - generic [ref=e41]: "[x]"
+              - generic [ref=e42]: Website generator (makes something, at least)
+            - generic [ref=e43]:
+              - generic [ref=e44]: "[ ]"
+              - generic [ref=e45]: Mobile app (maybe next year)
+            - generic [ref=e46]:
+              - generic [ref=e47]: "[ ]"
+              - generic [ref=e48]: Write tests that don't suck
+      - generic [ref=e50]:
+        - paragraph [ref=e51]: // demo.mp4
+        - heading "What it looks like" [level=2] [ref=e52]
+        - img "StartupOS website generator" [ref=e54]
+        - paragraph [ref=e55]: // the website generator in action
+      - generic [ref=e57]:
+        - paragraph [ref=e58]: // features.md
+        - heading "What it does" [level=2] [ref=e59]
+        - generic [ref=e60]:
+          - generic [ref=e61]:
+            - generic [ref=e62]:
+              - img [ref=e63]
+              - heading "Founder Interview" [level=3] [ref=e65]
+            - paragraph [ref=e66]: Walks you through 18 questions about your idea. Market, users, business model, competitors. The stuff you'd normally skip.
+            - paragraph [ref=e67]: // still less painful than spreadsheets
+          - generic [ref=e68]:
+            - generic [ref=e69]:
+              - img [ref=e70]
+              - heading "ICP Builder" [level=3] [ref=e74]
+            - paragraph [ref=e75]: Figure out who your customer actually is. Age, job title, what keeps them up at night. Not who you think they are.
+            - paragraph [ref=e76]: "// spoiler: it's not everyone"
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - img [ref=e79]
+              - heading "Smart Roadmap" [level=3] [ref=e83]
+            - paragraph [ref=e84]: Generates a roadmap from your answers. Updates when you change your mind. Because Notion docs rot.
+            - paragraph [ref=e85]: // probably overengineered
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - img [ref=e88]
+              - heading "Revenue Modeling" [level=3] [ref=e90]
+            - paragraph [ref=e91]: Unit economics. Pricing tiers. Break-even. Spreadsheets are great, but I wanted something lazier.
+            - paragraph [ref=e92]: // does not guarantee profit
+          - generic [ref=e93]:
+            - generic [ref=e94]:
+              - img [ref=e95]
+              - heading "Brand Generator" [level=3] [ref=e101]
+            - paragraph [ref=e102]: Creates brand guidelines from your positioning. Colors, fonts, voice. Makes your landing page look less like a template.
+            - paragraph [ref=e103]: // yes, another AI app
+          - generic [ref=e104]:
+            - generic [ref=e105]:
+              - img [ref=e106]
+              - heading "Startup Roast" [level=3] [ref=e108]
+            - paragraph [ref=e109]: Brutally honest feedback on your idea. No padding. No sugar-coating. Your mom won't say these things.
+            - paragraph [ref=e110]: // reader discretion advised
+      - generic [ref=e112]:
+        - paragraph [ref=e113]: // stack.txt
+        - heading "Architecture" [level=2] [ref=e114]
+        - paragraph [ref=e115]: Nothing fancy. Just whatever worked at 2am.
+        - generic [ref=e116]:
+          - generic [ref=e122]: package.json
+          - generic [ref=e123]:
+            - generic [ref=e124]: $ tree . --depth 2
+            - generic [ref=e125]:
+              - generic [ref=e126]: startupos/
+              - generic [ref=e127]: ├── apps/
+              - generic [ref=e128]: ├── frontend/ // Next.js, Tailwind
+              - generic [ref=e129]: ├── backend/ // Express, Prisma, SQLite
+              - generic [ref=e130]: ├── packages/
+              - generic [ref=e131]: ├── shared/ // Types I reuse everywhere
+              - generic [ref=e132]: ├── AI stuff
+              - generic [ref=e133]: ├── provider chain with fallback
+              - generic [ref=e134]: ├── 60s timeout each
+              - generic [ref=e135]: ├── hardcoded fallback if all fail
+              - generic [ref=e136]: └── package.json
+            - generic [ref=e137]: $ echo "works on my machine"
+            - generic [ref=e138]: works on my machine
+        - generic [ref=e139]: // deployed via Railway. probably overengineered for what it does.
+      - generic [ref=e141]:
+        - paragraph [ref=e142]: // ship.sh
+        - heading "Try it" [level=2] [ref=e143]
+        - paragraph [ref=e144]: Free tier. No credit card. Full workspace. I don't have a premium plan because I haven't figured out pricing yet.
+        - generic [ref=e145]:
+          - link "Try it" [ref=e146] [cursor=pointer]:
+            - /url: /interview
+          - link "GitHub" [ref=e147] [cursor=pointer]:
+            - /url: https://github.com/startupos
+        - paragraph [ref=e148]: built by a student with too much free time
+    - contentinfo [ref=e149]:
+      - generic [ref=e150]:
+        - generic [ref=e151]:
+          - generic [ref=e152]: © 2026 StartupOS
+          - link "privacy" [ref=e153] [cursor=pointer]:
+            - /url: /privacy
+          - link "terms" [ref=e154] [cursor=pointer]:
+            - /url: /terms
+        - paragraph [ref=e155]: // ship fast. break things. fix them later.
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e161] [cursor=pointer]:
+    - img [ref=e162]
+  - alert [ref=e165]

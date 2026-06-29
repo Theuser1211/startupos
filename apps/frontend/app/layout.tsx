@@ -14,9 +14,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StartupOS — AI-Powered Founder Toolkit",
-  description: "The operating system for modern founders. Clarify your vision, align your team, and execute with precision.",
-  keywords: "startup, founder, AI, business plan, blueprint, MVP",
+  title: "StartupOS — tools for building stuff",
+  description: "A bunch of tools I wish existed while building projects. Made by a student.",
+  keywords: "startup, founder, side project, tools",
   icons: {
     icon: [
       { url: "/logo-square.png", sizes: "any" },
@@ -25,15 +25,15 @@ export const metadata: Metadata = {
     apple: [{ url: "/logo-square.png" }],
   },
   openGraph: {
-    title: "StartupOS — AI-Powered Founder Toolkit",
-    description: "The operating system for modern founders.",
+    title: "StartupOS — tools for building stuff",
+    description: "A bunch of tools I wish existed while building projects.",
     type: "website",
     siteName: "StartupOS",
   },
   twitter: {
     card: "summary_large_image",
-    title: "StartupOS — AI-Powered Founder Toolkit",
-    description: "The operating system for modern founders.",
+    title: "StartupOS — tools for building stuff",
+    description: "A bunch of tools I wish existed while building projects.",
   },
   robots: { index: true, follow: true },
 };
