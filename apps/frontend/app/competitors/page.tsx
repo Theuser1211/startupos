@@ -231,7 +231,7 @@ function CompetitorsContent() {
 
         {competitors && !isLoading && (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
-            {competitors.length === 0 ? (
+            {(!competitors || competitors.length === 0) ? (
               <motion.div variants={itemVariants}>
                 <Card className=" border-[rgba(34,197,94,0.12)]">
                   <CardContent className="flex flex-col items-center py-16 text-center">
@@ -331,7 +331,7 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" /> Snapshot History
               </h4>
-              {history.snapshots.length === 0 ? (
+              {(!history.snapshots || history.snapshots.length === 0) ? (
                 <p className="text-xs text-muted-foreground py-4">No snapshots yet</p>
               ) : (
                 <div className="space-y-0">
@@ -367,7 +367,7 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
                 <TrendingUp className="h-3.5 w-3.5" /> Detected Changes
               </h4>
-              {history.changes.length === 0 ? (
+              {(!history.changes || history.changes.length === 0) ? (
                 <p className="text-xs text-muted-foreground py-4">No changes detected yet</p>
               ) : (
                 <div className="space-y-0">
@@ -402,7 +402,11 @@ function CompetitorDetail({ competitorId }: { competitorId: string }) {
               )}
             </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex items-center justify-center py-8">
+            <p className="text-xs text-muted-foreground font-mono">No history data available</p>
+          </div>
+        )}
       </div>
     </motion.div>
   );

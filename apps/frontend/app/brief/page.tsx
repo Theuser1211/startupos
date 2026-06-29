@@ -191,6 +191,17 @@ function BriefContent() {
           </Card>
         )}
 
+        {startupId && !isLoading && !error && !brief && (
+          <Card className=" border-[rgba(34,197,94,0.12)]">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <Zap className="h-10 w-10 text-primary mb-3" />
+              <p className="text-sm font-mono text-muted-foreground">No brief data available.</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">This startup may not have a blueprint yet.</p>
+              <Button size="sm" className="mt-4" onClick={() => refetch()}>Retry</Button>
+            </CardContent>
+          </Card>
+        )}
+
         {brief && (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
             <motion.div variants={itemVariants}>
@@ -198,7 +209,7 @@ function BriefContent() {
                 <CardContent className="p-6">
                   <div className="flex items-start gap-5">
                     <div className="relative">
-                      <ScoreRing score={brief.healthScore} size={80} />
+                      <ScoreRing score={brief.healthScore || 0} size={80} />
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className={`text-base font-bold font-mono ${getScoreColor(brief.healthScore)}`}>
                           {brief.healthScore}
@@ -230,7 +241,7 @@ function BriefContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {brief.wins.length === 0 ? (
+                    {(!brief.wins || brief.wins.length === 0) ? (
                       <div className="flex flex-col items-center py-8 text-center">
                         <CheckCircle2 className="h-8 w-8 text-muted-foreground/40 mb-2" />
                         <p className="text-sm text-muted-foreground">No wins yet</p>
@@ -261,7 +272,7 @@ function BriefContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {brief.priorities.length === 0 ? (
+                    {(!brief.priorities || brief.priorities.length === 0) ? (
                       <div className="flex flex-col items-center py-8 text-center">
                         <Target className="h-8 w-8 text-muted-foreground/40 mb-2" />
                         <p className="text-sm text-muted-foreground">All caught up!</p>
@@ -293,7 +304,7 @@ function BriefContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {brief.competitorUpdates.length === 0 ? (
+                  {(!brief.competitorUpdates || brief.competitorUpdates.length === 0) ? (
                     <div className="flex flex-col items-center py-8 text-center">
                       <Crosshair className="h-8 w-8 text-muted-foreground/40 mb-2" />
                       <p className="text-sm text-muted-foreground">No competitor updates</p>
@@ -329,7 +340,7 @@ function BriefContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {brief.healthHistory.length === 0 ? (
+                  {(!brief.healthHistory || brief.healthHistory.length === 0) ? (
                     <div className="flex flex-col items-center py-8 text-center">
                       <TrendingUp className="h-8 w-8 text-muted-foreground/40 mb-2" />
                       <p className="text-sm text-muted-foreground">No health data yet</p>

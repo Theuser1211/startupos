@@ -289,3 +289,279 @@ body {
   animation: typewriter 1.5s steps(40) forwards;
   max-width: fit-content;
 }
+
+/* ============================================================
+   FOUNDER OS — Handcrafted Terminal Identity
+   ============================================================ */
+
+/* Subtle noise texture overlay — makes surfaces feel physical */
+.noise-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* CRT phosphor glow — subtle green bleed on primary text */
+.crt-glow {
+  text-shadow: 0 0 4px rgba(34, 197, 94, 0.15), 0 0 12px rgba(34, 197, 94, 0.05);
+}
+
+/* Terminal boot log line */
+.boot-log {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.12);
+  letter-spacing: 0.02em;
+}
+.boot-log .highlight {
+  color: var(--color-primary);
+  opacity: 0.5;
+}
+
+/* Stamped label — looks like it was typed on a label maker */
+.stamp-label {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-muted-foreground);
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  padding: 2px 8px;
+  transform: rotate(-0.5deg);
+}
+
+/* Founder note — handwritten-ish aside */
+.founder-note {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  font-style: italic;
+  border-left: 2px solid rgba(34, 197, 94, 0.15);
+  padding-left: 10px;
+  line-height: 1.5;
+}
+
+/* Terminal command suggestion — looks like a real shell */
+.cmd-suggestion {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: rgba(34, 197, 94, 0.35);
+  padding: 3px 0;
+  cursor: default;
+  transition: color 0.2s;
+}
+.cmd-suggestion:hover {
+  color: rgba(34, 197, 94, 0.6);
+}
+.cmd-suggestion::before {
+  content: "~$ ";
+  color: rgba(34, 197, 94, 0.2);
+}
+
+/* ASCII box drawing — for structured terminal output */
+.ascii-box {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.15);
+  white-space: pre;
+}
+
+/* Scrolling ticker — startup metrics bar */
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-scroll {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+/* Glitch text effect — for error/panic states */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-1px, 0); }
+  80% { transform: translate(1px, 1px); }
+}
+.glitch-text {
+  animation: glitch 0.3s ease-in-out;
+}
+
+/* Handwritten underline — SVG-based squiggly line */
+.squiggly-underline {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='4'%3E%3Cpath d='M0 3 Q5 0 10 3 Q15 6 20 3 Q25 0 30 3 Q35 6 40 3' stroke='%2322c55e' stroke-width='1' fill='none' opacity='0.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: bottom;
+  background-size: 40px 4px;
+  padding-bottom: 4px;
+}
+
+/* Founder workspace status bar — bottom of terminal */
+.status-bar {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  letter-spacing: 0.03em;
+}
+.status-bar .status-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Cursor trail effect — subtle green afterglow */
+@keyframes cursor-trail {
+  0% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+/* Terminal tab completion hint */
+.tab-hint {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: rgba(34, 197, 94, 0.15);
+  pointer-events: none;
+}
+
+/* Startup artifact — stamp/印记 feel */
+.artifact-stamp {
+  position: relative;
+  display: inline-block;
+}
+.artifact-stamp::after {
+  content: "VERIFIED";
+  position: absolute;
+  top: -4px;
+  right: -24px;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--color-primary);
+  opacity: 0.3;
+  transform: rotate(12deg);
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  padding: 1px 4px;
+}
+
+/* Scanline flicker — subtle CRT imperfection */
+@keyframes scanline-flicker {
+  0%, 97%, 100% { opacity: 0.03; }
+  98% { opacity: 0.06; }
+  99% { opacity: 0.02; }
+}
+.scanlines-flicker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(34, 197, 94, 0.015) 2px,
+    rgba(34, 197, 94, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: scanline-flicker 8s ease-in-out infinite;
+}
+
+/* Terminal prompt with proper spacing */
+.terminal-prompt-line {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.terminal-prompt-line .prompt-user {
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+.terminal-prompt-line .prompt-sep {
+  color: rgba(255, 255, 255, 0.1);
+  margin: 0 6px;
+}
+.terminal-prompt-line .prompt-path {
+  color: var(--color-secondary);
+  opacity: 0.4;
+}
+.terminal-prompt-line .prompt-symbol {
+  color: var(--color-primary);
+  margin-left: 6px;
+}
+
+/* YC-style hacker vibe — code snippet card */
+.code-snippet {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+  padding: 12px 16px;
+  overflow-x: auto;
+}
+.code-snippet .comment {
+  color: rgba(255, 255, 255, 0.15);
+}
+.code-snippet .keyword {
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+.code-snippet .string {
+  color: var(--color-secondary);
+  opacity: 0.6;
+}
+
+/* Subtle hover lift for interactive cards */
+.card-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 1px rgba(34, 197, 94, 0.1);
+}
+
+/* Founder quote block */
+.founder-quote {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  line-height: 1.6;
+  padding-left: 16px;
+  border-left: 2px solid rgba(34, 197, 94, 0.2);
+}
+.founder-quote::before {
+  content: "// ";
+  color: rgba(34, 197, 94, 0.2);
+}
+
+/* Terminal window with phosphor burn-in effect */
+.phosphor-burn {
+  position: relative;
+}
+.phosphor-burn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(34, 197, 94, 0.02) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}

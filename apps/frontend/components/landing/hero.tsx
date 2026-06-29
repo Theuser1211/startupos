@@ -22,13 +22,23 @@ const itemVariants = {
 const stickers = [
   { text: "Founder Tested" },
   { text: "Ship Fast" },
-  { text: "Beta" },
+  { text: "v0.1.0" },
 ];
 
 const terminalLines = [
-  { text: "Compiling founder environment...", delay: 0.8 },
-  { text: "Analyzing founder interview...", delay: 1.2 },
-  { text: "✓ System ready", delay: 1.6 },
+  { text: "loading founder environment...", delay: 0.6 },
+  { text: "parsing startup DNA...", delay: 0.9 },
+  { text: "injecting caffeine into neural nets...", delay: 1.2 },
+  { text: "calibrating hustle levels...", delay: 1.5 },
+  { text: "✓ system ready. no weekends off.", delay: 1.8 },
+];
+
+const bootLogs = [
+  "[boot] initializing startupos kernel v0.1.0",
+  "[boot] founder mode: engaged",
+  "[boot] ram: 3 cups of coffee, 1 questionable energy drink",
+  "[boot] loading modules: ambition, delusion, persistence",
+  "[boot] all systems nominal. ship it.",
 ];
 
 export function HeroSection() {
@@ -70,7 +80,7 @@ export function HeroSection() {
             </span>
           </div>
 
-          <div className="p-6 sm:p-8 md:p-10">
+          <div className="p-6 sm:p-8 md:p-10 relative">
             <motion.div
               variants={containerVariants}
               initial="hidden"
@@ -80,7 +90,7 @@ export function HeroSection() {
               <motion.div variants={itemVariants} className="mb-4">
                 <div className="flex items-center gap-2 font-mono text-sm text-primary/60">
                   <Terminal className="h-3.5 w-3.5" />
-                  <span>$ ./configure --founder-mode --os=startupos</span>
+                  <span className="crt-glow">founder@startupos:~$ ./configure --mode=founder</span>
                   <span className="w-2 h-4 bg-primary/60 animate-terminal-blink" />
                 </div>
               </motion.div>
@@ -91,7 +101,7 @@ export function HeroSection() {
               >
                 <span className="text-foreground">Compile Your</span>
                 <br />
-                <span className="text-primary">
+                <span className="text-primary crt-glow">
                   Startup OS
                 </span>
               </motion.h1>
@@ -100,13 +110,13 @@ export function HeroSection() {
                 variants={itemVariants}
                 className="mt-4 max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed font-mono"
               >
-                Compile your startup operating system. AI-powered blueprint generation, market analysis, and execution tools for serious founders.
+                The command center for founders who'd rather build than pitch. AI blueprints, market intel, execution tools — all in one terminal.
               </motion.p>
 
               <motion.div variants={itemVariants} className="mt-8 flex flex-col sm:flex-row items-start gap-3">
                 <Button
                   size="lg"
-                  className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary"
+                  className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary card-lift"
                   asChild
                 >
                   <Link href="/interview">
@@ -134,12 +144,32 @@ export function HeroSection() {
                     transition={{ delay: line.delay, duration: 0.5 }}
                   >
                     {line.text.startsWith("✓") ? (
-                      <span className="text-primary">{line.text}</span>
+                      <span className="text-primary crt-glow">{line.text}</span>
                     ) : (
                       line.text
                     )}
                   </motion.p>
                 ))}
+              </motion.div>
+
+              {/* Boot log — founder OS authenticity */}
+              <motion.div
+                variants={itemVariants}
+                className="mt-6 hidden sm:block"
+              >
+                <div className="code-snippet max-w-lg">
+                  {bootLogs.map((log, i) => (
+                    <motion.p
+                      key={log}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 2.2 + i * 0.15, duration: 0.3 }}
+                      className="comment"
+                    >
+                      {log}
+                    </motion.p>
+                  ))}
+                </div>
               </motion.div>
             </motion.div>
           </div>

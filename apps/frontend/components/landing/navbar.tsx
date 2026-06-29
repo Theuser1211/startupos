@@ -61,7 +61,7 @@ export function Navbar() {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="hidden sm:inline font-mono text-[11px] text-primary/50">
+            <span className="hidden sm:inline font-mono text-[11px] text-primary/50 group-hover:text-primary/70 transition-colors">
               $ startupos ~ %
             </span>
             <Image

@@ -108,6 +108,8 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       if (res.website) {
         setWebsiteId(res.website.id);
         setWebsiteData(res.website as unknown as Record<string, unknown>);
+      } else {
+        throw new Error("No website data returned from server");
       }
       setGenStage(websiteStages.length - 1);
       setGenProgress(100);
@@ -243,8 +245,14 @@ function WebsitePreview({
   deploying: boolean;
   deployedUrl?: string;
 }) {
-  const spec = website.website_spec || website.spec || website;
-  const sections = (spec as Record<string, unknown>)?.sections as Array<{ type: string; heading?: string; content: string }> | undefined;
+  const specObj = website?.spec as Record<string, unknown> | undefined;
+  const specContent = specObj?.content as Record<string, unknown> | undefined;
+  const pageList = specContent?.pages as Array<Record<string, unknown>> | undefined;
+  const sections = pageList?.flatMap(p => (p.sections as Array<Record<string, unknown>>) || []).map(s => ({
+    type: s.type as string,
+    heading: ((s.content as Record<string, unknown>)?.heading as string) || undefined,
+    content: ((s.content as Record<string, unknown>)?.content as string) || ((s.content as Record<string, unknown>)?.text as string) || "",
+  })) as Array<{ type: string; heading?: string; content: string }> | undefined;
 
   return (
     <>

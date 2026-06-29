@@ -1,72 +1,65 @@
 # StartupOS
 
-I build things for founders. This is the one I wish I had when I started my first company.
+The operating system for founders who'd rather build than pitch.
 
-StartupOS is an AI-powered operating system for founders. You walk through an interview about your startup idea, and it generates a complete blueprint — brand positioning, ICP, revenue model, roadmap, competitor analysis, the whole thing.
+![StartupOS Landing](desktop--.png)
 
-It looks like a terminal because I got tired of generic AI SaaS design.
+## [Try it live →](https://startupos.app)
 
-## Why I Built This
+Free. No credit card. Just you and a terminal.
 
-I ran into the same problem over and over. I'd have a startup idea, talk to some people, feel excited, then hit a wall. There was no single place to organize all the pieces — the customer profile, the go-to-market strategy, the product roadmap, the competitive landscape. I'd have docs scattered across Notion, Google Sheets, and a million browser tabs.
+---
 
-I wanted something that felt like a command center. A place where a founder could sit down, walk through a structured interview, and walk out with a real plan — not just a pitch deck template.
+## Why I built this
 
-I also wanted it to look like something I'd actually want to use. Not another purple SaaS with rounded corners and a hero animation. Something that felt like it belonged in a terminal.
+I had a startup idea. Then another one. Then seven more.
 
-## What It Does
+The problem wasn't that I lacked ideas — it was that I couldn't keep track of any of them. My customer research was in Notion. My revenue model was in a Google Sheet. My competitive analysis was a half-finished doc I started at 2am and never opened again. My "brand strategy" was a vibe.
 
-You answer a few questions about your startup: what you're building, who it's for, how you'll charge, what problem you solve. The AI takes that input and generates a full blueprint.
+I wanted one place where I could sit down, answer a structured set of questions about my idea, and walk out with a real blueprint. Not a pitch deck template. Not a business plan PDF. An actual working document with market analysis, customer profiles, revenue projections, and a roadmap I could actually follow.
 
-The workspace gives you tabs for every dimension of your startup. Verdict. Brand. ICP. Revenue. Roadmap. Roast. Each one is generated from your interview data.
+So I built it. And I made it look like a terminal because I was sick of every AI tool looking like a purple Figma mockup from Dribbble.
 
-There's a dashboard that tracks your startup health score, shows you ASCII progress bars, gives you a fortune cookie, and predicts your probability of failure. Because running a startup is grim and you might as well have fun with it.
+## What it does
 
-## Features
+You answer questions about your startup — what you're building, who it's for, how you'll make money, what problem you're solving. The AI takes that and generates a complete blueprint with:
 
-- **Founder Interview** — Multi-step onboarding that collects your idea, stage, industry, customer, pricing, and problem. Validates every step. Handles conditional fields so you're not filling out irrelevant stuff.
-- **Blueprint Generation** — AI generates a complete startup blueprint with verdict, brand positioning, ICP, revenue model, roadmap, and roast. Takes about 15-30 seconds depending on provider load.
-- **Workspace** — Tabbed interface with 8 sections: Overview, Verdict, Website, Brand, ICP, Revenue, Roadmap, Roast. Each tab pulls from the generated blueprint.
-- **Dashboard (Mission Control)** — Health score with animated ring, ASCII progress bars for foundational/product/launch/engagement metrics, recent event log, prioritized action items.
-- **Fortune Cookie** — Daily founder wisdom. 118 aphorisms. Updates daily.
-- **Death Predictor** — Computes your startup's failure probability based on health metrics, industry risk, and activity. Shows risk factors and recommendations.
-- **Panic Button** — For those moments. You know the ones.
+- **Verdict** — A scored assessment across 7 dimensions (market, timing, competition, defensibility, founder-fit, distribution, revenue). It tells you if your idea is worth pursuing. Brutally.
+- **Brand Identity** — Mission, values, tone of voice, color palette, typography. Generated from your actual positioning, not generic advice.
+- **ICP Builder** — Your ideal customer profile. Who they are, what they care about, where to find them.
+- **Revenue Model** — Pricing strategy, unit economics, revenue projections. Real numbers, not vibes.
+- **Smart Roadmap** — A product roadmap that adapts to your stage and market.
+- **Startup Roast** — The AI roasts your idea. It's harsh. It's also usually right.
+- **Dashboard** — Health score, ASCII progress bars, a fortune cookie, and a death predictor. Because startup life is grim and you might as well have fun with it.
 - **Competitor Intelligence** — Track competitors with snapshot history and change detection.
-- **Daily Brief** — Health score summary, wins, priorities, competitor updates.
-- **Website Generation** — Generate and deploy a website from your blueprint data.
-- **Terminal Aesthetic** — Green-on-dark design, JetBrains Mono everywhere, ASCII dividers, status dots, blinking cursor.
 
-## Tech Stack
+## Tech stack
 
 - **Frontend:** Next.js 16, React 19, TypeScript, TailwindCSS v4, Framer Motion
-- **Backend:** Fastify, Node.js
-- **Database:** PostgreSQL with Drizzle ORM
-- **AI:** Multiple provider support with automatic failover (Google Gemini, OpenAI-compatible)
+- **Backend:** Fastify, Node.js, Prisma ORM
+- **Database:** PostgreSQL
+- **AI:** Multiple providers with automatic failover (Gemini, OpenAI-compatible)
 - **Auth:** Supabase
 - **Deployment:** Vercel (frontend), Railway (backend)
 - **Testing:** Playwright (61 E2E tests)
 
-## Architecture
+## How it works
 
-The frontend is a Next.js app with Turbopack. All pages are static by default. Auth state is managed via React context with a custom Supabase SSR client. API calls go through a centralized client that handles 401 redirects, token expiry, and friendly error messages.
+The frontend is a Next.js app with Turbopack. All pages are static by default. Auth state lives in React context with a custom Supabase SSR client. API calls go through a centralized client that handles 401 redirects, token expiry, and error messages that don't make you want to throw your laptop.
 
-The backend is a Fastify server with a module-based structure. Blueprint generation flows through a provider registry that supports multiple AI providers with cooldown logic. If one provider fails, it falls through to the next. Every step of the pipeline logs to console with structured prefixes so I can debug generation failures without digging through mountains of logs.
-
-The frontend uses TanStack Query for data fetching. Caching is aggressive. Refetch logic is conservative. I learned the hard way that refetching a blueprint mid-generation causes confusing states.
+The backend is a Fastify server with a module-based structure. Blueprint generation flows through a provider registry — if one AI provider fails, it falls through to the next. I added cooldown logic because Gemini once timed out 3 times in a row during a demo. Never again.
 
 Here's roughly how blueprint generation works:
 
 ```
-Interview → Create startup → Generate prompt → Provider registry → 
-AI call (with failover) → Validate response → Parse JSON → 
+Interview → Create startup → Generate prompt → Provider registry →
+AI call (with failover) → Validate response → Parse JSON →
 Persist to DB → Return to frontend
 ```
 
-## Screenshots
+The frontend uses TanStack Query for data fetching. Caching is aggressive. Refetch logic is conservative. I learned the hard way that refetching a blueprint mid-generation causes the most confusing states imaginable.
 
-<!-- TODO: Add screenshots of the landing page, interview flow, workspace, and dashboard -->
-
-## Running Locally
+## Running locally
 
 ```bash
 git clone https://github.com/yourusername/startupos.git
@@ -83,9 +76,9 @@ npm install
 npm run dev
 ```
 
-The frontend runs on `http://localhost:3000` by default. The backend runs on `http://localhost:3001`.
+Frontend runs on `http://localhost:3000`. Backend runs on `http://localhost:3001`.
 
-## Environment Variables
+## Environment variables
 
 **Frontend** (`apps/frontend/.env.local`):
 
@@ -108,63 +101,65 @@ CORS_ORIGIN=http://localhost:3000
 
 You'll need a Supabase project and at least one AI provider key. I run both Gemini and OpenAI and let the failover system handle the rest.
 
-## Biggest Challenges
+## The bugs that almost broke me
 
-**Blueprint reliability was the hardest thing to get right.** AI providers timeout. They return malformed JSON. They hallucinate fields. I built a multi-provider failover system with cooldown logic, but even that wasn't enough. I had to add Zod validation on every response, a JSON extraction layer that handles common malformations, and front-end retry logic that reuses the same startup ID instead of creating duplicates.
+**Blueprint reliability was a nightmare.** AI providers timeout. They return malformed JSON. They hallucinate fields that don't exist in your schema. I built a multi-provider failover system with cooldown logic, but even that wasn't enough. I had to add Zod validation on every response, a JSON extraction layer that handles common malformations, and front-end retry logic that reuses the same startup ID instead of creating duplicates. There was a week where Gemini kept returning `"verdict": "your startup is bad"` as a string instead of a nested object. I still have nightmares.
 
-**Hydration bugs drove me insane.** Next.js + browser extensions + localStorage interactions = random crashes. The footer was rendering the current year server-side and then React would flip out when the client-side year didn't match. I learned to use `suppressHydrationWarning` and defer dynamic values to client effects.
+**Hydration bugs made me question my career choices.** Next.js + browser extensions + localStorage interactions = random crashes. The footer was rendering the current year server-side and then React would flip out when the client-side year didn't match. I learned to use `suppressHydrationWarning` and defer dynamic values to client effects. Simple fix. Took me 3 hours to find.
 
-**The sidebar race condition was subtle.** `useSearchParams().get("id")` returns null on the first render after `router.push()`. This meant the workspace would flash an empty state before getting the URL parameter. I fixed it with a `paramsReady` guard, fallback to `window.location.search`, and localStorage persistence.
+**The sidebar race condition was evil.** `useSearchParams().get("id")` returns null on the first render after `router.push()`. This meant the workspace would flash an empty state before getting the URL parameter. I fixed it with a `paramsReady` guard, fallback to `window.location.search`, and localStorage persistence. The fix is 15 lines. Finding it took 2 days.
 
-**Onboarding dead-ends.** If a user selected "one-time" as their business model, a conditional field for price range would hide. But the validation still checked it. I had to add `showIf` awareness to the validation function so hidden fields don't block form submission.
+**Onboarding dead-ends.** If a user selected "one-time" as their business model, a conditional field for price range would hide. But the validation still checked it. I had to add `showIf` awareness to the validation function so hidden fields don't block form submission. This one was so stupid I almost rage-quit.
 
-**Making the app survive refreshes.** TanStack Query refetches on mount by default. If the server takes 30 seconds to generate a blueprint, refetching every time the user navigates away and back is a terrible experience. I had to tune the stale time, implement retry guards, and add auth-aware error handling that doesn't pop you out to the login screen mid-generation.
+**The refresh problem.** TanStack Query refetches on mount by default. If the server takes 30 seconds to generate a blueprint, refetching every time the user navigates away and back is a terrible experience. I had to tune the stale time, implement retry guards, and add auth-aware error handling that doesn't pop you out to the login screen mid-generation.
 
-## Reliability & Testing
+## Testing
 
-I wrote 61 Playwright tests covering every flow I could think of:
+I wrote 61 Playwright tests because I got tired of manually clicking through the same flows every time I changed something. The test suite covers:
 
-- Public pages load correctly (including after hard refresh)
-- Authentication: sign up, login, logout, wrong password, duplicate email, password mismatch, session expiry, protected route access
-- Founder interview: all steps, all dropdowns, conditional fields, validation on every step, refresh recovery, minimum and maximum inputs
-- Blueprint generation: single generation, retry on failure, refresh after generation, 5 consecutive generations without duplicates
-- Workspace: all 8 tabs render, rapid switching doesn't crash, refresh preserves state
-- Dashboard: every widget loads, fortune cookie persists daily, death predictor computes correctly, panic button works
-- Competitors and brief pages: CRUD operations, empty states, refresh recovery
-- Mobile: 375px viewport has no horizontal scroll, all buttons are reachable
-- Stress tests: rapid navigation, spam-clicking, double submission, refresh during API calls, browser back/forward
-- Error handling: 401 responses show "Authentication required" instead of crashing, logged-out states redirect gracefully
+- Public pages (including hard refresh recovery)
+- Authentication (sign up, login, logout, wrong password, duplicate email, session expiry)
+- Founder interview (all steps, all dropdowns, conditional fields, validation on every step)
+- Blueprint generation (single generation, retry on failure, 5 consecutive generations without duplicates)
+- Workspace (all 8 tabs, rapid switching, refresh preserves state)
+- Dashboard (every widget, fortune cookie persistence, death predictor calculations)
+- Competitors and brief pages (CRUD, empty states, refresh recovery)
+- Mobile (375px viewport, no horizontal scroll, all buttons reachable)
+- Stress tests (rapid navigation, spam-clicking, double submission, refresh during API calls)
+- Error handling (401 responses show friendly messages, logged-out states redirect gracefully)
 
 All 61 tests pass. The build compiles with zero TypeScript errors.
 
-## What I Learned
+## What I'd improve next
 
-**Design matters more than I thought.** The first version of this app looked like every other AI SaaS — purple gradients, glass cards, rounded everything. I spent a lot of time redoing the entire UI to look like a terminal. It was worth it. The app feels more serious now. Founders respond to it differently.
+- **Multi-user workspaces** — right now it's single-user. I want team access with roles.
+- **Real competitor monitoring** — currently it's snapshot-based. I want weekly automated briefs.
+- **Template system** — different startup types (SaaS, marketplace, hardware) need different blueprint structures.
+- **Integrations** — Stripe for real revenue data, GitHub for commit activity, Linear for task velocity.
+- **Mobile app** — push notifications for critical startup events. Founders live on their phones.
+- **Community features** — share blueprints, get feedback from other founders. Build in public, but structured.
+- **Better AI prompts** — the blueprint quality varies. I want to fine-tune prompts per industry.
 
-**AI isn't reliable enough to trust blindly.** Every response needs validation. Every provider needs a fallback. Every timeout needs a retry strategy. Building a system that works even when the AI doesn't is harder than building the features themselves.
+## Screenshots
 
-**Testing catches things you'd never find manually.** The Playwright suite found bugs I'd been living with for weeks — flickering states during navigation, validation gaps on hidden form fields, race conditions in URL parameter parsing. I should have written the tests earlier.
+| Landing | Interview | Workspace |
+|---------|-----------|-----------|
+| ![Landing](desktop--.png) | ![Interview](desktop--interview.png) | ![Workspace](desktop--workspace.png) |
 
-**Monospace fonts everywhere is surprisingly polarizing.** Some people love it. Some people hate it. I'm in the love camp.
+| Dashboard | Blueprints | Auth |
+|-----------|------------|------|
+| ![Dashboard](page-brief.png) | ![Blueprints](desktop--blueprints.png) | ![Sign In](desktop--auth-sign-in.png) |
 
-## Future Ideas
+## Acknowledgements
 
-- Multi-user workspaces with role-based access
-- Automated competitive monitoring with weekly briefs
-- Template system for different startup types (SaaS, marketplace, hardware, etc.)
-- Integrations with Stripe, GitHub, and Linear for real-time health metrics
-- Mobile app with push notifications for critical startup events
-- Community features — share blueprints, get feedback from other founders
-- Y Combinator application generator (pulls from existing blueprint data)
-
-## Final Thoughts
-
-I built this because I wanted a tool that treated founders like operators, not content creators. There are a million tools that help you make pitch decks and landing pages. There aren't many that help you think clearly about your business.
-
-StartupOS is still early. It has rough edges. But it works. I use it. A few other founders use it. And every time someone generates a blueprint and says "this is actually useful," it makes the weeks of debugging AI provider failures worth it.
-
-Ship fast. Stay technical. And don't use purple.
+- Built with Next.js, Fastify, Supabase, and an unreasonable amount of terminal green
+- AI providers: Google Gemini, OpenAI-compatible endpoints
+- Fonts: JetBrains Mono, Plus Jakarta Sans
+- Icons: Lucide
+- Animations: Framer Motion
+- The entire shadcn/ui ecosystem for component primitives
+- Every founder who told me "this is actually useful" — you're the reason this exists
 
 ---
 
-*Built by a founder who's tired of AI-generated SaaS templates.*
+*Built by a founder who got tired of AI SaaS templates and decided to build something that looks like it belongs in a terminal. Ship fast. Stay technical. Don't use purple.*

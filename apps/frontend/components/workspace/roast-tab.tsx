@@ -46,7 +46,8 @@ export function RoastTab({ blueprint }: { blueprint?: StartupBlueprint | null })
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-red-400 font-mono text-xl">!</span> Startup Roast</h1>
-            <p className="text-sm text-muted-foreground font-mono text-xs">$ ./roast --brutal</p>
+            <p className="text-sm text-muted-foreground font-mono text-xs">$ ./roast --brutal --no-mercy</p>
+            <p className="text-[9px] text-muted-foreground/20 font-mono italic mt-0.5">// brace yourself. this is going to hurt.</p>
           </div>
         </div>
       </motion.div>

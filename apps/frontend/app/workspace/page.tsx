@@ -69,15 +69,7 @@ function WorkspaceContent() {
   const [guestReady, setGuestReady] = useState(false);
 
   useEffect(() => {
-    console.log("[GuestRecovery]", {
-      tokenExists: hasToken,
-      guestMode,
-      startupIdFromURL: startupIdParam,
-      startupIdFromStorage: getGuestStartupId(),
-      chosenStartupId: effectiveStartupId,
-    });
     setParamsReady(true);
-    console.log("[Workspace] Mounted | startupIdParam:", startupIdParam, "| fromURL:", startupIdFromUrl, "| fallback:", startupIdFromUrlFallback);
   }, []);
 
   useEffect(() => {
@@ -105,18 +97,7 @@ function WorkspaceContent() {
   const startupInfo = guestMode ? guestStartup : startup;
   const isLoading = guestMode ? false : (startupLoading || blueprintLoading);
 
-  console.log("[Workspace] State:", {
-    startupIdParam,
-    effectiveStartupId,
-    guestMode,
-    startupInfo: startupInfo?.id,
-    hasNormalizedBlueprint: !!blueprint,
-    isLoading,
-    paramsReady,
-  });
-
   const retryBlueprint = useCallback(() => {
-    console.log("[Workspace] Manual blueprint retry triggered");
     refetchBlueprint();
   }, [refetchBlueprint]);
 
@@ -129,7 +110,6 @@ function WorkspaceContent() {
   }
 
   if (guestMode && !guestReady) {
-    console.log("[Workspace] Guest mode — waiting for local data");
     return (
       <div className="flex min-h-screen bg-background items-center justify-center" role="status" aria-label="Loading">
         <Loader2 className="h-8 w-8 text-primary animate-spin" />
@@ -138,7 +118,6 @@ function WorkspaceContent() {
   }
 
   if (isLoading) {
-    console.log("[Workspace] Rendering loading state");
     return (
       <div className="flex min-h-screen bg-background items-center justify-center">
         <div className="text-center space-y-4" role="status" aria-label="Loading">
@@ -159,10 +138,8 @@ function WorkspaceContent() {
   const noBlueprint = !blueprint;
 
   if (noBlueprint && startupIdParam) {
-    console.log("[Workspace] Has startupId but no blueprint | startupError:", startupError, "| blueprintError:", blueprintError, "| blueprintFetching:", blueprintFetching);
 
     if (startupError) {
-      console.log("[Workspace] Startup fetch failed — showing error");
       const is401 = (startupQueryError as unknown as ApiError)?.status === 401;
       const tokenExisted = (startupQueryError as unknown as ApiError)?.tokenExisted;
       return (
@@ -190,7 +167,6 @@ function WorkspaceContent() {
     }
 
     if (blueprintError) {
-      console.log("[Workspace] Blueprint fetch failed - showing retry card");
       const is401 = (blueprintQueryError as unknown as ApiError)?.status === 401;
       const tokenExisted = (blueprintQueryError as unknown as ApiError)?.tokenExisted;
       return (
@@ -225,18 +201,16 @@ function WorkspaceContent() {
     }
 
     if (blueprintFetching) {
-      console.log("[Workspace] Blueprint still refetching - showing retry loading");
       return (
         <div className="flex min-h-screen bg-background items-center justify-center">
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 text-primary animate-spin mx-auto" />
-            <p className="text-sm text-muted-foreground font-mono">retying blueprint fetch...</p>
+            <p className="text-sm text-muted-foreground font-mono">retrying blueprint fetch...</p>
           </div>
         </div>
       );
     }
 
-    console.log("[Workspace] No blueprint found for this startup - showing create prompt");
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">
@@ -256,7 +230,6 @@ function WorkspaceContent() {
   }
 
   if (noBlueprint && !effectiveStartupId && paramsReady) {
-    console.log("[Workspace] No effective startupId | paramsReady:", paramsReady);
     return (
       <div className="flex min-h-screen bg-background items-center justify-center p-8">
         <div className="max-w-md w-full text-center space-y-6">

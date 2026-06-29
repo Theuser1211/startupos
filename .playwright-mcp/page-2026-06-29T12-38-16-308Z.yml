@@ -1,0 +1,163 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "$ startupos ~ % StartupOS" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: $ startupos ~ %
+          - img "StartupOS" [ref=e9]
+        - navigation [ref=e10]:
+          - link "./features" [ref=e12] [cursor=pointer]:
+            - /url: "#features"
+        - generic [ref=e13]:
+          - link "sign in" [ref=e14] [cursor=pointer]:
+            - /url: /auth/sign-in
+          - link "./start" [ref=e15] [cursor=pointer]:
+            - /url: /interview
+            - img
+            - text: ./start
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e23]:
+          - generic [ref=e24]:
+            - generic [ref=e30]: startupos/configure.sh — zsh
+            - generic [ref=e32]:
+              - generic [ref=e34]:
+                - img [ref=e35]
+                - generic [ref=e37]: founder@startupos:~$ ./configure --mode=founder
+              - heading "Compile Your Startup OS" [level=1] [ref=e39]:
+                - text: Compile Your
+                - text: Startup OS
+              - paragraph [ref=e40]: The command center for founders who'd rather build than pitch. AI blueprints, market intel, execution tools — all in one terminal.
+              - link "./start --free" [ref=e42] [cursor=pointer]:
+                - /url: /interview
+                - img
+                - text: ./start --free
+                - img
+              - generic [ref=e43]:
+                - generic [ref=e44]: Founder Tested
+                - generic [ref=e45]: Ship Fast
+                - generic [ref=e46]: v0.1.0
+              - generic [ref=e47]:
+                - paragraph [ref=e48]: loading founder environment...
+                - paragraph [ref=e49]: parsing startup DNA...
+                - paragraph [ref=e50]: injecting caffeine into neural nets...
+                - paragraph [ref=e51]: calibrating hustle levels...
+                - paragraph [ref=e52]: ✓ system ready. no weekends off.
+              - generic [ref=e54]:
+                - paragraph [ref=e55]: "[boot] initializing startupos kernel v0.1.0"
+                - paragraph [ref=e56]: "[boot] founder mode: engaged"
+                - paragraph [ref=e57]: "[boot] ram: 3 cups of coffee, 1 questionable energy drink"
+                - paragraph [ref=e58]: "[boot] loading modules: ambition, delusion, persistence"
+                - paragraph [ref=e59]: "[boot] all systems nominal. ship it."
+          - generic [ref=e60]:
+            - generic [ref=e61]: system online
+            - generic [ref=e63]: "|"
+            - generic [ref=e64]: Mission Control
+        - generic [ref=e68]: scroll
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - img [ref=e76]
+            - generic [ref=e78]: $ ls features/
+          - heading "The Complete Founder Toolkit" [level=2] [ref=e79]
+          - paragraph [ref=e80]: Every tool you need to build a real company — no MBA required, no VC pitch needed.
+        - generic [ref=e81]:
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - img [ref=e88]
+              - heading "AI Founder Coach" [level=3] [ref=e97]
+            - paragraph [ref=e98]: Talk through your idea with an AI that actually understands startups. Not a chatbot. A sparring partner.
+            - generic [ref=e99]:
+              - generic [ref=e100]: $ ai-founder-coach --help
+              - generic [ref=e101]: ✓ online
+          - generic [ref=e105]:
+            - generic [ref=e106]:
+              - img [ref=e108]
+              - heading "ICP Builder" [level=3] [ref=e113]
+            - paragraph [ref=e114]: Figure out who your customer actually is. Not who you think they are. There's a difference.
+            - generic [ref=e115]:
+              - generic [ref=e116]: $ icp-builder --help
+              - generic [ref=e117]: ✓ online
+          - generic [ref=e121]:
+            - generic [ref=e122]:
+              - img [ref=e124]
+              - heading "Smart Roadmap" [level=3] [ref=e130]
+            - paragraph [ref=e131]: A roadmap that updates itself. Because the one you made in Notion three months ago is already wrong.
+            - generic [ref=e132]:
+              - generic [ref=e133]: $ smart-roadmap --help
+              - generic [ref=e134]: ✓ online
+          - generic [ref=e138]:
+            - generic [ref=e139]:
+              - img [ref=e141]
+              - heading "Revenue Modeling" [level=3] [ref=e144]
+            - paragraph [ref=e145]: Unit economics that make sense. Scenario planning without the spreadsheet headaches.
+            - generic [ref=e146]:
+              - generic [ref=e147]: $ revenue-modeling --help
+              - generic [ref=e148]: ✓ online
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - img [ref=e155]
+              - heading "Brand Strategy" [level=3] [ref=e158]
+            - paragraph [ref=e159]: Brand guidelines generated from your actual positioning. Not generic 'be authentic' advice.
+            - generic [ref=e160]:
+              - generic [ref=e161]: $ brand-strategy --help
+              - generic [ref=e162]: ✓ online
+          - generic [ref=e166]:
+            - generic [ref=e167]:
+              - img [ref=e169]
+              - heading "Startup Roast" [level=3] [ref=e172]
+            - paragraph [ref=e173]: Brutally honest feedback. The kind your mom won't give you. Your startup needs this.
+            - generic [ref=e174]:
+              - generic [ref=e175]: $ startup-roast --help
+              - generic [ref=e176]: ✓ online
+        - generic [ref=e179]: 6 modules loaded. 0 excuses remaining.
+      - generic [ref=e181]:
+        - generic [ref=e182]:
+          - generic [ref=e188]: startupos/install.sh
+          - generic [ref=e189]:
+            - generic [ref=e190]:
+              - img [ref=e191]
+              - generic [ref=e193]: $ ./startupos --install --no-vc-required
+            - heading "Compile Your Startup OS" [level=2] [ref=e194]
+            - paragraph [ref=e195]: Stop juggling 47 browser tabs. One terminal. Your whole startup.
+            - link "./start --free" [ref=e197] [cursor=pointer]:
+              - /url: /interview
+              - img
+              - text: ./start --free
+              - img
+            - paragraph [ref=e198]: $ Free tier. Full workspace. No credit card. No BS.
+            - paragraph [ref=e199]: "\"I built this because I was tired of watching founders drown in Notion docs.\" — a founder"
+        - generic [ref=e200]:
+          - generic [ref=e201]: Mission Control
+          - generic [ref=e203]: "|"
+          - generic [ref=e204]: powered by AI
+    - contentinfo [ref=e205]:
+      - generic [ref=e206]:
+        - generic [ref=e208]: EOF — thanks for scrolling this far
+        - generic [ref=e209]:
+          - link "$ startupos --version StartupOS" [ref=e210] [cursor=pointer]:
+            - /url: /
+            - generic [ref=e211]: $ startupos --version
+            - img "StartupOS" [ref=e212]
+          - navigation [ref=e213]:
+            - link "./features" [ref=e214] [cursor=pointer]:
+              - /url: "#features"
+            - link "./about" [ref=e215] [cursor=pointer]:
+              - /url: /about
+            - link "./privacy" [ref=e216] [cursor=pointer]:
+              - /url: /privacy
+            - link "./terms" [ref=e217] [cursor=pointer]:
+              - /url: /terms
+            - link "./contact" [ref=e218] [cursor=pointer]:
+              - /url: /contact
+          - generic [ref=e221]: live
+        - generic [ref=e222]:
+          - paragraph [ref=e223]: © 2026 StartupOS. Ship fast, stay technical.
+          - paragraph [ref=e224]: built with late nights, terminal green, and an unreasonable amount of coffee
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e230] [cursor=pointer]:
+    - img [ref=e231]
+  - alert [ref=e234]

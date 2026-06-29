@@ -24,7 +24,7 @@ export function Footer() {
     <footer className="border-t border-border py-10 px-6">
       <div className="mx-auto max-w-7xl">
         <div className="ascii-divider mb-6">
-          <span>EOF</span>
+          <span>EOF — thanks for scrolling this far</span>
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -59,10 +59,10 @@ export function Footer() {
 
         <div className="mt-6 pt-4 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="font-mono text-[10px] text-muted-foreground/50">
-            &copy; {year} StartupOS. All rights reserved.
+            &copy; {year} StartupOS. Ship fast, stay technical.
           </p>
-          <p className="font-mono text-[10px] text-muted-foreground/50">
-            built with late nights and terminal
+          <p className="font-mono text-[10px] text-muted-foreground/30 italic">
+            built with late nights, terminal green, and an unreasonable amount of coffee
           </p>
         </div>
       </div>

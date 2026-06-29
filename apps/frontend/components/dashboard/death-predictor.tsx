@@ -157,6 +157,9 @@ export function DeathPredictor({ dashboard }: DeathPredictorProps) {
                   ? "Significant risk. Time to act."
                   : "Critical. Focus on survival."}
           </p>
+          <p className="text-[9px] text-muted-foreground/25 mt-0.5 italic font-mono">
+            // {result.risk <= 25 ? "you're doing better than 90% of founders" : result.risk <= 50 ? "most startups die here. don't." : "this is fine. everything is fine."}
+          </p>
         </div>
       </div>
 

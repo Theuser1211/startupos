@@ -39,20 +39,25 @@ function SignInForm() {
     setError(null);
     setIsLoading(true);
 
-    const { error } = await signIn(email, password);
-    if (error) {
-      if (error.toLowerCase().includes("invalid credentials") || error.toLowerCase().includes("invalid login")) {
-        setError("Invalid email or password. Please try again.");
-      } else if (error.toLowerCase().includes("email not confirmed")) {
-        setError("Please confirm your email address before signing in.");
-      } else if (error.toLowerCase().includes("rate limit")) {
-        setError("Too many attempts. Please wait a moment and try again.");
+    try {
+      const { error } = await signIn(email, password);
+      if (error) {
+        if (error.toLowerCase().includes("invalid credentials") || error.toLowerCase().includes("invalid login")) {
+          setError("Invalid email or password. Please try again.");
+        } else if (error.toLowerCase().includes("email not confirmed")) {
+          setError("Please confirm your email address before signing in.");
+        } else if (error.toLowerCase().includes("rate limit")) {
+          setError("Too many attempts. Please wait a moment and try again.");
+        } else {
+          setError(error);
+        }
       } else {
-        setError(error);
+        router.push(redirect);
       }
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
-    } else {
-      router.push(redirect);
     }
   };
 

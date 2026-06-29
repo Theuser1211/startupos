@@ -16,32 +16,32 @@ const features: Feature[] = [
   {
     icon: Brain,
     title: "AI Founder Coach",
-    description: "Get personalized insights and strategic advice from an AI that understands your specific startup context, stage, and goals.",
+    description: "Talk through your idea with an AI that actually understands startups. Not a chatbot. A sparring partner.",
   },
   {
     icon: Target,
     title: "ICP Builder",
-    description: "Define and refine your Ideal Customer Profile with AI-driven market analysis and persona development tools.",
+    description: "Figure out who your customer actually is. Not who you think they are. There's a difference.",
   },
   {
     icon: Rocket,
     title: "Smart Roadmap",
-    description: "Generate dynamic product roadmaps that adapt to your progress, market changes, and user feedback in real-time.",
+    description: "A roadmap that updates itself. Because the one you made in Notion three months ago is already wrong.",
   },
   {
     icon: BarChart3,
     title: "Revenue Modeling",
-    description: "Build sophisticated financial models with AI-powered projections, scenario planning, and unit economics analysis.",
+    description: "Unit economics that make sense. Scenario planning without the spreadsheet headaches.",
   },
   {
     icon: Lightbulb,
     title: "Brand Strategy",
-    description: "Develop a cohesive brand identity with AI-generated guidelines, messaging frameworks, and visual direction.",
+    description: "Brand guidelines generated from your actual positioning. Not generic 'be authentic' advice.",
   },
   {
     icon: Shield,
     title: "Startup Roast",
-    description: "Get brutally honest feedback on your startup from AI that identifies blind spots, risks, and growth opportunities.",
+    description: "Brutally honest feedback. The kind your mom won't give you. Your startup needs this.",
   },
 ];
 
@@ -99,7 +99,7 @@ export function FeaturesSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mt-3 text-sm text-muted-foreground max-w-2xl font-mono"
           >
-            Every tool you need to build a successful company — no MBA required.
+            Every tool you need to build a real company — no MBA required, no VC pitch needed.
           </motion.p>
         </motion.div>
 
@@ -163,7 +163,7 @@ export function FeaturesSection() {
           className="mt-16"
         >
           <div className="ascii-divider">
-            <span>6 modules loaded</span>
+            <span>6 modules loaded. 0 excuses remaining.</span>
           </div>
         </motion.div>
       </div>

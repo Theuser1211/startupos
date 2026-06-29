@@ -42,6 +42,7 @@ export function BrandTab({ blueprint }: { blueprint?: StartupBlueprint | null })
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold"><span className="text-primary font-mono text-xl">$</span> Brand Identity</h1>
             <p className="text-sm text-muted-foreground font-mono text-xs">$ cat ~/brand/guidelines</p>
+            <p className="text-[9px] text-muted-foreground/20 font-mono italic mt-0.5">// your brand is what people say about you when you're not in the room</p>
           </div>
         </div>
       </motion.div>

@@ -1,0 +1,20 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - img [ref=e6]
+    - heading "$ startup --not-selected" [level=2] [ref=e8]
+    - paragraph [ref=e9]: Select a startup from your list or create a new one to get started.
+    - generic [ref=e10]:
+      - link "My Startups" [ref=e11] [cursor=pointer]:
+        - /url: /blueprints
+        - button "My Startups" [ref=e12]
+      - link "New Interview" [ref=e13] [cursor=pointer]:
+        - /url: /interview
+        - button "New Interview" [ref=e14]:
+          - img
+          - text: New Interview
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e20] [cursor=pointer]:
+    - img [ref=e21]
+  - alert [ref=e24]

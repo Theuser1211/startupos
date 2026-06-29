@@ -60,13 +60,16 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
     >
       <motion.div variants={itemVariants}>
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-primary font-mono text-lg">$</span>
+          <span className="text-primary font-mono text-lg crt-glow">$</span>
           <h1 className="text-2xl sm:text-3xl font-bold">
             Welcome back{startupName ? `, ${startupName.split(" ")[0]}` : ""}
           </h1>
         </div>
         <p className="text-muted-foreground mt-1 font-mono text-xs">
           $ cat ~/startup/{startupName || "dashboard"}/overview
+        </p>
+        <p className="text-muted-foreground/30 mt-1 font-mono text-[10px] italic">
+          // still here? good. persistence beats talent.
         </p>
       </motion.div>
 

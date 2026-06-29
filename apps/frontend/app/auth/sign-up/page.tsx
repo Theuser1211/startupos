@@ -40,18 +40,22 @@ function SignUpForm() {
 
     setIsLoading(true);
 
-    const { error } = await signUp(email, password);
-    if (error) {
-      if (error.toLowerCase().includes("already registered") || error.toLowerCase().includes("already exists")) {
-        setError("This email is already registered. Try signing in instead.");
-      } else if (error.toLowerCase().includes("rate limit")) {
-        setError("Too many attempts. Please wait a moment and try again.");
+    try {
+      const { error } = await signUp(email, password);
+      if (error) {
+        if (error.toLowerCase().includes("already registered") || error.toLowerCase().includes("already exists")) {
+          setError("This email is already registered. Try signing in instead.");
+        } else if (error.toLowerCase().includes("rate limit")) {
+          setError("Too many attempts. Please wait a moment and try again.");
+        } else {
+          setError(error);
+        }
       } else {
-        setError(error);
+        setIsSuccess(true);
       }
-      setIsLoading(false);
-    } else {
-      setIsSuccess(true);
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
     }
   };

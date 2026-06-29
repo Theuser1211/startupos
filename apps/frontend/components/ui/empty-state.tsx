@@ -38,9 +38,10 @@ export function EmptyState({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
-        className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-accent"
+        className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl border border-border bg-accent relative"
       >
         <Icon className="h-6 w-6 text-muted-foreground" />
+        <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-primary/40 animate-pulse-subtle" />
       </motion.div>
 
       <motion.h3
@@ -68,7 +69,7 @@ export function EmptyState({
         className="flex flex-col sm:flex-row items-center gap-3"
       >
         {actionLabel && actionHref && (
-          <Button asChild>
+          <Button asChild className="card-lift">
             <Link href={actionHref}>
               <ArrowRight className="h-4 w-4" />
               {actionLabel}
@@ -81,6 +82,16 @@ export function EmptyState({
           </Button>
         )}
       </motion.div>
+
+      {/* Terminal-style hint */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.3 }}
+        className="mt-8 font-mono text-[10px] text-muted-foreground/20"
+      >
+        $ echo "the best time to start was yesterday. the second best time is now."
+      </motion.p>
     </motion.div>
   );
 }

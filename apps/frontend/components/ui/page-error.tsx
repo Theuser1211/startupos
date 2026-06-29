@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Home, RefreshCw } from "lucide-react";
 
 interface PageErrorProps {
   error: Error & { digest?: string };
@@ -37,9 +39,18 @@ export function PageErrorFallback({ error, reset, title }: PageErrorProps) {
               Error in: {title}
             </p>
           )}
-          <Button onClick={reset}>
-            Try Again
-          </Button>
+          <div className="flex items-center justify-center gap-3">
+            <Button onClick={reset} className="gap-2">
+              <RefreshCw className="h-4 w-4" />
+              Try Again
+            </Button>
+            <Link href="/">
+              <Button variant="outline" className="gap-2">
+                <Home className="h-4 w-4" />
+                Home
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>

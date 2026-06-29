@@ -266,15 +266,15 @@ function PivotCard({ pivot }: { pivot: string }) {
 
 export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
   if (!blueprint) {
-    return (
-      <EmptyState
-        icon={Scale}
-        title="No verdict yet"
-        description="Complete the founder interview to receive StartupOS's final judgment on your startup."
-        actionLabel="Start Interview"
-        actionHref="/interview"
-      />
-    );
+  return (
+    <EmptyState
+      icon={Scale}
+      title="No verdict yet"
+      description="Complete the founder interview to receive StartupOS's final judgment on your startup. Fair warning: it doesn't hold back."
+      actionLabel="Start Interview"
+      actionHref="/interview"
+    />
+  );
   }
 
   const { verdict } = blueprint;
@@ -317,10 +317,13 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                     <span className="text-xs text-muted-foreground font-mono">Composite Score: {verdict.compositeScore}/100</span>
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0">Confidence: {verdict.confidenceLabel} ({verdict.confidence}%)</Badge>
                   </div>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"><span className="text-primary font-mono text-2xl">$</span> StartupOS Verdict</h1>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"><span className="text-primary font-mono text-2xl crt-glow">$</span> StartupOS Verdict</h1>
                   <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">{config.description}</p>
                   <p className="text-sm text-foreground/80 mt-4 max-w-2xl leading-relaxed italic border-l-2 border-primary/30 pl-4">
                     &ldquo;{verdict.summary}&rdquo;
+                  </p>
+                  <p className="text-[10px] text-muted-foreground/20 font-mono mt-3 italic">
+                    // generated from your interview data. not from a crystal ball. but close.
                   </p>
                 </motion.div>
               </div>
@@ -456,6 +459,9 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   StartupOS evaluates your startup across 7 independent dimensions: <strong>Market</strong>, <strong>Timing</strong>, <strong>Competition</strong>, <strong>Defensibility</strong>, <strong>Founder-Fit</strong>, <strong>Distribution</strong>, and <strong>Revenue</strong>. Each dimension is scored 0-100 using industry benchmarks and stage adjustments. The composite score weights Defensibility and Revenue highest (20% each).
                 </p>
+                <p className="text-[9px] text-muted-foreground/20 font-mono mt-2 italic">
+                  // it's not perfect. but it's more honest than your mom.
+                </p>
               </div>
             </div>
           </CardContent>
@@ -472,7 +478,7 @@ export function VerdictTab({ blueprint }: { blueprint?: StartupBlueprint | null 
               <div className="flex-1">
                 <h3 className="text-sm font-mono font-semibold mb-1"><span className="text-primary">$</span> What happens next?</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  This verdict is an independent assessment based on your interview data and industry benchmarks. Use the improvement paths above to identify the highest-impact actions.
+                  This verdict is an independent assessment based on your interview data and industry benchmarks. Use the improvement paths above to identify the highest-impact actions. Or ignore everything and go with your gut. Your call.
                 </p>
               </div>
               <Button variant="outline" size="sm" className="shrink-0 gap-2">

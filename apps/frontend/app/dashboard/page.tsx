@@ -161,6 +161,7 @@ function ScoreRing({ score, size = 140 }: { score: number; size?: number }) {
 }
 
 function TerminalHealthCard({ dashboard: d }: { dashboard: DashboardData }) {
+  const hb = d.healthBreakdown || { foundational: 0, product: 0, launch: 0, engagement: 0 };
   return (
     <div className="terminal-panel p-4 h-full font-mono text-sm space-y-2.5">
       <div className="flex items-center gap-2 text-xs text-primary/60 mb-3">
@@ -171,37 +172,37 @@ function TerminalHealthCard({ dashboard: d }: { dashboard: DashboardData }) {
         <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>Foundational</span>
-            <span className={d.healthBreakdown.foundational >= 20 ? "text-success" : "text-muted-foreground"}>{d.healthBreakdown.foundational}/25</span>
+            <span className={hb.foundational >= 20 ? "text-success" : "text-muted-foreground"}>{hb.foundational}/25</span>
           </div>
           <div className="text-xs tracking-wider">
-            <span className="text-success">{asciiBar(d.healthBreakdown.foundational, 25, 14)}</span>
+            <span className="text-success">{asciiBar(hb.foundational, 25, 14)}</span>
           </div>
         </div>
         <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>Product</span>
-            <span className={d.healthBreakdown.product >= 20 ? "text-success" : "text-muted-foreground"}>{d.healthBreakdown.product}/25</span>
+            <span className={hb.product >= 20 ? "text-success" : "text-muted-foreground"}>{hb.product}/25</span>
           </div>
           <div className="text-xs tracking-wider">
-            <span className="text-success">{asciiBar(d.healthBreakdown.product, 25, 14)}</span>
+            <span className="text-success">{asciiBar(hb.product, 25, 14)}</span>
           </div>
         </div>
         <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>Launch</span>
-            <span className={d.healthBreakdown.launch >= 20 ? "text-success" : "text-muted-foreground"}>{d.healthBreakdown.launch}/25</span>
+            <span className={hb.launch >= 20 ? "text-success" : "text-muted-foreground"}>{hb.launch}/25</span>
           </div>
           <div className="text-xs tracking-wider">
-            <span className="text-success">{asciiBar(d.healthBreakdown.launch, 25, 14)}</span>
+            <span className="text-success">{asciiBar(hb.launch, 25, 14)}</span>
           </div>
         </div>
         <div>
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
             <span>Engagement</span>
-            <span className={d.healthBreakdown.engagement >= 20 ? "text-success" : "text-muted-foreground"}>{d.healthBreakdown.engagement}/25</span>
+            <span className={hb.engagement >= 20 ? "text-success" : "text-muted-foreground"}>{hb.engagement}/25</span>
           </div>
           <div className="text-xs tracking-wider">
-            <span className="text-success">{asciiBar(d.healthBreakdown.engagement, 25, 14)}</span>
+            <span className="text-success">{asciiBar(hb.engagement, 25, 14)}</span>
           </div>
         </div>
       </div>
@@ -242,12 +243,9 @@ function DashboardContent() {
   const { data: dashboard, isLoading, error, refetch } = useDashboard(startupId);
   const [showAllActions, setShowAllActions] = useState(false);
 
-  console.log("[Dashboard] startupId from URL:", startupId, "| dashboard data:", dashboard?.startup?.id);
-
   useEffect(() => {
     if (startupId) {
       persistStartupId(startupId);
-      console.log("[Dashboard] Persisted startupId:", startupId);
     }
   }, [startupId]);
 
@@ -375,23 +373,38 @@ function DashboardContent() {
           </div>
         )}
 
+        {startupId && !isLoading && !error && !dashboard && (
+          <div className="terminal-panel">
+            <div className="terminal-panel-body flex flex-col items-center justify-center py-16 text-center">
+              <p className="text-sm text-muted-foreground font-mono">No dashboard data available.</p>
+              <p className="text-xs text-muted-foreground/60 mt-2">This startup may not have a blueprint yet.</p>
+              <div className="flex gap-3 mt-6">
+                <Button size="sm" variant="outline" className="font-mono" onClick={() => refetch()}>Retry</Button>
+                <Button size="sm" className="font-mono" asChild>
+                  <Link href={`/workspace?id=${startupId}`}>View Workspace</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {dashboard && (
           <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-5">
             <motion.div variants={itemVariants}>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-lg font-bold">{dashboard.startup.name}</span>
+                    <span className="text-lg font-bold">{dashboard.startup?.name || "Startup"}</span>
                     <span className="mono-label">$ mission_control</span>
                   </div>
                   <p className="text-xs text-muted-foreground font-mono">
-                    {dashboard.startup.industry || "no industry set"}
+                    {dashboard.startup?.industry || "no industry set"}
                   </p>
                 </div>
                 <StartupBadges dashboard={dashboard} />
               </div>
               <p className="text-[11px] text-muted-foreground mt-2 border-l-2 border-primary/30 pl-3 font-mono">
-                {getMicrocopy(dashboard.healthScore, dashboard.recentEvents.length > 0)}
+                {getMicrocopy(dashboard.healthScore, dashboard.recentEvents?.length > 0)}
               </p>
             </motion.div>
 
@@ -435,7 +448,7 @@ function DashboardContent() {
                     <span className="text-xs text-primary font-mono">$ git log --oneline</span>
                   </CardHeader>
                   <CardContent className="terminal-panel-body">
-                    {dashboard.recentEvents.length === 0 ? (
+                    {(!dashboard.recentEvents || dashboard.recentEvents.length === 0) ? (
                       <div className="flex flex-col items-center py-8 text-center">
                         <span className="text-2xl mb-2">🕳️</span>
                         <p className="text-sm text-muted-foreground font-mono">Looks quiet here.</p>
@@ -470,7 +483,7 @@ function DashboardContent() {
                     <span className="text-xs text-primary font-mono">$ next_actions --priority</span>
                   </CardHeader>
                   <CardContent className="terminal-panel-body">
-                    {dashboard.topActions.length === 0 ? (
+                    {(!dashboard.topActions || dashboard.topActions.length === 0) ? (
                       <div className="flex flex-col items-center py-8 text-center">
                         <span className="status-dot status-dot-live h-4 w-4 mb-2" />
                         <p className="text-sm text-muted-foreground font-mono">All caught up!</p>

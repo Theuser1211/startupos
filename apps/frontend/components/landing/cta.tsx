@@ -37,24 +37,24 @@ export function CTASection() {
           <div className="p-8 sm:p-10 text-center">
             <div className="inline-flex items-center gap-2 rounded border border-primary/15 bg-primary/5 px-3 py-1 font-mono text-[10px] text-primary mb-6">
               <Terminal className="h-3 w-3" />
-              <span>$ ./startupos --install</span>
+              <span>$ ./startupos --install --no-vc-required</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
               Compile Your{" "}
-              <span className="text-primary">
+              <span className="text-primary crt-glow">
                 Startup OS
               </span>
             </h2>
 
             <p className="mt-3 text-sm text-muted-foreground max-w-lg mx-auto font-mono">
-              AI-powered blueprint generation, market analysis, and execution tools for serious founders.
+              Stop juggling 47 browser tabs. One terminal. Your whole startup.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Button
                 size="lg"
-                className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary"
+                className="font-mono text-sm border border-primary/30 bg-primary/10 hover:bg-primary/20 text-primary card-lift"
                 asChild
               >
                 <Link href="/interview">
@@ -66,7 +66,12 @@ export function CTASection() {
             </div>
 
             <p className="mt-6 font-mono text-[11px] text-muted-foreground/60">
-              <span className="text-primary/60">$</span> Free tier includes full workspace access. No credit card required.
+              <span className="text-primary/60">$</span> Free tier. Full workspace. No credit card. No BS.
+            </p>
+
+            {/* Founder note — authenticity */}
+            <p className="mt-4 font-mono text-[10px] text-muted-foreground/25 italic">
+              "I built this because I was tired of watching founders drown in Notion docs." — a founder
             </p>
           </div>
         </div>

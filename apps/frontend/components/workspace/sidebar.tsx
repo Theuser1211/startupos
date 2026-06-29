@@ -53,7 +53,7 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
           priority
         />
         <span className="text-sm font-bold tracking-tight font-mono">
-          <span className="text-primary">$</span> startupos
+          <span className="text-primary crt-glow">$</span> startupos
         </span>
       </div>
 
@@ -143,6 +143,17 @@ export function Sidebar({ activeTab, onTabChange, founderName, startupId, bluepr
           <Command className="h-3.5 w-3.5" />
           Home
         </Link>
+      </div>
+
+      {/* Status bar — founder OS authenticity */}
+      <div className="status-bar mt-auto">
+        <span className="status-item">
+          <span className="w-1.5 h-1.5 rounded-full bg-primary/50" />
+          v0.1.0
+        </span>
+        <span className="status-item text-muted-foreground/20">
+          ship or die
+        </span>
       </div>
     </aside>
   );
