@@ -123,7 +123,7 @@ function CompetitorsContent() {
         ) : error ? (
           <div className={`border rounded p-4 ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30" : "border-red-500/30"}`}>
             <p className="text-sm font-medium">{(error as unknown as ApiError).status === 401 ? "Authentication required" : "Failed to load competitors"}</p>
-            <p className="text-xs text-muted-foreground mt-1">{toFriendlyError((error as unknown as ApiError).error || "An error occurred")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{toFriendlyError((error as unknown as ApiError).message || "An error occurred")}</p>
             {(error as unknown as ApiError).status !== 401 && (
               <Button size="sm" variant="outline" onClick={() => refetch()} className="mt-2 font-mono text-xs">Retry</Button>
             )}

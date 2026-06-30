@@ -3,18 +3,9 @@
 import { apiClient } from "./client";
 import type { AuthUser, AuthResponse } from "@startupos/shared";
 
-export async function refreshToken(): Promise<string | null> {
-  try {
-    const data = await apiClient.post<{ token: string }>("/auth/refresh", {});
-    apiClient.setToken(data.token);
-    return data.token;
-  } catch {
-    apiClient.clearToken();
-    return null;
-  }
-}
-
 function parseUserFromToken(token: string): AuthUser | null {
+  if (!apiClient.validateTokenFormat(token)) return null;
+  if (apiClient.isTokenExpired(token)) return null;
   const payload = apiClient.decodeJwtPayload(token);
   if (!payload) return null;
   return {
@@ -55,6 +46,14 @@ export async function login(
 export function getCurrentUser(): AuthUser | null {
   const token = apiClient.getToken();
   if (!token) return null;
+  if (!apiClient.validateTokenFormat(token)) {
+    apiClient.clearToken();
+    return null;
+  }
+  if (apiClient.isTokenExpired(token)) {
+    apiClient.clearToken();
+    return null;
+  }
   return parseUserFromToken(token);
 }
 
@@ -63,5 +62,9 @@ export function logout(): void {
 }
 
 export function isAuthenticated(): boolean {
-  return !!apiClient.getToken();
+  const token = apiClient.getToken();
+  if (!token) return false;
+  if (!apiClient.validateTokenFormat(token)) return false;
+  if (apiClient.isTokenExpired(token)) return false;
+  return true;
 }

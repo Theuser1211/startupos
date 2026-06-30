@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Sidebar } from "@/components/workspace/sidebar";
 import { OverviewTab } from "@/components/workspace/overview-tab";
 import { WebsiteTab } from "@/components/workspace/website-tab";
@@ -42,6 +42,7 @@ const mobileTabs = [
 
 function WorkspaceContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const startupIdFromUrl = searchParams.get("id");
   const startupIdFromUrlFallback = getStartupIdFromUrl();
   const startupIdParam = startupIdFromUrl || startupIdFromUrlFallback;
@@ -121,25 +122,31 @@ function WorkspaceContent() {
     const is401 = (startupQueryError as unknown as ApiError)?.status === 401;
     const tokenExisted = (startupQueryError as unknown as ApiError)?.tokenExisted;
 
+    if (is401) {
+      apiClient.clearToken();
+      if (typeof window !== "undefined") {
+        window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+      }
+      return (
+        <div className="flex min-h-screen bg-background items-center justify-center">
+          <Loader2 className="h-8 w-8 text-primary animate-spin" />
+        </div>
+      );
+    }
+
     if (startupError) {
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
           <Card className="max-w-md w-full">
             <CardContent className="flex flex-col items-center text-center p-6 space-y-3">
-              <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-destructive"}`} />
-              <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load startup"}</h2>
+              <AlertTriangle className="h-10 w-10 text-destructive" />
+              <h2 className="text-lg font-bold">Could not load startup</h2>
               <p className="text-sm text-muted-foreground">
-                {is401 && !tokenExisted ? "Please sign up or sign in to access this startup." : is401 ? "Your session has expired. Please sign in again." : "There was a problem fetching your startup data. Please try again."}
+                There was a problem fetching your startup data. Please try again.
               </p>
-              {is401 && !tokenExisted ? (
-                <Link href="/auth/sign-up">
-                  <Button variant="default">Sign Up</Button>
-                </Link>
-              ) : !is401 ? (
-                <Button variant="outline" onClick={() => { refetchStartup(); }} className="gap-2">
-                  <RefreshCw className="h-4 w-4" /> Retry
-                </Button>
-              ) : null}
+              <Button variant="outline" onClick={() => { refetchStartup(); }} className="gap-2">
+                <RefreshCw className="h-4 w-4" /> Retry
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -149,29 +156,23 @@ function WorkspaceContent() {
     if (blueprintError) {
       return (
         <div className="flex min-h-screen bg-background items-center justify-center p-8">
-          <Card className={`max-w-md w-full ${is401 ? "border-amber-500/30" : "border-warning/30"}`}>
+          <Card className="max-w-md w-full">
             <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
-              <AlertTriangle className={`h-10 w-10 ${is401 ? "text-warning" : "text-warning"}`} />
-              <h2 className="text-lg font-bold">{is401 ? "Authentication required" : "Could not load blueprint"}</h2>
+              <AlertTriangle className="h-10 w-10 text-warning" />
+              <h2 className="text-lg font-bold">Could not load blueprint</h2>
               <p className="text-sm text-muted-foreground">
-                {is401 && !tokenExisted ? "Please sign up or sign in to access this blueprint." : is401 ? "Your session has expired. Please sign in again." : "We found your startup but had trouble loading the blueprint data."}
+                We found your startup but had trouble loading the blueprint data.
               </p>
-              {is401 && !tokenExisted ? (
-                <Link href="/auth/sign-up">
-                  <Button variant="default">Sign Up</Button>
-                </Link>
-              ) : is401 ? null : (
-                <div className="flex gap-3 mt-2">
-                  <Button variant="outline" onClick={retryBlueprint} className="gap-2">
-                    <RefreshCw className="h-4 w-4" /> Retry
+              <div className="flex gap-3 mt-2">
+                <Button variant="outline" onClick={retryBlueprint} className="gap-2">
+                  <RefreshCw className="h-4 w-4" /> Retry
+                </Button>
+                {startupIdParam && (
+                  <Button variant="ghost" onClick={() => { refetchStartup(); retryBlueprint(); }} className="gap-2">
+                    <RefreshCw className="h-4 w-4" /> Fetch from startup
                   </Button>
-                  {startupIdParam && (
-                    <Button variant="ghost" onClick={() => { refetchStartup(); retryBlueprint(); }} className="gap-2">
-                      <RefreshCw className="h-4 w-4" /> Fetch from startup
-                    </Button>
-                  )}
-                </div>
-              )}
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>

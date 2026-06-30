@@ -25,12 +25,14 @@ function getToken(): string | null {
 
 function setToken(token: string): void {
   localStorage.setItem(TOKEN_KEY, token);
-  document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=604800; SameSite=Lax; Secure`;
+  const secure = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=604800; SameSite=Lax${secure}`;
 }
 
 function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
-  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax; Secure`;
+  const secure = location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax${secure}`;
 }
 
 const friendlyMessages: [string, string][] = [
@@ -86,35 +88,21 @@ export function validateTokenFormat(token: string): boolean {
 
 export function isTokenExpired(token: string): boolean {
   const payload = decodeJwtPayload(token);
-  if (!payload || !payload.exp) return false;
+  if (!payload) return true;
+  if (!payload.exp) return false;
   const exp = payload.exp as number;
   return Date.now() >= exp * 1000;
 }
 
-export interface ApiError {
-  error: string;
+export class ApiError extends Error {
   status: number;
   tokenExisted?: boolean;
-}
-
-function handleAuthFailure(): void {
-  clearToken();
-  unauthorizedHandler?.();
-}
-
-function redirectToSignIn(expired: boolean = false, redirectPath?: string): void {
-  if (typeof window === "undefined") return;
-  
-  clearToken();
-  const signInUrl = new URL("/auth/sign-in", window.location.origin);
-  if (expired) signInUrl.searchParams.set("expired", "1");
-  if (redirectPath) {
-    signInUrl.searchParams.set("redirect", encodeURIComponent(redirectPath));
-  } else {
-    const currentPath = window.location.pathname + window.location.search;
-    signInUrl.searchParams.set("redirect", encodeURIComponent(currentPath));
+  constructor(error: string, status: number, tokenExisted?: boolean) {
+    super(error);
+    this.name = "ApiError";
+    this.status = status;
+    this.tokenExisted = tokenExisted;
   }
-  window.location.href = signInUrl.toString();
 }
 
 async function refreshAndGetToken(): Promise<string | null> {
@@ -126,11 +114,7 @@ async function refreshAndGetToken(): Promise<string | null> {
     try {
       const token = getToken();
       if (!token || !validateTokenFormat(token)) {
-        handleAuthFailure();
-        return null;
-      }
-      if (isTokenExpired(token)) {
-        handleAuthFailure();
+        clearToken();
         return null;
       }
       const res = await fetch(`${BASE_URL}/auth/refresh`, {
@@ -142,19 +126,19 @@ async function refreshAndGetToken(): Promise<string | null> {
         },
       });
       if (!res.ok) {
-        handleAuthFailure();
+        clearToken();
         return null;
       }
       const data = await res.json() as { token: string };
       if (!data.token || !validateTokenFormat(data.token)) {
-        handleAuthFailure();
+        clearToken();
         return null;
       }
       setToken(data.token);
       return data.token;
     } catch (err) {
       console.error("[Auth] Refresh token failed:", err);
-      handleAuthFailure();
+      clearToken();
       return null;
     } finally {
       isRefreshing = false;
@@ -174,20 +158,31 @@ async function request<T = unknown>(
     ...(hasBody ? { "Content-Type": "application/json" } : {}),
     ...(options.headers as Record<string, string>),
   };
-  
+
   if (token) {
     if (!validateTokenFormat(token)) {
-      console.warn("[Auth] Token format invalid, clearing");
-      handleAuthFailure();
+      console.warn("[Auth] Token format invalid, clearing and redirecting");
+      clearToken();
       if (typeof window !== "undefined") {
         window.location.href = "/auth/sign-in?expired=1";
-        return Promise.reject(new Error("Invalid token format"));
       }
+      throw new ApiError("Invalid token format", 401, true);
     }
     if (isTokenExpired(token)) {
-      console.warn("[Auth] Token expired, attempting refresh");
+      console.warn("[Auth] Token expired, attempting refresh before request");
+      const refreshedToken = await refreshAndGetToken();
+      if (refreshedToken) {
+        headers["Authorization"] = `Bearer ${refreshedToken}`;
+      } else {
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname + window.location.search;
+          window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
+        }
+        throw new ApiError("Session expired", 401, true);
+      }
+    } else {
+      headers["Authorization"] = `Bearer ${token}`;
     }
-    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const controller = new AbortController();
@@ -216,8 +211,11 @@ async function request<T = unknown>(
           }
         }
         console.warn("[Auth] Token refresh failed, redirecting to sign in");
-        redirectToSignIn(true, path);
-        throw new Error("Authentication failed - redirecting");
+        if (typeof window !== "undefined") {
+          const currentPath = window.location.pathname + window.location.search;
+          window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
+        }
+        throw new ApiError("Session expired", 401, true);
       }
       let body: { error?: string; message?: string } = {};
       try {
@@ -225,23 +223,19 @@ async function request<T = unknown>(
       } catch {
         // ignore parse errors
       }
-      const err: ApiError = {
-        error: body.message || body.error || `Request failed with status ${res.status}`,
-        status: res.status,
-        tokenExisted: !!token,
-      };
-      throw err;
+      throw new ApiError(
+        body.message || body.error || `Request failed with status ${res.status}`,
+        res.status,
+        !!token,
+      );
     }
 
     if (res.status === 204) return undefined as T;
     return res.json();
   } catch (err: unknown) {
+    if (err instanceof ApiError) throw err;
     if (err && typeof err === "object" && "name" in err && (err as { name: string }).name === "AbortError") {
-      const timeoutErr: ApiError = {
-        error: "Request timed out. Please try again.",
-        status: 0,
-      };
-      throw timeoutErr;
+      throw new ApiError("Request timed out. Please try again.", 0);
     }
     throw err;
   } finally {

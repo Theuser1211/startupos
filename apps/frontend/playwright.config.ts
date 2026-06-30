@@ -2,13 +2,13 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: ".",
-  testMatch: ["playwright-audit.spec.ts", "qa-website-generation.spec.ts"],
-  timeout: 120000,
-  retries: 1,
+  testMatch: ["auth-flows.spec.ts"],
+  timeout: 60000,
+  retries: 0,
   use: {
     baseURL: "http://localhost:3000",
     headless: true,
-    screenshot: "only-on-failure",
+    screenshot: "on",
     video: "retain-on-failure",
     trace: "retain-on-failure",
   },
@@ -23,4 +23,5 @@ export default defineConfig({
       },
     },
   ],
+  outputDir: "./test-results",
 });

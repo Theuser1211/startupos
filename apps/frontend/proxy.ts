@@ -39,7 +39,7 @@ export function proxy(request: NextRequest) {
       return response;
     }
 
-    const exp = payload.exp;
+    const exp = payload.exp as number | undefined;
     if (exp && Date.now() >= exp * 1000) {
       const response = NextResponse.redirect(new URL("/auth/sign-in?expired=1", request.url));
       response.cookies.delete("startupos-token");
