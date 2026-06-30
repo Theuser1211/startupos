@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 
@@ -69,46 +68,39 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         aria-live="polite"
         aria-label="Notifications"
       >
-        <AnimatePresence mode="popLayout">
-          {toasts.map((t) => {
-            const config = variantConfig[t.variant];
-            const Icon = config.icon;
-            return (
-              <motion.div
-                key={t.id}
-                layout
-                initial={{ opacity: 0, x: 80 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 80 }}
-                transition={{ duration: 0.2 }}
-                className={cn(
-                  "pointer-events-auto relative w-full max-w-sm max-w-[calc(100vw-2rem)] rounded-lg border border-border shadow-lg border-l-2",
-                  config.border,
-                  config.bg,
-                  "bg-[#0d0d10]/95",
-                )}
-                role="alert"
-              >
-                <div className="flex items-start gap-3 p-4">
-                  <Icon className={cn("h-5 w-5 mt-0.5 shrink-0", iconColors[t.variant])} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-mono text-foreground">{t.title}</p>
-                    {t.message && (
-                      <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{t.message}</p>
-                    )}
-                  </div>
-                  <button
-                    onClick={() => dismiss(t.id)}
-                    className="shrink-0 flex h-5 w-5 items-center justify-center rounded-md text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Dismiss notification"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+        {toasts.map((t) => {
+          const config = variantConfig[t.variant];
+          const Icon = config.icon;
+          return (
+            <div
+              key={t.id}
+              className={cn(
+                "pointer-events-auto relative w-full max-w-sm max-w-[calc(100vw-2rem)] rounded border border-border border-l-2 shadow",
+                config.border,
+                config.bg,
+                "bg-[#0d0d10]/95",
+              )}
+              role="alert"
+            >
+              <div className="flex items-start gap-3 p-4">
+                <Icon className={cn("h-5 w-5 mt-0.5 shrink-0", iconColors[t.variant])} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-mono text-foreground">{t.title}</p>
+                  {t.message && (
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{t.message}</p>
+                  )}
                 </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+                <button
+                  onClick={() => dismiss(t.id)}
+                  className="shrink-0 flex h-5 w-5 items-center justify-center rounded text-muted-foreground hover:text-foreground"
+                  aria-label="Dismiss notification"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </ToastContext.Provider>
   );

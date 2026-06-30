@@ -1,0 +1,50 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "StartupOS" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - link "Sign in" [ref=e7] [cursor=pointer]:
+          - /url: /auth/sign-in
+    - main [ref=e8]:
+      - generic [ref=e10]:
+        - img "StartupOS workspace" [ref=e12]
+        - heading "StartupOS" [level=1] [ref=e13]
+        - paragraph [ref=e14]: A tool that forces you to think through your startup idea before building it. Answers a few questions, get a verdict, generate a website. Built because I kept starting projects and abandoning them after 3 days.
+        - link "Start the interview" [ref=e15] [cursor=pointer]:
+          - /url: /interview
+      - generic [ref=e17]:
+        - heading "Why I built this" [level=2] [ref=e18]
+        - generic [ref=e19]:
+          - paragraph [ref=e20]: I keep starting projects and abandoning them after 72 hours. Usually because I jump into building without thinking things through first.
+          - paragraph [ref=e21]: So I made a tool that walks me through a structured interview before I write a single line of code. It asks about the market, the users, the business model.
+          - paragraph [ref=e22]: It's not a replacement for talking to customers. It's a replacement for my own impulsiveness.
+      - generic [ref=e24]:
+        - heading "What you get" [level=2] [ref=e25]
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - heading "Verdict" [level=3] [ref=e28]
+            - paragraph [ref=e29]: Tells you if your idea is worth building based on market, competition, and your answers.
+          - generic [ref=e30]:
+            - heading "Website" [level=3] [ref=e31]
+            - paragraph [ref=e32]: Generates a complete landing page from your interview answers. Deploy to Vercel in one click.
+          - generic [ref=e33]:
+            - heading "Brand" [level=3] [ref=e34]
+            - paragraph [ref=e35]: Defines your mission, values, tone of voice, and visual identity so you don't have to guess.
+          - generic [ref=e36]:
+            - heading "Revenue" [level=3] [ref=e37]
+            - paragraph [ref=e38]: Walks through pricing models, projections, and unit economics. Figures out if you can make money.
+      - generic [ref=e40]:
+        - heading "Try it" [level=2] [ref=e41]
+        - paragraph [ref=e42]: Free. No signup required to start the interview. Full workspace if you create an account.
+        - link "Start the interview" [ref=e43] [cursor=pointer]:
+          - /url: /interview
+        - paragraph [ref=e44]: built by a student with too much free time
+    - contentinfo [ref=e45]:
+      - paragraph [ref=e47]: built by a student with too much free time
+  - generic "Notifications"
+  - button "Open Next.js Dev Tools" [ref=e53] [cursor=pointer]:
+    - img [ref=e54]
+  - alert [ref=e57]

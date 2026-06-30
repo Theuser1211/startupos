@@ -1,11 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/empty-state";
 import {
-  Target, Lightbulb, Users, TrendingUp, Star, Shield, BarChart3, LayoutDashboard,
+  Lightbulb, Users, TrendingUp, BarChart3, LayoutDashboard, Star,
 } from "lucide-react";
 import type { StartupBlueprint } from "@/lib/types";
 
@@ -14,19 +12,6 @@ const iconMap: Record<string, typeof Star> = {
   opportunity: TrendingUp,
   warning: BarChart3,
   action: Users,
-};
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
 };
 
 export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
@@ -42,63 +27,18 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
     );
   }
 
-  const { startupName, companySnapshot, stats, insights } = blueprint;
-
-  const statCards = [
-    { label: "Brand Score", value: `${stats.brandScore}`, icon: Star, color: "from-green-500 to-emerald-600", change: "+8" },
-    { label: "Market Fit", value: stats.marketFit, icon: Target, color: "from-blue-500 to-cyan-600", change: "+2" },
-    { label: "Readiness", value: `${stats.readiness}%`, icon: Shield, color: "from-emerald-500 to-teal-600", change: "+12%" },
-    { label: "Growth Score", value: `${stats.growthScore}`, icon: TrendingUp, color: "from-amber-500 to-orange-600", change: "+5" },
-  ];
+  const { startupName, companySnapshot, insights } = blueprint;
 
   return (
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-      className="space-y-8"
-    >
-      <motion.div variants={itemVariants}>
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-primary font-mono text-lg crt-glow">$</span>
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            Welcome back{startupName ? `, ${startupName.split(" ")[0]}` : ""}
-          </h1>
-        </div>
-        <p className="text-muted-foreground mt-1 font-mono text-xs">
-          $ cat ~/startup/{startupName || "dashboard"}/overview
-        </p>
-        <p className="text-muted-foreground/30 mt-1 font-mono text-[10px] italic">
-          // still here? good. persistence beats talent.
-        </p>
-      </motion.div>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold">
+          {startupName || "Untitled Startup"}
+        </h1>
+      </div>
 
-      <motion.div variants={itemVariants} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={stat.label} className=" hover:border-primary/20 transition-all duration-300">
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} shadow-lg border border-primary/10`}>
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
-                  <Badge variant="success" className="text-[10px] px-1.5 py-0">
-                    +{stat.change}
-                  </Badge>
-                </div>
-                <div className="mt-4">
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
-        <h2 className="text-lg font-semibold mb-4 mono-label"><span className="text-primary mr-2">$</span> AI Insights</h2>
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Insights</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {insights.map((insight) => {
             const Icon = iconMap[insight.type] || Lightbulb;
@@ -117,7 +57,7 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
             return (
               <div
                 key={insight.title}
-                className={`rounded-xl border p-5 ${typeColors[insight.type]} transition-all duration-300 hover:shadow-lg`}
+                className={`rounded border p-5 ${typeColors[insight.type]}`}
               >
                 <div className="flex items-start gap-3">
                   <Icon className={`h-5 w-5 mt-0.5 shrink-0 ${iconColors[insight.type]}`} />
@@ -130,12 +70,12 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
             );
           })}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={itemVariants}>
-        <Card className=" hover:border-primary/20 transition-all duration-300">
+      <div>
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg mono-label"><span className="text-primary mr-2">$</span> Company Snapshot</CardTitle>
+            <CardTitle className="text-lg">Company Snapshot</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -148,14 +88,14 @@ export function OverviewTab({ blueprint }: { blueprint?: StartupBlueprint | null
                 { label: "Founded", value: companySnapshot.foundedDate },
               ].map((item) => (
                 <div key={item.label}>
-                  <p className="mono-label text-xs text-muted-foreground mb-1">{item.label}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
                   <p className="text-sm font-medium font-mono">{item.value}</p>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <!-- Simplified geometric 'S' mark - inspired by operating system aesthetic -->
-  <rect x="2" y="2" width="28" height="28" rx="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
-  <path d="M10 12c0-1.5 1-2.5 2.5-2.5h3c1.5 0 2.5 1 2.5 2.5s-1 2.5-2.5 2.5h-2c-1.5 0-2.5 1-2.5 2.5s1 2.5 2.5 2.5h3c1.5 0 2.5-1 2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-</svg>

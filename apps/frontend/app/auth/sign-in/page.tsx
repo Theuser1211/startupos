@@ -2,7 +2,6 @@
 
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,16 +62,8 @@ function SignInForm() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 grid-bg" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative z-10 w-full max-w-md"
-      >
-        <div className="terminal-window p-6">
+      <div className="relative z-10 w-full max-w-md">
+        <div className="p-6">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center justify-center mb-6">
             <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-8 w-auto" priority />
@@ -83,9 +74,9 @@ function SignInForm() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            <div className="rounded bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
               {error}
-            </motion.div>
+            </div>
           )}
 
           <div>
@@ -97,7 +88,7 @@ function SignInForm() {
             <label htmlFor="password" className="mono-label block text-xs mb-1.5">Password</label>
             <div className="relative">
               <Input id="password" type={showPassword ? "text" : "password"} placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" className="pr-10" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors" aria-label={showPassword ? "Hide password" : "Show password"}>
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" aria-label={showPassword ? "Hide password" : "Show password"}>
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
@@ -114,12 +105,12 @@ function SignInForm() {
         </p>
 
         <div className="mt-4 text-center">
-          <Link href="/interview" className="text-xs font-mono text-muted-foreground hover:text-primary transition-colors">
+          <Link href="/interview" className="text-xs font-mono text-muted-foreground hover:text-primary">
             Continue without signing in →
           </Link>
         </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -128,7 +119,6 @@ export default function SignInPage() {
   return (
     <Suspense fallback={
       <div className="relative min-h-screen flex items-center justify-center">
-        <div className="absolute inset-0 grid-bg" />
         <Loader2 className="h-8 w-8 text-primary animate-spin" />
       </div>
     }>

@@ -1,40 +1,19 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/lib/contexts/auth-context";
-import { useCompetitors, useAddCompetitor, useCompetitorHistory } from "@/lib/hooks/use-competitors";
+import { useCompetitors, useAddCompetitor } from "@/lib/hooks/use-competitors";
 import { toFriendlyError, apiClient, type ApiError } from "@/lib/api/client";
 import {
-  Loader2, AlertTriangle, ArrowLeft, Plus, ExternalLink,
-  ChevronDown, ChevronRight, Clock, Crosshair, FileText,
-  TrendingUp, Search, X, Building2, Globe,
+  Loader2, AlertTriangle, ArrowLeft, Plus,
+  X, Building2, Globe, ExternalLink,
 } from "lucide-react";
 import { persistStartupId } from "@/lib/utils/startup-utils";
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const CHANGE_TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  pricing: { label: "Pricing Change", color: "text-warning" },
-  feature: { label: "Feature Change", color: "text-info" },
-  positioning: { label: "Positioning Change", color: "text-primary" },
-};
 
 function CompetitorsContent() {
   const router = useRouter();
@@ -45,7 +24,6 @@ function CompetitorsContent() {
   const addCompetitorMut = useAddCompetitor();
 
   const [showAddForm, setShowAddForm] = useState(false);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", website: "", description: "" });
   const [formError, setFormError] = useState("");
 
@@ -82,333 +60,143 @@ function CompetitorsContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="bg-[#0d0d10] border-b border-[rgba(34,197,94,0.12)]">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-          <Link href="/">
-            <Image src="/logo-full.png" alt="StartupOS" width={1536} height={1024} className="h-5 w-auto" />
-          </Link>
-          <div className="flex items-center gap-2">
+      <header className="border-b border-border">
+        <div className="mx-auto flex h-12 max-w-4xl items-center justify-between px-6">
+          <Link href="/" className="text-sm font-mono font-medium">StartupOS</Link>
+          <div className="flex items-center gap-3">
             {user && (
-              <div className="flex items-center gap-3">
-                <Link href="/blueprints">
-                  <Button variant="ghost" size="sm" className="text-xs">My Startups</Button>
-                </Link>
-                <button onClick={handleSignOut} className="text-xs text-muted-foreground hover:text-foreground transition-colors">Sign Out</button>
-              </div>
+              <>
+                <Link href="/blueprints" className="text-xs font-mono text-muted-foreground hover:text-foreground">My Startups</Link>
+                <button onClick={handleSignOut} className="text-xs font-mono text-muted-foreground hover:text-foreground">Sign out</button>
+              </>
             )}
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <Link href={startupId ? `/dashboard?id=${startupId}` : "/blueprints"} className="inline-flex items-center gap-1 text-sm font-mono text-muted-foreground hover:text-primary mb-6 transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back
+      <main className="mx-auto max-w-4xl px-6 py-8">
+        <Link href={startupId ? `/dashboard?id=${startupId}` : "/blueprints"} className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-foreground mb-6">
+          <ArrowLeft className="h-3 w-3" /> Back
         </Link>
 
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
-              <Crosshair className="h-5 w-5 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold">$ competitors --track</h1>
-              <p className="text-xs text-muted-foreground font-mono">Monitor competitors and detect changes</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-base font-semibold font-mono">Competitors</h1>
           <Button size="sm" className="font-mono text-xs" onClick={() => { setShowAddForm(!showAddForm); setFormError(""); }}>
-            <Plus className="h-4 w-4" /> Add Competitor
+            <Plus className="h-3 w-3" /> Add
           </Button>
         </div>
 
-        <AnimatePresence>
-          {showAddForm && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden mb-6"
-            >
-              <Card className="terminal-panel border-[rgba(34,197,94,0.12)]">
-                <CardContent className="p-5 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-mono font-semibold text-primary">Add Competitor</h3>
-                    <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1.5">
-                      <label className="mono-label text-xs">Name *</label>
-                      <Input
-                        placeholder="e.g. Acme Corp"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="mono-label text-xs">Website *</label>
-                      <Input
-                        placeholder="e.g. https://acme.com"
-                        value={formData.website}
-                        onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="mono-label text-xs">Description</label>
-                    <Textarea
-                      placeholder="What does this competitor do?"
-                      rows={2}
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    />
-                  </div>
-                  {formError && <p className="text-xs text-red-400">{formError}</p>}
-                  <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" className="font-mono text-xs" onClick={() => setShowAddForm(false)}>Cancel</Button>
-                    <Button size="sm" className="font-mono text-xs" onClick={handleAddCompetitor} disabled={addCompetitorMut.isPending}>
-                      {addCompetitorMut.isPending ? "Adding..." : "Add Competitor"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!apiClient.getToken() ? (
-          <Card className=" border-[rgba(34,197,94,0.12)]">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <Crosshair className="h-10 w-10 text-primary mb-3" />
-              <p className="text-sm font-mono text-muted-foreground">Sign in to track competitors.</p>
-              <p className="text-xs text-muted-foreground/60 mt-2">Create a free account to monitor competitors.</p>
-              <Button size="sm" className="mt-4 font-mono" asChild>
-                <Link href="/auth/sign-up">$ sign_up --begin</Link>
+        {showAddForm && (
+          <div className="border border-border rounded p-4 mb-6 space-y-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-mono">Add competitor</h3>
+              <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Input placeholder="Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="text-xs" />
+              <Input placeholder="Website" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} className="text-xs" />
+            </div>
+            <Input placeholder="Description (optional)" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="text-xs" />
+            {formError && <p className="text-xs text-destructive">{formError}</p>}
+            <div className="flex justify-end gap-2">
+              <Button size="sm" variant="ghost" className="font-mono text-xs" onClick={() => setShowAddForm(false)}>Cancel</Button>
+              <Button size="sm" className="font-mono text-xs" onClick={handleAddCompetitor} disabled={addCompetitorMut.isPending}>
+                {addCompetitorMut.isPending ? "Adding..." : "Add"}
               </Button>
-            </CardContent>
-          </Card>
-        ) : isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <p className="font-mono text-sm text-primary animate-pulse">$ loading competitors...</p>
+            </div>
           </div>
         )}
 
-        {error && (
-          <Card className={` ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30 bg-amber-500/5" : "border-red-500/30 bg-red-500/5"}`}>
-            <CardContent className="flex items-center gap-3 p-6">
-              <AlertTriangle className={`h-5 w-5 ${(error as unknown as ApiError).status === 401 ? "text-amber-400" : "text-red-400"}`} />
-              <div className="flex-1">
-                {(error as unknown as ApiError).status === 401 ? (
-                  <>
-                    <p className="text-sm font-medium text-amber-400">Authentication required</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{(error as unknown as ApiError).tokenExisted ? "Your session has expired. Please sign in again." : "Please sign up or sign in to continue."}</p>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-sm font-medium text-red-400">Failed to load competitors</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{toFriendlyError((error as unknown as ApiError).error || "An error occurred", (error as unknown as ApiError).tokenExisted)}</p>
-                  </>
-                )}
-              </div>
-              {(error as unknown as ApiError).status !== 401 && (
-                <Button size="sm" variant="outline" onClick={() => refetch()}>Retry</Button>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {!startupId && !isLoading && !error && (
-          <Card className=" border-[rgba(34,197,94,0.12)]">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <Crosshair className="h-10 w-10 text-primary mb-3" />
-              <p className="text-sm font-mono text-muted-foreground">Select a startup to view competitor intelligence</p>
-              <Button size="sm" className="mt-4" asChild>
-                <Link href="/blueprints">View My Startups</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {competitors && !isLoading && (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-4">
-            {(!competitors || competitors.length === 0) ? (
-              <motion.div variants={itemVariants}>
-                <Card className=" border-[rgba(34,197,94,0.12)]">
-                  <CardContent className="flex flex-col items-center py-16 text-center">
-                    <Search className="h-10 w-10 text-primary mb-3" />
-                    <p className="text-sm font-mono">No competitors tracked yet</p>
-                    <p className="text-xs font-mono text-muted-foreground mt-1 max-w-sm">No competitors tracked yet. Add your first competitor.</p>
-                    <Button size="sm" className="mt-4 font-mono text-xs" onClick={() => setShowAddForm(true)}>
-                      <Plus className="h-4 w-4" /> Add Your First Competitor
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ) : (
-              competitors.map((competitor, i) => (
-                <motion.div key={competitor.id} variants={itemVariants}>
-                  <Card
-                    className=" cursor-pointer hover:border-primary/40 transition-all duration-200"
-                    onClick={() => setExpandedId(expandedId === competitor.id ? null : competitor.id)}
-                  >
-                    <CardContent className="p-5">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-3 flex-1 min-w-0">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 shrink-0">
-                            <Building2 className="h-5 w-5 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold truncate">{competitor.name}</h3>
-                              {competitor.changes.length > 0 && (
-                                <Badge className="sticker-badge text-[10px] px-1.5 py-0.5 text-amber-400 border-amber-500/30 bg-amber-500/10">
-                                  {competitor.changes.length} change{competitor.changes.length !== 1 ? "s" : ""}
-                                </Badge>
-                              )}
-                            </div>
-                            <a
-                              href={competitor.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mt-0.5"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Globe className="h-3 w-3" />
-                              <span className="truncate max-w-[200px] inline-block align-middle">{competitor.website.replace(/https?:\/\//, "")}</span>
-                              <ExternalLink className="h-2.5 w-2.5" />
-                            </a>
-                            {competitor.description && (
-                              <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{competitor.description}</p>
-                            )}
-                            {competitor.latestSnapshot && (
-                              <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                                <FileText className="h-3 w-3" />
-                                <span>{competitor.latestSnapshot.title}</span>
-                                <Clock className="h-3 w-3 ml-1" />
-                                <span>{new Date(competitor.latestSnapshot.capturedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <ChevronDown className={`h-5 w-5 text-muted-foreground mt-2 transition-transform duration-200 ${expandedId === competitor.id ? "rotate-180" : ""}`} />
-                      </div>
-
-                      <AnimatePresence>
-                        {expandedId === competitor.id && (
-                          <CompetitorDetail competitorId={competitor.id} />
-                        )}
-                      </AnimatePresence>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))
+        {!apiClient.getToken() ? (
+          <div className="border border-border rounded p-8 text-center">
+            <p className="text-sm text-muted-foreground font-mono">Sign in to track competitors.</p>
+            <Button size="sm" className="mt-4 font-mono text-xs" asChild>
+              <Link href="/auth/sign-up">Sign up</Link>
+            </Button>
+          </div>
+        ) : isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-6 w-6 text-primary animate-spin" />
+          </div>
+        ) : error ? (
+          <div className={`border rounded p-4 ${(error as unknown as ApiError).status === 401 ? "border-amber-500/30" : "border-red-500/30"}`}>
+            <p className="text-sm font-medium">{(error as unknown as ApiError).status === 401 ? "Authentication required" : "Failed to load competitors"}</p>
+            <p className="text-xs text-muted-foreground mt-1">{toFriendlyError((error as unknown as ApiError).error || "An error occurred")}</p>
+            {(error as unknown as ApiError).status !== 401 && (
+              <Button size="sm" variant="outline" onClick={() => refetch()} className="mt-2 font-mono text-xs">Retry</Button>
             )}
-          </motion.div>
+          </div>
+        ) : !startupId ? (
+          <div className="border border-border rounded p-8 text-center">
+            <p className="text-sm text-muted-foreground font-mono">Select a startup to view competitors.</p>
+            <Button size="sm" className="mt-4 font-mono text-xs" asChild>
+              <Link href="/blueprints">View Startups</Link>
+            </Button>
+          </div>
+        ) : !competitors || competitors.length === 0 ? (
+          <div className="border border-border rounded p-8 text-center">
+            <Building2 className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground font-mono">No competitors tracked yet.</p>
+            <Button size="sm" className="mt-4 font-mono text-xs" onClick={() => setShowAddForm(true)}>
+              <Plus className="h-3 w-3" /> Add competitor
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {competitors.map((competitor) => (
+              <Card key={competitor.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <Building2 className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-medium">{competitor.name}</h3>
+                        <a href={competitor.website} target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary mt-0.5"
+                        >
+                          <Globe className="h-3 w-3" />
+                          <span className="truncate max-w-[200px]">{competitor.website.replace(/https?:\/\//, "")}</span>
+                          <ExternalLink className="h-2.5 w-2.5" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {competitor.description && (
+                    <p className="text-xs text-muted-foreground mt-3">{competitor.description}</p>
+                  )}
+
+                  {competitor.latestSnapshot && (
+                    <div className="mt-3 border-t border-border pt-3">
+                      <p className="text-xs font-mono font-medium">{competitor.latestSnapshot.title}</p>
+                      {competitor.latestSnapshot.summary && (
+                        <p className="text-xs text-muted-foreground mt-1">{competitor.latestSnapshot.summary}</p>
+                      )}
+                      {competitor.latestSnapshot.pricing && (
+                        <p className="text-xs text-muted-foreground mt-1">Pricing: {competitor.latestSnapshot.pricing}</p>
+                      )}
+                      <p className="text-[10px] text-muted-foreground mt-1">
+                        {new Date(competitor.latestSnapshot.capturedAt).toLocaleDateString("en-US", {
+                          month: "short", day: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  )}
+
+                  {competitor.changes && competitor.changes.length > 0 && (
+                    <div className="mt-2 text-xs text-muted-foreground">
+                      {competitor.changes.length} change{competitor.changes.length !== 1 ? "s" : ""} detected
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </main>
     </div>
-  );
-}
-
-function CompetitorDetail({ competitorId }: { competitorId: string }) {
-  const { data: history, isLoading } = useCompetitorHistory(competitorId);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      className="overflow-hidden"
-    >
-      <div className="terminal-panel mt-4 pt-4 border-t border-[rgba(34,197,94,0.12)]">
-        {isLoading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-5 w-5 text-primary animate-spin" />
-          </div>
-        ) : history ? (
-          <div className="grid gap-6 lg:grid-cols-2">
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" /> Snapshot History
-              </h4>
-              {(!history.snapshots || history.snapshots.length === 0) ? (
-                <p className="text-xs text-muted-foreground py-4">No snapshots yet</p>
-              ) : (
-                <div className="space-y-0">
-                  {history.snapshots.map((snapshot, i) => (
-                    <div key={snapshot.id} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 mt-0.5 shrink-0">
-                          <FileText className="h-3 w-3 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm">{snapshot.title}</p>
-                        {snapshot.summary && (
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{snapshot.summary}</p>
-                        )}
-                        {snapshot.pricing && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            <span className="font-medium">Pricing:</span> {snapshot.pricing}
-                          </p>
-                        )}
-                        <p className="text-[11px] text-muted-foreground mt-1">
-                          {new Date(snapshot.capturedAt).toLocaleDateString("en-US", {
-                            month: "short", day: "numeric", year: "numeric",
-                            hour: "2-digit", minute: "2-digit",
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5" /> Detected Changes
-              </h4>
-              {(!history.changes || history.changes.length === 0) ? (
-                <p className="text-xs text-muted-foreground py-4">No changes detected yet</p>
-              ) : (
-                <div className="space-y-0">
-                  {history.changes.map((change) => {
-                    const typeInfo = CHANGE_TYPE_LABELS[change.type] || { label: change.type, color: "text-muted-foreground" };
-                    return (
-                      <div key={change.id} className="flex items-start gap-3 py-2.5 border-t border-border first:border-t-0">
-                        <div className={`flex h-6 w-6 items-center justify-center rounded-full mt-0.5 shrink-0 ${change.type === "pricing" ? "bg-warning/10" : change.type === "feature" ? "bg-info/10" : "bg-primary/10"}`}>
-                          <TrendingUp className={`h-3 w-3 ${typeInfo.color}`} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium ${typeInfo.color}`}>{typeInfo.label}</p>
-                          <div className="flex items-start gap-2 mt-0.5 text-xs">
-                            {change.oldValue && (
-                              <span className="line-through text-red-400/70">{change.oldValue}</span>
-                            )}
-                            {change.newValue && (
-                              <span className="text-primary">{change.newValue}</span>
-                            )}
-                          </div>
-                          <p className="text-[11px] text-muted-foreground mt-0.5">
-                            {new Date(change.detectedAt).toLocaleDateString("en-US", {
-                              month: "short", day: "numeric",
-                              hour: "2-digit", minute: "2-digit",
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center py-8">
-            <p className="text-xs text-muted-foreground font-mono">No history data available</p>
-          </div>
-        )}
-      </div>
-    </motion.div>
   );
 }
 
