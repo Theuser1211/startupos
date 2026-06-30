@@ -7,7 +7,6 @@ const BASE_URL =
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 let unauthorizedHandler: (() => void) | null = null;
-let isAuthRedirecting = false;
 
 export function setUnauthorizedHandler(fn: () => void) {
   unauthorizedHandler = fn;
@@ -26,10 +25,12 @@ function getToken(): string | null {
 
 function setToken(token: string): void {
   localStorage.setItem(TOKEN_KEY, token);
+  document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=604800; SameSite=Lax; Secure`;
 }
 
 function clearToken(): void {
   localStorage.removeItem(TOKEN_KEY);
+  document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax; Secure`;
 }
 
 const friendlyMessages: [string, string][] = [
@@ -59,9 +60,10 @@ export function toFriendlyError(raw: string, tokenExisted?: boolean): string {
   return raw;
 }
 
-function decodeJwtPayload(token: string): Record<string, unknown> | null {
+export function decodeJwtPayload(token: string): Record<string, unknown> | null {
   try {
     const base64 = token.split(".")[1];
+    if (!base64) return null;
     const json = atob(base64.replace(/-/g, "+").replace(/_/g, "/"));
     return JSON.parse(json);
   } catch {
@@ -69,10 +71,50 @@ function decodeJwtPayload(token: string): Record<string, unknown> | null {
   }
 }
 
+export function validateTokenFormat(token: string): boolean {
+  if (!token || typeof token !== "string") return false;
+  const parts = token.split(".");
+  if (parts.length !== 3) return false;
+  if (!parts[0] || !parts[1] || !parts[2]) return false;
+  try {
+    decodeJwtPayload(token);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function isTokenExpired(token: string): boolean {
+  const payload = decodeJwtPayload(token);
+  if (!payload || !payload.exp) return false;
+  const exp = payload.exp as number;
+  return Date.now() >= exp * 1000;
+}
+
 export interface ApiError {
   error: string;
   status: number;
   tokenExisted?: boolean;
+}
+
+function handleAuthFailure(): void {
+  clearToken();
+  unauthorizedHandler?.();
+}
+
+function redirectToSignIn(expired: boolean = false, redirectPath?: string): void {
+  if (typeof window === "undefined") return;
+  
+  clearToken();
+  const signInUrl = new URL("/auth/sign-in", window.location.origin);
+  if (expired) signInUrl.searchParams.set("expired", "1");
+  if (redirectPath) {
+    signInUrl.searchParams.set("redirect", encodeURIComponent(redirectPath));
+  } else {
+    const currentPath = window.location.pathname + window.location.search;
+    signInUrl.searchParams.set("redirect", encodeURIComponent(currentPath));
+  }
+  window.location.href = signInUrl.toString();
 }
 
 async function refreshAndGetToken(): Promise<string | null> {
@@ -83,7 +125,14 @@ async function refreshAndGetToken(): Promise<string | null> {
   refreshPromise = (async () => {
     try {
       const token = getToken();
-      if (!token) return null;
+      if (!token || !validateTokenFormat(token)) {
+        handleAuthFailure();
+        return null;
+      }
+      if (isTokenExpired(token)) {
+        handleAuthFailure();
+        return null;
+      }
       const res = await fetch(`${BASE_URL}/auth/refresh`, {
         method: "POST",
         body: "{}",
@@ -93,14 +142,19 @@ async function refreshAndGetToken(): Promise<string | null> {
         },
       });
       if (!res.ok) {
-        clearToken();
+        handleAuthFailure();
         return null;
       }
       const data = await res.json() as { token: string };
+      if (!data.token || !validateTokenFormat(data.token)) {
+        handleAuthFailure();
+        return null;
+      }
       setToken(data.token);
       return data.token;
-    } catch {
-      clearToken();
+    } catch (err) {
+      console.error("[Auth] Refresh token failed:", err);
+      handleAuthFailure();
       return null;
     } finally {
       isRefreshing = false;
@@ -120,7 +174,19 @@ async function request<T = unknown>(
     ...(hasBody ? { "Content-Type": "application/json" } : {}),
     ...(options.headers as Record<string, string>),
   };
+  
   if (token) {
+    if (!validateTokenFormat(token)) {
+      console.warn("[Auth] Token format invalid, clearing");
+      handleAuthFailure();
+      if (typeof window !== "undefined") {
+        window.location.href = "/auth/sign-in?expired=1";
+        return Promise.reject(new Error("Invalid token format"));
+      }
+    }
+    if (isTokenExpired(token)) {
+      console.warn("[Auth] Token expired, attempting refresh");
+    }
     headers["Authorization"] = `Bearer ${token}`;
   }
 
@@ -136,6 +202,7 @@ async function request<T = unknown>(
 
     if (!res.ok) {
       if (res.status === 401 && token && path !== "/auth/refresh") {
+        console.warn("[Auth] 401 received, attempting token refresh");
         const newToken = await refreshAndGetToken();
         if (newToken) {
           headers["Authorization"] = `Bearer ${newToken}`;
@@ -148,13 +215,9 @@ async function request<T = unknown>(
             return retryRes.json();
           }
         }
-        // Refresh failed — clear auth state and redirect
-        unauthorizedHandler?.();
-        if (!isAuthRedirecting && typeof window !== "undefined") {
-          isAuthRedirecting = true;
-          const currentPath = window.location.pathname + window.location.search;
-          window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(currentPath)}`;
-        }
+        console.warn("[Auth] Token refresh failed, redirecting to sign in");
+        redirectToSignIn(true, path);
+        throw new Error("Authentication failed - redirecting");
       }
       let body: { error?: string; message?: string } = {};
       try {
@@ -211,5 +274,6 @@ async function del<T = unknown>(path: string): Promise<T> {
 export const apiClient = {
   request, get, post, put, del,
   getToken, setToken, clearToken, decodeJwtPayload,
+  validateTokenFormat, isTokenExpired,
   BASE_URL,
 };
