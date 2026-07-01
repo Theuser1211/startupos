@@ -994,11 +994,16 @@ async function withFailover<T>(
   const errors: Array<{ provider: string; model: string; error: string; statusCode: number }> = [];
   const availableCount = providerRegistry.getEntryCount();
   const hasFreeLLM = !!env.FREELLM_API_KEY;
+  const totalTimeout = env.AI_FAILOVER_TOTAL_TIMEOUT_MS;
+  const overallStart = Date.now();
 
   logger.info(
-    { availableProviders: availableCount, hasFreeLLM, context },
+    { availableProviders: availableCount, hasFreeLLM, context, totalTimeout },
     "AI provider: starting fallback chain",
   );
+
+  function elapsed() { return Date.now() - overallStart; }
+  function timeRemaining() { return Math.max(0, totalTimeout - elapsed()); }
 
   if (hasFreeLLM) {
     const provider = new FreeLLMProvider();
@@ -1027,6 +1032,11 @@ async function withFailover<T>(
   const maxAttempts = availableCount + 1;
 
   while (attemptCount < maxAttempts) {
+    if (timeRemaining() <= 0) {
+      logger.warn({ elapsedMs: elapsed(), totalTimeout }, "AI provider: total timeout reached, skipping remaining providers");
+      break;
+    }
+
     const entry = providerRegistry.getNextAvailableProvider();
     if (!entry) break;
 
@@ -1052,7 +1062,7 @@ async function withFailover<T>(
 
       const remaining = availableCount - attemptCount + (hasFreeLLM ? 0 : 0);
       logger.warn(
-        { provider: entry.provider, model: entry.model, id: entry.id, remainingProviders: remaining, error: message },
+        { provider: entry.provider, model: entry.model, id: entry.id, remainingProviders: remaining, error: message, elapsedMs: elapsed() },
         "AI provider: failed — trying next",
       );
     }
@@ -1060,7 +1070,7 @@ async function withFailover<T>(
 
   const detail = errors.map((e) => `${e.provider} (${e.model}): [${e.statusCode}] ${e.error}`).join(" | ");
   const prefix = context ? `${context}: ` : "";
-  const fullError = `${prefix}All AI providers failed (tried ${errors.length} providers): ${detail}`;
+  const fullError = `${prefix}All AI providers failed after ${elapsed()}ms (tried ${errors.length} providers): ${detail}`;
   logger.error({ errors: errors.map(e => ({ provider: e.provider, model: e.model, statusCode: e.statusCode, error: e.error })) }, fullError);
   throw new Error(fullError);
 }
