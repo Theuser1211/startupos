@@ -8,7 +8,7 @@ import { WebsiteTab } from "@/components/workspace/website-tab";
 import { BrandTab } from "@/components/workspace/brand-tab";
 import { ICPTab } from "@/components/workspace/icp-tab";
 import { RevenueTab } from "@/components/workspace/revenue-tab";
-import { RoadmapTab } from "@/components/workspace/roadmap-tab";
+
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { useStartup, useBlueprint } from "@/lib/hooks/use-startup";
@@ -28,7 +28,6 @@ const tabComponents: Record<string, React.ComponentType<{ blueprint?: StartupBlu
   brand: BrandTab,
   icp: ICPTab,
   revenue: RevenueTab,
-  roadmap: RoadmapTab,
 };
 
 const mobileTabs = [
@@ -37,7 +36,6 @@ const mobileTabs = [
   { id: "brand", label: "Brand" },
   { id: "icp", label: "ICP" },
   { id: "revenue", label: "Revenue" },
-  { id: "roadmap", label: "Roadmap" },
 ];
 
 function WorkspaceContent() {

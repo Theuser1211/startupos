@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard, Globe, Palette, Target, DollarSign, Map,
+  LayoutDashboard, Globe, Palette, Target, DollarSign,
   LucideIcon, FolderOpen, Crosshair,
 } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +20,7 @@ const tabs: Tab[] = [
   { id: "brand", label: "Brand", icon: Palette },
   { id: "icp", label: "ICP", icon: Target },
   { id: "revenue", label: "Revenue", icon: DollarSign },
-  { id: "roadmap", label: "Roadmap", icon: Map },
+
 ];
 
 interface SidebarProps {

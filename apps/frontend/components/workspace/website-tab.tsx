@@ -15,6 +15,8 @@ import type { StartupBlueprint } from "@/lib/types";
 
 type GenPhase = "idle" | "generating" | "completed" | "failed";
 
+const STORAGE_KEY_PREFIX = "startupos-gen-website-";
+
 export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null }) {
   const [genPhase, setGenPhase] = useState<GenPhase>("idle");
   const [websiteData, setWebsiteData] = useState<Record<string, unknown> | null>(null);
@@ -25,35 +27,44 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
   const generateWebsiteMut = useGenerateWebsite();
   const deployMut = useDeploy();
 
+  const startupId = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("id")
+    : null;
+
+  const storageKey = startupId ? `${STORAGE_KEY_PREFIX}${startupId}` : null;
+
+  const clearGenFlag = useCallback(() => {
+    if (storageKey) sessionStorage.removeItem(storageKey);
+  }, [storageKey]);
+
   useEffect(() => {
-    const startupId = typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("id")
-      : null;
-    if (startupId) {
-      getWebsiteByStartup(startupId).then((existing) => {
-        if (existing) {
-          setWebsiteId(existing.id);
-          setWebsiteData(existing as unknown as Record<string, unknown>);
-          setGenPhase("completed");
-        }
-      }).catch(() => {});
-    }
-  }, []);
+    if (!startupId) return;
+
+    getWebsiteByStartup(startupId).then((existing) => {
+      if (existing) {
+        setWebsiteId(existing.id);
+        setWebsiteData(existing as unknown as Record<string, unknown>);
+        setGenPhase("completed");
+        clearGenFlag();
+      } else if (storageKey && sessionStorage.getItem(storageKey) === "true") {
+        handleGenerate();
+      }
+    }).catch(() => {});
+  }, [startupId]);
 
   const handleGenerate = useCallback(async () => {
     if (!blueprint?.startupName) {
       toast({ variant: "error", title: "No blueprint data", message: "Complete the interview first." });
       return;
     }
+    if (!startupId) {
+      toast({ variant: "error", title: "No startup ID", message: "Cannot generate without a startup." });
+      return;
+    }
     setGenPhase("generating");
     setGenError(null);
+    if (storageKey) sessionStorage.setItem(storageKey, "true");
     try {
-      const startupId = typeof window !== "undefined"
-        ? new URLSearchParams(window.location.search).get("id")
-        : null;
-      if (!startupId) {
-        throw new Error("No startup ID found");
-      }
       const res = await generateWebsiteMut.mutateAsync({ startupId });
       if (res.website) {
         setWebsiteId(res.website.id);
@@ -63,12 +74,21 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       }
       toast({ variant: "success", title: "Website ready!", message: "Your website has been generated." });
       setGenPhase("completed");
+      clearGenFlag();
     } catch (err) {
       setGenPhase("failed");
       setGenError(err instanceof Error ? err.message : "Failed to generate website.");
       toast({ variant: "error", title: "Generation failed" });
+      clearGenFlag();
     }
-  }, [blueprint, generateWebsiteMut, toast]);
+  }, [blueprint, generateWebsiteMut, toast, startupId, storageKey, clearGenFlag]);
+
+  const handleRegenerate = useCallback(() => {
+    setWebsiteData(null);
+    setWebsiteId(null);
+    setGenPhase("idle");
+    handleGenerate();
+  }, [handleGenerate]);
 
   if (!blueprint) {
     return (
@@ -133,25 +153,33 @@ export function WebsiteTab({ blueprint }: { blueprint?: StartupBlueprint | null 
       )}
 
       {genPhase === "completed" && website && (
-        <WebsitePreview
-          website={website}
-          websiteId={websiteId}
-          onDeploy={async () => {
-            if (!websiteId) return;
-            try {
-              const result = await deployMut.mutateAsync({ websiteId });
-              if (result.success && result.url) {
-                toast({ variant: "success", title: "Deployed!", message: `Your site is live at ${result.url}` });
-              } else {
-                toast({ variant: "error", title: "Deploy failed", message: result.error || "Unknown error" });
+        <div className="space-y-6">
+          <WebsitePreview
+            website={website}
+            websiteId={websiteId}
+            onDeploy={async () => {
+              if (!websiteId) return;
+              try {
+                const result = await deployMut.mutateAsync({ websiteId });
+                if (result.success && result.url) {
+                  toast({ variant: "success", title: "Deployed!", message: `Your site is live at ${result.url}` });
+                } else {
+                  toast({ variant: "error", title: "Deploy failed", message: result.error || "Unknown error" });
+                }
+              } catch {
+                toast({ variant: "error", title: "Deploy failed" });
               }
-            } catch {
-              toast({ variant: "error", title: "Deploy failed" });
-            }
-          }}
-          deploying={deployMut.isPending}
-          deployedUrl={(website as Record<string, string>)?.url}
-        />
+            }}
+            deploying={deployMut.isPending}
+            deployedUrl={(website as Record<string, string>)?.url}
+          />
+          <div className="text-center">
+            <Button variant="outline" size="sm" onClick={handleRegenerate} disabled={generateWebsiteMut.isPending}>
+              <RotateCw className="h-4 w-4 mr-1" />
+              Regenerate Website
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
