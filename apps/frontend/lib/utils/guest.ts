@@ -29,19 +29,19 @@ export function saveGuestStartup(startupId: string, data: InterviewData, company
     : (PROBLEM_LABELS[data.problem] || data.problem || "efficiency");
 
   const brandValues = [];
-  if (data.industry === "ai" || data.industry === "saas" || data.industry === "developer-tools") brandValues.push("Innovation");
+  if (data.industry === "ai" || data.industry === "saas" || data.industry === "devtools") brandValues.push("Innovation");
   else brandValues.push("Quality");
   if (data.targetCustomer === "b2b-small" || data.targetCustomer === "b2b-enterprise") brandValues.push("Trust", "Reliability");
   else if (data.targetCustomer === "b2c-mass" || data.targetCustomer === "b2c-niche") brandValues.push("Simplicity", "Accessibility");
   else brandValues.push("Community", "Transparency");
-  if (data.problem === "cost" || data.problem === "time") brandValues.push("Efficiency");
-  if (data.problem === "quality") brandValues.push("Excellence");
+  if (data.problem === "cost") brandValues.push("Efficiency");
+  if (data.problem === "performance") brandValues.push("Excellence");
   brandValues.push("Customer-Centric");
 
   const brandColors = [];
-  if (data.industry === "fintech" || data.industry === "health") {
+  if (data.industry === "fintech" || data.industry === "healthtech") {
     brandColors.push({ name: "Primary", hex: "#2563EB" }, { name: "Secondary", hex: "#7C3AED" }, { name: "Accent", hex: "#10B981" });
-  } else if (data.industry === "ai" || data.industry === "developer-tools" || data.industry === "saas") {
+  } else if (data.industry === "ai" || data.industry === "devtools" || data.industry === "saas") {
     brandColors.push({ name: "Primary", hex: "#6C5CE7" }, { name: "Secondary", hex: "#00B894" }, { name: "Accent", hex: "#FDCB6E" });
   } else {
     brandColors.push({ name: "Primary", hex: "#E17055" }, { name: "Secondary", hex: "#00CEC9" }, { name: "Accent", hex: "#6C5CE7" });

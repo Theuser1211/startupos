@@ -1,5 +1,13 @@
 import type { StartupBlueprint } from "@/lib/types";
 
+interface RawBrand {
+  mission?: string;
+  values?: string[];
+  tone?: string[];
+  colors?: { name: string; hex: string }[];
+  typography?: { heading: string; body: string };
+}
+
 interface RawBlueprintContent {
   name?: string;
   description?: string;
@@ -12,6 +20,7 @@ interface RawBlueprintContent {
   techStack?: string[];
   competitorAnalysis?: string[];
   roadmap?: string[];
+  brand?: RawBrand;
 }
 
 interface RawBlueprint {
@@ -172,18 +181,21 @@ export function normalizeBlueprint(raw: RawBlueprint | undefined | null): Startu
       improvements: [],
       recommendations: [],
     },
-    brand: {
-      mission: description || `To revolutionize the ${industry || "technology"} industry`,
-      values: ["Innovation", "User-Centric", "Transparency", "Quality"],
-      tone: ["Professional", "Approachable", "Confident", "Clear"],
-      colors: [
-        { name: "Primary", hex: "#7C3AED" },
-        { name: "Secondary", hex: "#06B6D4" },
-        { name: "Accent", hex: "#F59E0B" },
-        { name: "Neutral", hex: "#64748B" },
-      ],
-      typography: { heading: "Inter", body: "Inter" },
-    },
+    brand: (() => {
+      const aiBrand = (content as { brand?: RawBrand }).brand;
+      return {
+        mission: aiBrand?.mission || description || `To revolutionize the ${industry || "technology"} industry`,
+        values: aiBrand?.values?.length ? aiBrand.values : ["Innovation", "User-Centric", "Transparency", "Quality"],
+        tone: aiBrand?.tone?.length ? aiBrand.tone : ["Professional", "Approachable", "Confident", "Clear"],
+        colors: aiBrand?.colors?.length ? aiBrand.colors : [
+          { name: "Primary", hex: "#7C3AED" },
+          { name: "Secondary", hex: "#06B6D4" },
+          { name: "Accent", hex: "#F59E0B" },
+          { name: "Neutral", hex: "#64748B" },
+        ],
+        typography: aiBrand?.typography?.heading ? aiBrand.typography : { heading: "Inter", body: "Inter" },
+      };
+    })(),
     logos: [],
     generationMetadata: undefined,
     icp: {

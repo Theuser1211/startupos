@@ -119,10 +119,11 @@ function WorkspaceContent() {
   const noBlueprint = !blueprint;
 
   if (noBlueprint && startupIdParam) {
-    const is401 = (startupQueryError as unknown as ApiError)?.status === 401;
+    const errStatus = (startupQueryError as unknown as ApiError)?.status;
     const tokenExisted = (startupQueryError as unknown as ApiError)?.tokenExisted;
+    const isAuthError = errStatus === 401 || errStatus === 403 || (tokenExisted && errStatus && errStatus >= 400);
 
-    if (is401) {
+    if (isAuthError && hasToken) {
       apiClient.clearToken();
       if (typeof window !== "undefined") {
         window.location.href = `/auth/sign-in?expired=1&redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
