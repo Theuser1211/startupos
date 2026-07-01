@@ -60,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { user: authUser } = await apiLogin(email, password);
       setUser(authUser);
+      document.cookie = "startupos-guest=; path=/; max-age=0";
       return { error: null };
     } catch (err: unknown) {
       const message =
@@ -74,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { user: authUser } = await apiRegister(email, password);
       setUser(authUser);
+      document.cookie = "startupos-guest=; path=/; max-age=0";
       return { error: null };
     } catch (err: unknown) {
       const message =
@@ -87,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     apiLogout();
     setUser(null);
+    document.cookie = "startupos-guest=; path=/; max-age=0";
     if (typeof window !== "undefined") {
       window.location.href = "/auth/sign-in";
     }

@@ -23,6 +23,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  const isGuest = request.cookies.get("startupos-guest")?.value === "true";
+  if (isGuest) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("startupos-token")?.value;
 
   if (!token) {

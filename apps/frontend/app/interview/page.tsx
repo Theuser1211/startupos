@@ -210,6 +210,7 @@ export default function InterviewPage() {
 
       const guestId = generateId();
       saveGuestStartup(guestId, data, companyName);
+      document.cookie = "startupos-guest=true; path=/; max-age=3600";
 
       toast({
         variant: "success",
