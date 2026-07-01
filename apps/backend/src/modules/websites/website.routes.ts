@@ -12,8 +12,8 @@ const websiteResponse = {
     createdAt: { type: "string", format: "date-time" },
     updatedAt: { type: "string", format: "date-time" },
     startupId: { type: "string" },
-    spec: { type: ["object", "null"] },
-    deployment: { type: ["object", "null"] },
+    spec: { type: ["object", "null"], additionalProperties: true },
+    deployment: { type: ["object", "null"], additionalProperties: true },
   },
 };
 
@@ -59,7 +59,7 @@ export async function websiteRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            website: { type: ["object", "null"] },
+            website: websiteResponse,
           },
         },
       },
@@ -82,7 +82,7 @@ export async function websiteRoutes(app: FastifyInstance): Promise<void> {
         200: {
           type: "object",
           properties: {
-            website: { type: ["object", "null"] },
+            website: websiteResponse,
           },
         },
       },
