@@ -7,7 +7,7 @@ import type { GenerateBlueprintPayload, GenerateBlueprintResponse } from "@start
 export async function generateBlueprint(
   payload: GenerateBlueprintPayload,
 ): Promise<GenerateBlueprintResponse> {
-  return apiClient.post<GenerateBlueprintResponse>("/blueprints/generate", payload);
+  return apiClient.post<GenerateBlueprintResponse>("/blueprints/generate", payload, { timeout: 180000 });
 }
 
 export async function getBlueprint(
