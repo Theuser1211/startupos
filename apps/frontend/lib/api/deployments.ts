@@ -8,7 +8,7 @@ export async function createDeployment(payload: DeployPayload): Promise<DeployRe
 }
 
 export async function deploy(payload: DeployPayload): Promise<DeployResponse> {
-  return apiClient.post<DeployResponse>("/deployments/create", payload);
+  return apiClient.post<DeployResponse>("/deployments/deploy", payload, { timeout: 120000 });
 }
 
 export async function getDeployment(id: string): Promise<DeployResponse> {

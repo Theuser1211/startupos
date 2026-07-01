@@ -22,15 +22,39 @@ export function saveGuestStartup(startupId: string, data: InterviewData, company
     ? data.industryOther
     : (INDUSTRY_LABELS[data.industry] || data.industry);
 
+  const industryLabel = INDUSTRY_LABELS[data.industry] || data.industry || "technology";
+  const customerLabel = CUSTOMER_LABELS[data.targetCustomer] || data.targetCustomer || "startups";
+  const problemLabel = data.problem === "other" && data.problemOther
+    ? data.problemOther
+    : (PROBLEM_LABELS[data.problem] || data.problem || "efficiency");
+
+  const brandValues = [];
+  if (data.industry === "ai" || data.industry === "saas" || data.industry === "developer-tools") brandValues.push("Innovation");
+  else brandValues.push("Quality");
+  if (data.targetCustomer === "b2b-small" || data.targetCustomer === "b2b-enterprise") brandValues.push("Trust", "Reliability");
+  else if (data.targetCustomer === "b2c-mass" || data.targetCustomer === "b2c-niche") brandValues.push("Simplicity", "Accessibility");
+  else brandValues.push("Community", "Transparency");
+  if (data.problem === "cost" || data.problem === "time") brandValues.push("Efficiency");
+  if (data.problem === "quality") brandValues.push("Excellence");
+  brandValues.push("Customer-Centric");
+
+  const brandColors = [];
+  if (data.industry === "fintech" || data.industry === "health") {
+    brandColors.push({ name: "Primary", hex: "#2563EB" }, { name: "Secondary", hex: "#7C3AED" }, { name: "Accent", hex: "#10B981" });
+  } else if (data.industry === "ai" || data.industry === "developer-tools" || data.industry === "saas") {
+    brandColors.push({ name: "Primary", hex: "#6C5CE7" }, { name: "Secondary", hex: "#00B894" }, { name: "Accent", hex: "#FDCB6E" });
+  } else {
+    brandColors.push({ name: "Primary", hex: "#E17055" }, { name: "Secondary", hex: "#00CEC9" }, { name: "Accent", hex: "#6C5CE7" });
+  }
+  brandColors.push({ name: "Neutral", hex: "#636E72" });
+
   const rawBlueprint = {
     name: companyName,
     description: data.idea || "",
     industry,
-    problemStatement: data.problem === "other" && data.problemOther
-      ? data.problemOther
-      : (PROBLEM_LABELS[data.problem] || data.problem),
+    problemStatement: problemLabel,
     solution: data.idea || "",
-    targetAudience: CUSTOMER_LABELS[data.targetCustomer] || data.targetCustomer,
+    targetAudience: customerLabel,
     keyFeatures: [
       "AI-powered idea validation",
       "Automated market analysis",
@@ -43,6 +67,13 @@ export function saveGuestStartup(startupId: string, data: InterviewData, company
     techStack: ["React", "Node.js", "AI/ML"],
     competitorAnalysis: [],
     roadmap: [],
+    brand: {
+      mission: `Empower ${customerLabel} to solve ${problemLabel} with ${companyName}`,
+      values: brandValues.slice(0, 5),
+      tone: ["Professional", "Approachable", "Confident"],
+      colors: brandColors,
+      typography: { heading: "Inter", body: "Inter" },
+    },
   };
 
   const startupData: Startup = {

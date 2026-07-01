@@ -7,7 +7,7 @@ import type { GenerateWebsitePayload, GenerateWebsiteResponse, WebsiteResponse }
 export async function generateWebsite(
   payload: GenerateWebsitePayload,
 ): Promise<GenerateWebsiteResponse> {
-  return apiClient.post<GenerateWebsiteResponse>("/websites/generate", payload);
+  return apiClient.post<GenerateWebsiteResponse>("/websites/generate", payload, { timeout: 120000 });
 }
 
 export async function getWebsite(id: string): Promise<Website> {

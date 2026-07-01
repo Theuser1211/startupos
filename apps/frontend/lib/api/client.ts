@@ -150,10 +150,11 @@ async function refreshAndGetToken(): Promise<string | null> {
 
 async function request<T = unknown>(
   path: string,
-  options: RequestInit = {},
+  options: RequestInit & { timeout?: number } = {},
 ): Promise<T> {
   const token = getToken();
   const hasBody = !!options.body;
+  const timeout = options.timeout || 30000;
   const headers: Record<string, string> = {
     ...(hasBody ? { "Content-Type": "application/json" } : {}),
     ...(options.headers as Record<string, string>),
@@ -186,7 +187,7 @@ async function request<T = unknown>(
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
@@ -247,10 +248,11 @@ async function get<T = unknown>(path: string): Promise<T> {
   return request<T>(path, { method: "GET" });
 }
 
-async function post<T = unknown>(path: string, body?: unknown): Promise<T> {
+async function post<T = unknown>(path: string, body?: unknown, options?: { timeout?: number }): Promise<T> {
   return request<T>(path, {
     method: "POST",
     body: body ? JSON.stringify(body) : undefined,
+    ...(options?.timeout ? { timeout: options.timeout } : {}),
   });
 }
 
