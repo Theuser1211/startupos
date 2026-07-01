@@ -23,7 +23,7 @@ export async function generateBlueprintHandler(
     logger.info({ requestId, startupId }, "[Blueprint] Startup lookup start");
     const startup = await prisma.startup.findUnique({
       where: { id: startupId },
-      select: { userId: true, description: true },
+      select: { userId: true, name: true, description: true },
     });
     logger.info({ requestId, startupId, found: !!startup }, "[Blueprint] Startup lookup done");
 
@@ -58,7 +58,7 @@ export async function generateBlueprintHandler(
     }
 
     logger.info({ requestId, startupId, promptLength: effectivePrompt.length, timeoutMs: env.AI_TIMEOUT_MS }, "[Blueprint] AI call start");
-    const blueprintContent = await generateBlueprintWithFallback(effectivePrompt);
+    const blueprintContent = await generateBlueprintWithFallback(effectivePrompt, startup.name, startup.description || undefined);
     logger.info({ requestId, startupId, name: blueprintContent.name, industry: blueprintContent.industry, featureCount: blueprintContent.keyFeatures?.length }, "[Blueprint] AI call completed");
 
     logger.info({ requestId, startupId }, "[Blueprint] Parse succeeded");

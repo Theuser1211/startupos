@@ -415,7 +415,22 @@ Return ONLY valid JSON with this exact structure:
   "techStack": ["tech1", "tech2"],
   "monetization": "Monetization strategy",
   "competitorAnalysis": ["competitor1", "competitor2"],
-  "roadmap": ["milestone1", "milestone2"]
+  "roadmap": ["milestone1", "milestone2"],
+  "brand": {
+    "mission": "Inspiring mission statement aligned with the startup's purpose",
+    "values": ["Value1", "Value2", "Value3", "Value4"],
+    "tone": ["Professional", "Approachable", "Confident", "Clear"],
+    "colors": [
+      { "name": "Primary", "hex": "#HEXCOLOR" },
+      { "name": "Secondary", "hex": "#HEXCOLOR" },
+      { "name": "Accent", "hex": "#HEXCOLOR" },
+      { "name": "Neutral", "hex": "#HEXCOLOR" }
+    ],
+    "typography": {
+      "heading": "Font name for headings",
+      "body": "Font name for body text"
+    }
+  }
 }`;
 
     const raw = await this.callAPI(
@@ -495,7 +510,22 @@ Return ONLY valid JSON with this exact structure:
   "techStack": [...],
   "monetization": "...",
   "competitorAnalysis": [...],
-  "roadmap": [...]
+  "roadmap": [...],
+  "brand": {
+    "mission": "Inspiring mission statement aligned with the startup's purpose",
+    "values": ["Value1", "Value2", "Value3", "Value4"],
+    "tone": ["Professional", "Approachable", "Confident", "Clear"],
+    "colors": [
+      { "name": "Primary", "hex": "#HEXCOLOR" },
+      { "name": "Secondary", "hex": "#HEXCOLOR" },
+      { "name": "Accent", "hex": "#HEXCOLOR" },
+      { "name": "Neutral", "hex": "#HEXCOLOR" }
+    ],
+    "typography": {
+      "heading": "Font name for headings",
+      "body": "Font name for body text"
+    }
+  }
 }`;
 
     const raw = await this.callAPI(
@@ -575,7 +605,22 @@ Return ONLY valid JSON with this exact structure:
   "techStack": [...],
   "monetization": "...",
   "competitorAnalysis": [...],
-  "roadmap": [...]
+  "roadmap": [...],
+  "brand": {
+    "mission": "Inspiring mission statement aligned with the startup's purpose",
+    "values": ["Value1", "Value2", "Value3", "Value4"],
+    "tone": ["Professional", "Approachable", "Confident", "Clear"],
+    "colors": [
+      { "name": "Primary", "hex": "#HEXCOLOR" },
+      { "name": "Secondary", "hex": "#HEXCOLOR" },
+      { "name": "Accent", "hex": "#HEXCOLOR" },
+      { "name": "Neutral", "hex": "#HEXCOLOR" }
+    ],
+    "typography": {
+      "heading": "Font name for headings",
+      "body": "Font name for body text"
+    }
+  }
 }`;
 
     const raw = await this.callAPI(
@@ -586,7 +631,6 @@ Return ONLY valid JSON with this exact structure:
         { role: "system", content: systemPrompt },
         { role: "user", content: prompt },
       ],
-      1024,
     );
 
     logger.debug({ provider: this.name, rawLength: raw.length }, "Raw response from OpenRouter");
@@ -656,7 +700,22 @@ Return ONLY valid JSON with this exact structure:
   "techStack": [...],
   "monetization": "...",
   "competitorAnalysis": [...],
-  "roadmap": [...]
+  "roadmap": [...],
+  "brand": {
+    "mission": "Inspiring mission statement aligned with the startup's purpose",
+    "values": ["Value1", "Value2", "Value3", "Value4"],
+    "tone": ["Professional", "Approachable", "Confident", "Clear"],
+    "colors": [
+      { "name": "Primary", "hex": "#HEXCOLOR" },
+      { "name": "Secondary", "hex": "#HEXCOLOR" },
+      { "name": "Accent", "hex": "#HEXCOLOR" },
+      { "name": "Neutral", "hex": "#HEXCOLOR" }
+    ],
+    "typography": {
+      "heading": "Font name for headings",
+      "body": "Font name for body text"
+    }
+  }
 }`;
 
     const raw = await this.callAPI(
@@ -737,7 +796,22 @@ Return ONLY valid JSON with this exact structure:
   "techStack": [...],
   "monetization": "...",
   "competitorAnalysis": [...],
-  "roadmap": [...]
+  "roadmap": [...],
+  "brand": {
+    "mission": "Inspiring mission statement aligned with the startup's purpose",
+    "values": ["Value1", "Value2", "Value3", "Value4"],
+    "tone": ["Professional", "Approachable", "Confident", "Clear"],
+    "colors": [
+      { "name": "Primary", "hex": "#HEXCOLOR" },
+      { "name": "Secondary", "hex": "#HEXCOLOR" },
+      { "name": "Accent", "hex": "#HEXCOLOR" },
+      { "name": "Neutral", "hex": "#HEXCOLOR" }
+    ],
+    "typography": {
+      "heading": "Font name for headings",
+      "body": "Font name for body text"
+    }
+  }
 }`;
 
     const raw = await this.callAPI(
@@ -991,7 +1065,30 @@ async function withFailover<T>(
   throw new Error(fullError);
 }
 
-export async function generateBlueprintWithFallback(prompt: string): Promise<BlueprintResult> {
+function buildFallbackBlueprint(name: string, description?: string): BlueprintResult {
+  const industry = "Technology";
+  const featureList: string[] = [];
+
+  return {
+    name,
+    description: description || `${name} - A modern technology startup.`,
+    industry,
+    targetAudience: "Early adopters and professionals seeking innovative solutions",
+    problemStatement: `Customers need better solutions in this space, and existing options don't fully address their needs.`,
+    solution: `${name} provides a modern, efficient solution that leverages technology to solve these challenges.`,
+    keyFeatures: featureList,
+    techStack: ["Modern web technologies", "Cloud infrastructure", "API-first architecture"],
+    monetization: "Subscription-based pricing with tiered plans",
+    competitorAnalysis: ["Traditional incumbents", "Emerging startups in the space"],
+    roadmap: ["Launch MVP", "Gather user feedback", "Scale infrastructure", "Expand feature set"],
+  };
+}
+
+export async function generateBlueprintWithFallback(
+  prompt: string,
+  startupName?: string,
+  startupDescription?: string,
+): Promise<BlueprintResult> {
   const availableCount = providerRegistry.getEntryCount();
   const hasFreeLLM = !!env.FREELLM_API_KEY;
   logger.info(
@@ -999,9 +1096,11 @@ export async function generateBlueprintWithFallback(prompt: string): Promise<Blu
     "[Blueprint] generateBlueprintWithFallback: starting",
   );
   if (availableCount === 0 && !hasFreeLLM) {
-    const error = "No AI provider configured. Set GOOGLE_API_KEY_1, GROQ_API_KEY, NIM_API_KEY_1, OPENROUTER_API_KEY, or FREELLM_API_KEY.";
-    logger.error({ availableProviders: 0, hasFreeLLM: false }, error);
-    throw new Error("No AI provider configured");
+    logger.warn(
+      { availableProviders: 0, hasFreeLLM: false },
+      "[Blueprint] No AI provider configured, building fallback blueprint",
+    );
+    return buildFallbackBlueprint(startupName || prompt, startupDescription);
   }
   const totalStart = Date.now();
   try {
@@ -1014,11 +1113,11 @@ export async function generateBlueprintWithFallback(prompt: string): Promise<Blu
     return result;
   } catch (error) {
     const totalDuration = Date.now() - totalStart;
-    logger.error(
+    logger.warn(
       { success: false, totalDurationMs: totalDuration, error: error instanceof Error ? error.message : String(error) },
-      "[Blueprint] generateBlueprintWithFallback: all providers failed",
+      "[Blueprint] generateBlueprintWithFallback: all providers failed, building fallback blueprint",
     );
-    throw error;
+    return buildFallbackBlueprint(startupName || prompt, startupDescription);
   }
 }
 
